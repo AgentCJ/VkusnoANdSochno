@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\github\\API\\VkusnoAndSochno.API\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{184F4F11-8D5A-463F-BF78-9230019A3CA0}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{184F4F11-8D5A-463F-BF78-9230019A3CA0}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{184F4F11-8D5A-463F-BF78-9230019A3CA0}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\models\\vkusnodbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{184F4F11-8D5A-463F-BF78-9230019A3CA0}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\models\\vkusnodbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{184F4F11-8D5A-463F-BF78-9230019A3CA0}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{184F4F11-8D5A-463F-BF78-9230019A3CA0}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\github\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\appsettings.json",
+              "RelativeDocumentMoniker": "VkusnoAndSochno.API\\appsettings.json",
+              "ToolTip": "D:\\github\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\appsettings.json",
+              "RelativeToolTip": "VkusnoAndSochno.API\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-11-04T16:20:12.538Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "VkusnoDbContext.cs",
+              "DocumentMoniker": "D:\\github\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Models\\VkusnoDbContext.cs",
+              "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Models\\VkusnoDbContext.cs",
+              "ToolTip": "D:\\github\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Models\\VkusnoDbContext.cs",
+              "RelativeToolTip": "VkusnoAndSochno.API\\Models\\VkusnoDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-04T16:18:19.101Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\github\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Program.cs",
+              "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Program.cs",
+              "ToolTip": "D:\\github\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Program.cs",
+              "RelativeToolTip": "VkusnoAndSochno.API\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-04T16:09:47.315Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
