@@ -18,5 +18,8 @@
         Title="Касса"
         ContentTemplate="{DataTemplate views:CashierPage}"
         Route="CashierPage" />
-
+    <ShellContent
+        Title="Кухня"
+        ContentTemplate="{DataTemplate views:CookPage}"
+        Route="CookPage" />
 </Shell>

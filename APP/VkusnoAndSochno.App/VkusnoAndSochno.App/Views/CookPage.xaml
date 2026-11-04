@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:services="clr-namespace:VkusnoAndSochno.App.Services"
+             x:Class="VkusnoAndSochno.App.Views.CookPage"
+             Title="Кухня">
+
+    <Grid RowDefinitions="Auto, *" Padding="15">
+        <Button Grid.Row="0" Text="🔄 Обновить заказы" Command="{Binding LoadOrdersCommand}" Margin="0,0,0,10"/>
+
+        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsRefreshing}" Command="{Binding LoadOrdersCommand}">
+            <CollectionView ItemsSource="{Binding ActiveOrders}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="services:ActiveOrderDto">
+                        <Frame Margin="0,5" Padding="10" BorderColor="Gray" CornerRadius="8">
+                            <VerticalStackLayout Spacing="5">
+                                <Label Text="{Binding IdOrder, StringFormat='Заказ №{0}'}" FontAttributes="Bold" FontSize="18"/>
+                                <Label Text="{Binding Status, StringFormat='Статус: {0}'}" TextColor="Blue"/>
+                                <Label Text="{Binding TotalAmount, StringFormat='Сумма: {0} ₽'}"/>
+
+                                <!-- Список блюд в заказе -->
+                                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}" Margin="10,5,0,5">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate x:DataType="services:OrderItemDto">
+                                            <Label Text="{Binding DishName, StringFormat='• {0}'}">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="• " />
+                                                        <Span Text="{Binding DishName}" />
+                                                        <Span Text=" (x" />
+                                                        <Span Text="{Binding Quantity}" />
+                                                        <Span Text=")" />
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </VerticalStackLayout>
+
+                                <!-- Кнопки управления статусом -->
+                                <HorizontalStackLayout Spacing="10">
+                                    <Button Text="Начать готовить" 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.StartCookingCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="Orange"
+                                            IsVisible="{Binding Status, Converter={StaticResource StatusToBoolConverter}, ConverterParameter='оплачен'}"/>
+
+                                    <Button Text="Выполнено" 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.FinishCookingCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="Green"
+                                            IsVisible="{Binding Status, Converter={StaticResource StatusToBoolConverter}, ConverterParameter='готовится'}"/>
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

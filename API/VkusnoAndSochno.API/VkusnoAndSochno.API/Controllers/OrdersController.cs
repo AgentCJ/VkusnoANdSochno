@@ -60,5 +60,45 @@ namespace VkusnoAndSochno.API.Controllers
                 return BadRequest(ex.InnerException?.Message ?? ex.Message);
             }
         }
+        // GET: api/orders/active
+        [HttpGet("active")]
+        public async Task<IActionResult> GetActiveOrders()
+        {
+            var orders = await (from o in _context.Orders
+                                where o.Status == "оплачен" || o.Status == "готовится"
+                                orderby o.OrderTime
+                                select new
+                                {
+                                    o.IdOrder,
+                                    o.Status,
+                                    o.TotalAmount,
+                                    o.OrderTime,
+                                    Items = (from oi in _context.OrderItems
+                                             join d in _context.Dishes on oi.IdDish equals d.IdDish
+                                             where oi.IdOrder == o.IdOrder
+                                             select new { d.DishName, oi.Quantity }).ToList()
+                                }).ToListAsync();
+
+            return Ok(orders);
+        }
+
+        // PUT: api/orders/{id}/status?status=готовится
+        [HttpPut("{orderId}/status")]
+        public async Task<IActionResult> UpdateStatus(int orderId, string status)
+        {
+            try
+            {
+                // Находим заказ и меняем статус. Триггер в БД сработает автоматически
+                var result = await _context.Database.ExecuteSqlRawAsync(
+                    "UPDATE \"Order\" SET status = {0} WHERE id_order = {1}", status, orderId);
+
+                if (result == 0) return NotFound("Заказ не найден");
+                return Ok(new { Message = $"Статус изменен на '{status}'" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.InnerException?.Message ?? ex.Message);
+            }
+        }
     }
 }

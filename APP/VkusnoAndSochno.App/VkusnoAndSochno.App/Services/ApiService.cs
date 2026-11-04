@@ -46,6 +46,18 @@ namespace VkusnoAndSochno.App.Services
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<LoginResponse>();
         }
+        public async Task<List<ActiveOrderDto>> GetActiveOrdersAsync()
+        {
+            var response = await _httpClient.GetFromJsonAsync<List<ActiveOrderDto>>("orders/active");
+            return response ?? new List<ActiveOrderDto>();
+        }
+
+        public async Task UpdateOrderStatusAsync(int orderId, string status)
+        {
+            var response = await _httpClient.PutAsync($"orders/{orderId}/status?status={status}", null);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(await response.Content.ReadAsStringAsync());
+        }
 
     }
     public class LoginResponse
@@ -56,6 +68,20 @@ namespace VkusnoAndSochno.App.Services
         public string Message { get; set; } = string.Empty;
     }
 
-
     public class CreateOrderResponse { public int OrderId { get; set; } }
+    public class ActiveOrderDto
+    {
+        public int IdOrder { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public decimal TotalAmount { get; set; }
+        public DateTime OrderTime { get; set; }
+        public List<OrderItemDto> Items { get; set; } = new();
+    }
+
+    public class OrderItemDto
+    {
+        public string DishName { get; set; } = string.Empty;
+        public int Quantity { get; set; }
+    }
+
 }
