@@ -41,11 +41,22 @@ namespace VkusnoAndSochno.App.Views
 
             // Перенаправляем в зависимости от роли
             if (result.RoleName == "cashier")
+            {
                 await Shell.Current.GoToAsync("//CashierPage");
+            }
             else if (result.RoleName == "cook")
-                await Shell.Current.GoToAsync("//CookPage"); // Заглушка для повара
+            {
+                await Shell.Current.GoToAsync("//CookPage");
+            }
+            else if (result.RoleName == "storekeeper")
+            {
+                await Shell.Current.GoToAsync("//StorekeeperPage");
+            }
             else
+            {
                 await DisplayAlert("Успех", $"Вы вошли как {result.RoleName}. Экран в разработке.", "ОК");
+            }
+
         }
     }
 }

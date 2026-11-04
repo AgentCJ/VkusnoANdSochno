@@ -25,6 +25,8 @@ namespace VkusnoAndSochno.App
             builder.Services.AddTransient<Views.LoginPage>();
             builder.Services.AddTransient<ViewModels.CookViewModel>();
             builder.Services.AddTransient<Views.CookPage>();
+            builder.Services.AddTransient<ViewModels.StorekeeperViewModel>();
+            builder.Services.AddTransient<Views.StorekeeperPage>();
 
             return builder.Build();
         }

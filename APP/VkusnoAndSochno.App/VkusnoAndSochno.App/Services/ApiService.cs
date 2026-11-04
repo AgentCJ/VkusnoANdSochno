@@ -58,6 +58,31 @@ namespace VkusnoAndSochno.App.Services
             if (!response.IsSuccessStatusCode)
                 throw new Exception(await response.Content.ReadAsStringAsync());
         }
+        public async Task<List<StockBalanceDto>> GetBalanceAsync(int branchId)
+        {
+            var res = await _httpClient.GetFromJsonAsync<List<StockBalanceDto>>($"warehouse/balance/{branchId}");
+            return res ?? new();
+        }
+
+        public async Task<List<IngredientDto>> GetIngredientsAsync()
+        {
+            var res = await _httpClient.GetFromJsonAsync<List<IngredientDto>>("warehouse/ingredients");
+            return res ?? new();
+        }
+
+        public async Task<List<SupplierDto>> GetSuppliersAsync()
+        {
+            var res = await _httpClient.GetFromJsonAsync<List<SupplierDto>>("warehouse/suppliers");
+            return res ?? new();
+        }
+
+        public async Task RegisterSupplyAsync(object request)
+        {
+            var response = await _httpClient.PostAsJsonAsync("warehouse/supply", request);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(await response.Content.ReadAsStringAsync());
+        }
+
 
     }
     public class LoginResponse
@@ -83,5 +108,19 @@ namespace VkusnoAndSochno.App.Services
         public string DishName { get; set; } = string.Empty;
         public int Quantity { get; set; }
     }
+    public class StockBalanceDto
+    {
+        public int IdBranch { get; set; }
+        public string BranchName { get; set; } = string.Empty;
+        public int IdIngredient { get; set; }
+        public string IngredientName { get; set; } = string.Empty;
+        public string UnitOfMeasure { get; set; } = string.Empty;
+        public decimal MinRemaining { get; set; }
+        public decimal Balance { get; set; }
+    }
+
+    public class IngredientDto { public int IdIngredient { get; set; } public string IngredientName { get; set; } = string.Empty; }
+    public class SupplierDto { public int IdSupplier { get; set; } public string SupplierName { get; set; } = string.Empty; }
+
 
 }
