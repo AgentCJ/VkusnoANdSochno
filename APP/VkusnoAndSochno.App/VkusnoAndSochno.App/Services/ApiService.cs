@@ -82,6 +82,22 @@ namespace VkusnoAndSochno.App.Services
             if (!response.IsSuccessStatusCode)
                 throw new Exception(await response.Content.ReadAsStringAsync());
         }
+        public async Task<List<SalesReportDto>> GetSalesReportAsync(DateTime from, DateTime to)
+        {
+            var fromStr = from.ToString("yyyy-MM-dd");
+            var toStr = to.ToString("yyyy-MM-dd");
+
+            var response = await _httpClient.GetAsync($"reports/sales?from={fromStr}&to={toStr}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorText = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Сервер вернул ошибку: {errorText}");
+            }
+
+            var res = await response.Content.ReadFromJsonAsync<List<SalesReportDto>>();
+            return res ?? new();
+        }
 
 
     }
@@ -122,5 +138,13 @@ namespace VkusnoAndSochno.App.Services
     public class IngredientDto { public int IdIngredient { get; set; } public string IngredientName { get; set; } = string.Empty; }
     public class SupplierDto { public int IdSupplier { get; set; } public string SupplierName { get; set; } = string.Empty; }
 
+    public class SalesReportDto
+    {
+        public int IdBranch { get; set; }
+        public string BranchName { get; set; } = string.Empty;
+        public long OrdersCount { get; set; }
+        public decimal TotalRevenue { get; set; }
+        public decimal AvgOrder { get; set; }
+    }
 
 }

@@ -52,6 +52,10 @@ namespace VkusnoAndSochno.App.Views
             {
                 await Shell.Current.GoToAsync("//StorekeeperPage");
             }
+            else if (result.RoleName == "manager")
+            {
+                await Shell.Current.GoToAsync("//ManagerPage");
+            }
             else
             {
                 await DisplayAlert("Успех", $"Вы вошли как {result.RoleName}. Экран в разработке.", "ОК");

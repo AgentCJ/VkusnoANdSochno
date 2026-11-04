@@ -23,5 +23,5 @@
         ContentTemplate="{DataTemplate views:CookPage}"
         Route="CookPage" />
     <ShellContent Title="Склад" ContentTemplate="{DataTemplate views:StorekeeperPage}" Route="StorekeeperPage" />
-    
+    <ShellContent Title="Отчеты" ContentTemplate="{DataTemplate views:ManagerPage}" Route="ManagerPage" />
 </Shell>
