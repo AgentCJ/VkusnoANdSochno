@@ -6,7 +6,9 @@
     Title="Вкусно и сочно"
     FlyoutBehavior="Disabled">
     <!-- Отключаем боковое меню для простоты -->
-
+    <Shell.ToolbarItems>
+        <ToolbarItem Text="Выйти" Clicked="OnLogoutClicked" Order="Secondary" Priority="0" />
+    </Shell.ToolbarItems>
     <!-- Стартовая страница - Авторизация -->
     <ShellContent
         Title="Вход"
