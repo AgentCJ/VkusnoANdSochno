@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\github\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj": {}
+    "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj": {}
   },
   "projects": {
-    "D:\\github\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj": {
+    "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\github\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj",
+        "projectUniqueName": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj",
         "projectName": "VkusnoAndSochno.API",
-        "projectPath": "D:\\github\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj",
+        "projectPath": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj",
         "packagesPath": "C:\\Users\\Honor\\.nuget\\packages\\",
-        "outputPath": "D:\\github\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\obj\\",
+        "outputPath": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

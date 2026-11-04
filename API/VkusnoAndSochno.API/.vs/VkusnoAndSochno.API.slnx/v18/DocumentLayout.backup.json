@@ -1,14 +1,30 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\github\\API\\VkusnoAndSochno.API\\",
+  "WorkspaceRootPath": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{184F4F11-8D5A-463F-BF78-9230019A3CA0}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{184F4F11-8D5A-463F-BF78-9230019A3CA0}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\vkusnoandsochno\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{184F4F11-8D5A-463F-BF78-9230019A3CA0}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{184F4F11-8D5A-463F-BF78-9230019A3CA0}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\vkusnoandsochno\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\vkusnoandsochno\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\vkusnoandsochno.api.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\vkusnoandsochno.api.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\vkusnoandsochno\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\vkusnoandsochno\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\vkusnoandsochno\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\models\\vkusnodbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\models\\vkusnodbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,30 +34,79 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "WeatherForecastController.cs",
-              "DocumentMoniker": "D:\\github\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\WeatherForecastController.cs",
-              "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Controllers\\WeatherForecastController.cs",
-              "ToolTip": "D:\\github\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\WeatherForecastController.cs*",
-              "RelativeToolTip": "VkusnoAndSochno.API\\Controllers\\WeatherForecastController.cs*",
-              "ViewState": "AgIAAAYAAAAAAAAAAAASwBIAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-04T16:17:53.296Z",
+              "DocumentIndex": 1,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Properties\\launchSettings.json",
+              "ToolTip": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Properties\\launchSettings.json",
+              "RelativeToolTip": "VkusnoAndSochno.API\\Properties\\launchSettings.json",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAuwCAAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-11-04T16:57:18.904Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
+              "Title": "VkusnoAndSochno.API",
+              "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj",
+              "RelativeDocumentMoniker": "VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj",
+              "ToolTip": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj",
+              "RelativeToolTip": "VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-11-04T16:57:16.509Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "OrdersController.cs",
+              "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\OrdersController.cs",
+              "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Controllers\\OrdersController.cs",
+              "ToolTip": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\OrdersController.cs",
+              "RelativeToolTip": "VkusnoAndSochno.API\\Controllers\\OrdersController.cs",
+              "ViewState": "AgIAACUAAAAAAAAAAAAkwBwAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-04T16:56:51.319Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\appsettings.json",
+              "RelativeDocumentMoniker": "VkusnoAndSochno.API\\appsettings.json",
+              "ToolTip": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\appsettings.json",
+              "RelativeToolTip": "VkusnoAndSochno.API\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-11-04T16:20:12.538Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "VkusnoDbContext.cs",
+              "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Models\\VkusnoDbContext.cs",
+              "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Models\\VkusnoDbContext.cs",
+              "ToolTip": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Models\\VkusnoDbContext.cs",
+              "RelativeToolTip": "VkusnoAndSochno.API\\Models\\VkusnoDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-04T16:18:19.101Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
               "Title": "Program.cs",
-              "DocumentMoniker": "D:\\github\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Program.cs",
+              "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Program.cs",
               "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Program.cs",
-              "ToolTip": "D:\\github\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Program.cs",
+              "ToolTip": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Program.cs",
               "RelativeToolTip": "VkusnoAndSochno.API\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-11-04T16:09:47.315Z",
               "EditorCaption": ""
