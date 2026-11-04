@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="VkusnoAndSochno.App.Views.LoginPage"
+             Title="Вход в систему">
+    <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
+
+        <Label Text="АИС «Вкусно и сочно»" FontSize="24" HorizontalOptions="Center" FontAttributes="Bold"/>
+
+        <Entry x:Name="LoginEntry" Placeholder="Логин" />
+        <Entry x:Name="PasswordEntry" Placeholder="Пароль" IsPassword="True" />
+
+        <Label x:Name="ErrorLabel" TextColor="Red" HorizontalOptions="Center" />
+
+        <Button Text="Войти" Clicked="OnLoginClicked" BackgroundColor="#2196F3"/>
+
+        <Label Text="Тестовые аккаунты:&#10;cashier1 / hash_2 (кассир)&#10;cook1 / hash_3 (повар)" 
+               FontSize="12" TextColor="Gray" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+    </VerticalStackLayout>
+</ContentPage>

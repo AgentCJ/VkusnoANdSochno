@@ -3,10 +3,20 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:VkusnoAndSochno.App.Views"
-    Title="Вкусно и сочно">
+    Title="Вкусно и сочно"
+    FlyoutBehavior="Disabled">
+    <!-- Отключаем боковое меню для простоты -->
 
+    <!-- Стартовая страница - Авторизация -->
+    <ShellContent
+        Title="Вход"
+        ContentTemplate="{DataTemplate views:LoginPage}"
+        Route="LoginPage" />
+
+    <!-- Страница кассира (скрыта из меню, вызывается программно) -->
     <ShellContent
         Title="Касса"
         ContentTemplate="{DataTemplate views:CashierPage}"
         Route="CashierPage" />
+
 </Shell>

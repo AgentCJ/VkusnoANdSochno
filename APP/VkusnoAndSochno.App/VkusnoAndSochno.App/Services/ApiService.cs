@@ -37,7 +37,25 @@ namespace VkusnoAndSochno.App.Services
             if (!response.IsSuccessStatusCode)
                 throw new Exception(await response.Content.ReadAsStringAsync());
         }
+        public async Task<LoginResponse?> LoginAsync(string login, string password)
+        {
+            var response = await _httpClient.PostAsJsonAsync("auth/login", new { Login = login, Password = password });
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                return null;
+
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<LoginResponse>();
+        }
+
     }
+    public class LoginResponse
+    {
+        public int EmployeeId { get; set; }
+        public int BranchId { get; set; }
+        public string RoleName { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
+    }
+
 
     public class CreateOrderResponse { public int OrderId { get; set; } }
 }

@@ -19,8 +19,10 @@ namespace VkusnoAndSochno.App
     		builder.Logging.AddDebug();
 #endif
             builder.Services.AddSingleton<Services.ApiService>();
+            builder.Services.AddSingleton<Services.UserSession>();
             builder.Services.AddTransient<ViewModels.CashierViewModel>();
             builder.Services.AddTransient<Views.CashierPage>();
+            builder.Services.AddTransient<Views.LoginPage>();
 
             return builder.Build();
         }

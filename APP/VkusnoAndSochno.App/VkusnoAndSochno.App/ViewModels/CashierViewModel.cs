@@ -7,23 +7,26 @@ namespace VkusnoAndSochno.App.ViewModels
     public partial class CashierViewModel : ObservableObject
     {
         private readonly ApiService _apiService;
+        private readonly UserSession _session;
+
         private int _currentOrderId;
 
         [ObservableProperty]
         private string statusMessage = "Создайте заказ, чтобы начать";
 
-        public CashierViewModel(ApiService apiService)
+        public CashierViewModel(ApiService apiService, UserSession session)
         {
             _apiService = apiService;
+            _session = session;
         }
+
 
         [RelayCommand]
         public async Task CreateNewOrderAsync()
         {
             try
             {
-                // ID 2 (кассир) и филиал 1 твоих тестовых данных
-                _currentOrderId = await _apiService.CreateOrderAsync(2, 1);
+                _currentOrderId = await _apiService.CreateOrderAsync(_session.EmployeeId, _session.BranchId);
                 StatusMessage = $"Создан заказ №{_currentOrderId}";
             }
             catch (Exception ex)
@@ -38,7 +41,6 @@ namespace VkusnoAndSochno.App.ViewModels
             if (_currentOrderId == 0) { StatusMessage = "Сначала создайте заказ!"; return; }
             try
             {
-                // ID блюда 1 (Гамбургер)
                 await _apiService.AddItemAsync(_currentOrderId, 1, 1);
                 StatusMessage = "Гамбургер добавлен (+150 ₽)";
             }
