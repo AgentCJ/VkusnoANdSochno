@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace VkusnoAndSochno.App.Services
 {
@@ -98,6 +99,18 @@ namespace VkusnoAndSochno.App.Services
             var res = await response.Content.ReadFromJsonAsync<List<SalesReportDto>>();
             return res ?? new();
         }
+        public async Task<List<DishDto>> GetMenuAsync()
+        {
+            var res = await _httpClient.GetFromJsonAsync<List<DishDto>>("orders/menu");
+            return res ?? new();
+        }
+
+        public async Task RemoveItemAsync(int orderId, int dishId)
+        {
+            var response = await _httpClient.DeleteAsync($"orders/{orderId}/items/{dishId}");
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(await response.Content.ReadAsStringAsync());
+        }
 
 
     }
@@ -146,5 +159,25 @@ namespace VkusnoAndSochno.App.Services
         public decimal TotalRevenue { get; set; }
         public decimal AvgOrder { get; set; }
     }
+    public class DishDto
+    {
+        public int IdDish { get; set; }
+        public string DishName { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
+        public decimal Price { get; set; }
+    }
 
+    public partial class CartItemDto : ObservableObject
+    {
+        public int IdDish { get; set; }
+        public string DishName { get; set; } = string.Empty;
+        public decimal Price { get; set; }
+
+        // Автоматически уведомляет интерфейс при изменении
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(TotalPrice))] // Если меняется кол-во, обновляется и сумма
+        private int quantity;
+
+        public decimal TotalPrice => Price * Quantity;
+    }
 }

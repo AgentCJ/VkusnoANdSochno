@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using VkusnoAndSochno.API.Models;
+using VkusnoAndSochno.API.Models; // <-- ваш namespace
 
 namespace VkusnoAndSochno.API.Controllers
 {
@@ -60,7 +60,7 @@ namespace VkusnoAndSochno.API.Controllers
                 return BadRequest(ex.InnerException?.Message ?? ex.Message);
             }
         }
-        // GET: api/orders/active
+
         [HttpGet("active")]
         public async Task<IActionResult> GetActiveOrders()
         {
@@ -82,18 +82,43 @@ namespace VkusnoAndSochno.API.Controllers
             return Ok(orders);
         }
 
-        // PUT: api/orders/{id}/status?status=готовится
         [HttpPut("{orderId}/status")]
         public async Task<IActionResult> UpdateStatus(int orderId, string status)
         {
             try
             {
-                // Находим заказ и меняем статус. Триггер в БД сработает автоматически
                 var result = await _context.Database.ExecuteSqlRawAsync(
                     "UPDATE \"Order\" SET status = {0} WHERE id_order = {1}", status, orderId);
 
                 if (result == 0) return NotFound("Заказ не найден");
                 return Ok(new { Message = $"Статус изменен на '{status}'" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.InnerException?.Message ?? ex.Message);
+            }
+        }
+
+        [HttpGet("menu")]
+        public async Task<IActionResult> GetMenu()
+        {
+            var dishes = await _context.Dishes
+                .Where(d => d.IsActive)
+                .Select(d => new { d.IdDish, d.DishName, d.Category, d.Price })
+                .ToListAsync();
+            return Ok(dishes);
+        }
+
+        // --- ИСПРАВЛЕННЫЙ МЕТОД УДАЛЕНИЯ ---
+        [HttpDelete("{orderId}/items/{dishId}")]
+        public async Task<IActionResult> RemoveItem(int orderId, int dishId)
+        {
+            try
+            {
+                await _context.Database.ExecuteSqlRawAsync(
+                    "DELETE FROM \"OrderItem\" WHERE id_order = {0} AND id_dish = {1}", orderId, dishId);
+
+                return Ok(new { Message = "Позиция удалена" });
             }
             catch (Exception ex)
             {

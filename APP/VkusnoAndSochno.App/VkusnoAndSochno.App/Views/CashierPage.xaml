@@ -1,25 +1,103 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:services="clr-namespace:VkusnoAndSochno.App.Services"
              x:Class="VkusnoAndSochno.App.Views.CashierPage"
-             Title="Касса — Вкусно и сочно">
-    <VerticalStackLayout Padding="20" Spacing="15">
+             Title="Касса"
+             BackgroundColor="#F5F5F5">
 
-        <Label Text="{Binding StatusMessage}"
-               FontSize="18"
-               HorizontalOptions="Center"
-               HorizontalTextAlignment="Center"
-               TextColor="DarkSlateGray"/>
+    <Grid ColumnDefinitions="2*, 1*" Padding="10" ColumnSpacing="10">
 
-        <Button Text="🆕 Создать новый заказ"
-                Command="{Binding CreateNewOrderCommand}"/>
+        <!-- ЛЕВАЯ ЧАСТЬ: МЕНЮ -->
+        <Grid Grid.Column="0" RowDefinitions="Auto, *" RowSpacing="10">
 
-        <Button Text="🍔 Добавить Гамбургер (150 ₽)"
-                Command="{Binding AddBurgerCommand}"/>
+            <Border Grid.Row="0" Padding="10" BackgroundColor="White" StrokeShape="RoundRectangle 8" StrokeThickness="0">
+                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="10">
+                    <Button Grid.Column="0" Text="🆕 Новый заказ" Command="{Binding CreateNewOrderCommand}" BackgroundColor="#2196F3"/>
+                    <Label Grid.Column="1" Text="{Binding StatusMessage}" TextColor="DarkSlateGray" 
+                           VerticalOptions="Center" FontAttributes="Bold" LineBreakMode="TailTruncation"/>
+                </Grid>
+            </Border>
 
-        <Button Text="💳 Оплатить заказ"
-                Command="{Binding CloseOrderCommand}"
-                BackgroundColor="#4CAF50"/>
+            <!-- Сетка с блюдами -->
+            <CollectionView Grid.Row="1" ItemsSource="{Binding Menu}">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="3" HorizontalItemSpacing="10" VerticalItemSpacing="10"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="services:DishDto">
+                        <Border Padding="10" BackgroundColor="White" StrokeShape="RoundRectangle 10" 
+                                StrokeThickness="1" Stroke="LightGray">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer 
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AddToCartCommand}"
+                                    CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout>
+                                <Label Text="{Binding DishName}" FontAttributes="Bold" FontSize="14" TextColor="Black" 
+                                       HorizontalTextAlignment="Center" LineBreakMode="TailTruncation" MaxLines="2"/>
+                                <Label Text="{Binding Price, StringFormat='{0} ₽'}" TextColor="#4CAF50" 
+                                       FontAttributes="Bold" HorizontalOptions="Center" Margin="0,10,0,0"/>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
 
-    </VerticalStackLayout>
+        <!-- ПРАВАЯ ЧАСТЬ: КОРЗИНА (ЧЕК) -->
+        <Border Grid.Column="1" BackgroundColor="White" StrokeShape="RoundRectangle 10" Padding="10" StrokeThickness="0">
+            <Grid RowDefinitions="Auto, *, Auto" RowSpacing="10">
+
+                <Label Grid.Row="0" Text="Текущий чек" FontSize="18" FontAttributes="Bold" TextColor="Black"/>
+
+                <!-- Список добавленных блюд -->
+                <CollectionView Grid.Row="1" ItemsSource="{Binding Cart}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="services:CartItemDto">
+
+                            <Grid RowDefinitions="Auto, 1" Padding="0, 5">
+                                <!-- Клик по всей строке = Удаление с подтверждением -->
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer 
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveFromCartCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Grid.GestureRecognizers>
+
+                                <!-- Внутренняя сетка: Название | Минус | Кол-во | Цена -->
+                                <Grid Grid.Row="0" ColumnDefinitions="*, Auto, Auto, Auto" ColumnSpacing="5" Margin="5,0">
+
+                                    <Label Grid.Column="0" Text="{Binding DishName}" TextColor="Black" VerticalOptions="Center" LineBreakMode="TailTruncation"/>
+
+                                    <!-- Кнопка МИНУС -->
+                                    <Button Grid.Column="1" Text="−" 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DecreaseQuantityCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#E0E0E0" TextColor="Black" FontSize="18" FontAttributes="Bold" 
+                                            WidthRequest="30" HeightRequest="30" CornerRadius="15" Padding="0" VerticalOptions="Center"/>
+
+                                    <Label Grid.Column="2" Text="{Binding Quantity}" TextColor="Black" VerticalOptions="Center" HorizontalTextAlignment="Center" WidthRequest="25"/>
+
+                                    <Label Grid.Column="3" Text="{Binding TotalPrice, StringFormat='{0} ₽'}" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalTextAlignment="End" WidthRequest="70"/>
+                                </Grid>
+
+                                <!-- Линия-разделитель -->
+                                <BoxView Grid.Row="1" Color="LightGray" HeightRequest="1" HorizontalOptions="Fill" Margin="0,5,0,0"/>
+                            </Grid>
+
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- Итог и кнопка оплаты -->
+                <VerticalStackLayout Grid.Row="2" Spacing="10">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Label Grid.Column="0" Text="Итого:" FontSize="18" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>
+                        <Label Grid.Column="1" Text="{Binding TotalAmount, StringFormat='{0:N2} ₽'}" FontSize="22" FontAttributes="Bold" TextColor="#4CAF50" VerticalOptions="Center"/>
+                    </Grid>
+                    <Button Text="💳 Оплатить" Command="{Binding PayOrderCommand}" BackgroundColor="#4CAF50" FontSize="16" HeightRequest="50"/>
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+    </Grid>
 </ContentPage>
