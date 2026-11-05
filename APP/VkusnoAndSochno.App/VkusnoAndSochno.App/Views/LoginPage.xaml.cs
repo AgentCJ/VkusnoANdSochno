@@ -56,6 +56,10 @@ namespace VkusnoAndSochno.App.Views
             {
                 await Shell.Current.GoToAsync("//ManagerPage");
             }
+            else if (result.RoleName == "test") //удалить тестовое условие
+            {
+                await Shell.Current.GoToAsync("//TestHubPage");
+            }
             else
             {
                 await DisplayAlert("Успех", $"Вы вошли как {result.RoleName}. Экран в разработке.", "ОК");

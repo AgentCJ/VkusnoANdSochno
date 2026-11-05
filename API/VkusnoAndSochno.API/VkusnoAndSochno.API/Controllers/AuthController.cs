@@ -19,6 +19,17 @@ namespace VkusnoAndSochno.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
+            //тестовый режим (удалить в конце разработки)
+            if (request.Login == "test" && request.Password == "test")
+            {
+                return Ok(new
+                {
+                    EmployeeId = 1,
+                    BranchId = 1,
+                    RoleName = "test",
+                    Message = "Тестовый режим активирован"
+                });
+            }
             // Ищем пользователя по логину и паролю (сравниваем напрямую)
             var user = await _context.Users
                 .Include(u => u.IdEmployeeNavigation)
@@ -36,6 +47,7 @@ namespace VkusnoAndSochno.API.Controllers
                 Message = "Успешный вход"
             });
         }
+
     }
 
     public class LoginRequest

@@ -29,6 +29,7 @@ namespace VkusnoAndSochno.App
             builder.Services.AddTransient<Views.StorekeeperPage>();
             builder.Services.AddTransient<ViewModels.ManagerViewModel>();
             builder.Services.AddTransient<Views.ManagerPage>();
+            builder.Services.AddTransient<Views.TestHubPage>(); //тестовый, удалить потом
 
 
             return builder.Build();

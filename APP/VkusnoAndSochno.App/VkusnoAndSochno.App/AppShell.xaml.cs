@@ -9,28 +9,59 @@ public partial class AppShell : Shell
         InitializeComponent();
     }
 
-    // Обработчик для кнопки выхода
-    private async void OnLogoutClicked(object sender, EventArgs e)
+    protected override void OnNavigated(ShellNavigatedEventArgs args)
     {
-        // Получаем текущий маршрут (на какой странице мы находимся)
+        base.OnNavigated(args);
+
+        var session = IPlatformApplication.Current?.Services.GetService<UserSession>();
         var currentRoute = CurrentState.Location.OriginalString;
 
-        if (currentRoute.Contains("LoginPage"))
+        // Определяем, нужно ли показывать кнопку
+        bool shouldShowBackButton = (session?.RoleName == "test") &&
+                                    !currentRoute.Contains("TestHubPage") &&
+                                    !currentRoute.Contains("LoginPage");
+
+        // Управляем коллекцией ToolbarItems
+        if (shouldShowBackButton)
         {
-            // Если мы на экране входа — предлагаем закрыть программу
-            bool answer = await DisplayAlert("Выход", "Вы уверены, что хотите закрыть приложение?", "Да", "Нет");
-            if (answer)
+            // Добавляем, если её ещё нет
+            if (!ToolbarItems.Contains(BackToTestMenuBtn))
             {
-                Application.Current?.Quit(); // Закрывает приложение целиком
+                ToolbarItems.Add(BackToTestMenuBtn);
             }
         }
         else
         {
-            // Если мы внутри аккаунта — предлагаем выйти из него
+            // Удаляем, если она есть
+            if (ToolbarItems.Contains(BackToTestMenuBtn))
+            {
+                ToolbarItems.Remove(BackToTestMenuBtn);
+            }
+        }
+    }
+
+    private async void OnBackToTestMenuClicked(object sender, EventArgs e)
+    {
+        await GoToAsync("//TestHubPage");
+    }
+
+    private async void OnLogoutClicked(object sender, EventArgs e)
+    {
+        var currentRoute = CurrentState.Location.OriginalString;
+
+        if (currentRoute.Contains("LoginPage") || currentRoute.Contains("TestHubPage"))
+        {
+            bool answer = await DisplayAlert("Выход", "Вы уверены, что хотите закрыть приложение?", "Да", "Нет");
+            if (answer)
+            {
+                Application.Current?.Quit();
+            }
+        }
+        else
+        {
             bool answer = await DisplayAlert("Выход", "Вы уверены, что хотите выйти из аккаунта?", "Да", "Нет");
             if (answer)
             {
-                // Возвращаемся на экран авторизации
                 await GoToAsync("//LoginPage");
             }
         }

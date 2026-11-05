@@ -7,6 +7,10 @@
     FlyoutBehavior="Disabled">
     <!-- Отключаем боковое меню для простоты -->
     <Shell.ToolbarItems>
+        <!-- Кнопка возврата в тест-меню (по умолчанию её не будет на экране) -->
+        <ToolbarItem x:Name="BackToTestMenuBtn" Text="В тест-меню" Clicked="OnBackToTestMenuClicked" />
+
+        <!-- существующая кнопка выхода -->
         <ToolbarItem Text="Выйти" Clicked="OnLogoutClicked" Order="Secondary" Priority="0" />
     </Shell.ToolbarItems>
     <!-- Стартовая страница - Авторизация -->
@@ -26,4 +30,5 @@
         Route="CookPage" />
     <ShellContent Title="Склад" ContentTemplate="{DataTemplate views:StorekeeperPage}" Route="StorekeeperPage" />
     <ShellContent Title="Отчеты" ContentTemplate="{DataTemplate views:ManagerPage}" Route="ManagerPage" />
+    <ShellContent Title="Тест" ContentTemplate="{DataTemplate views:TestHubPage}" Route="TestHubPage" /> <!-- удалить тестовое-->
 </Shell>
