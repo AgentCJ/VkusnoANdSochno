@@ -3,48 +3,77 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:services="clr-namespace:VkusnoAndSochno.App.Services"
              x:Class="VkusnoAndSochno.App.Views.StorekeeperPage"
-             Title="Склад">
+             Title="Склад"
+             BackgroundColor="#F5F5F5">
+
     <Grid RowDefinitions="Auto, Auto, *" Padding="15" RowSpacing="10">
 
         <!-- Форма поставки -->
-        <Border Grid.Row="0" Padding="10" Stroke="Gray" StrokeShape="RoundRectangle 8">
-            <VerticalStackLayout Spacing="5">
-                <Label Text="Регистрация поставки" FontAttributes="Bold" FontSize="16"/>
+        <Border Grid.Row="0" Padding="15" BackgroundColor="#E3F2FD" StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="#90CAF9">
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Регистрация поставки" FontAttributes="Bold" FontSize="18" TextColor="#1565C0"/>
 
-                <Picker Title="Ингредиент" ItemsSource="{Binding Ingredients}" 
-                        ItemDisplayBinding="{Binding IngredientName}" 
-                        SelectedItem="{Binding SelectedIngredient}" />
+                <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
+                    <!-- Ингредиент -->
+                    <Border Grid.Column="0" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
+                        <Picker Title="Ингредиент" ItemsSource="{Binding Ingredients}" 
+                                ItemDisplayBinding="{Binding IngredientName}" 
+                                SelectedItem="{Binding SelectedIngredient}"
+                                TextColor="Black" TitleColor="#666666" Margin="5,0"/>
+                    </Border>
 
-                <Picker Title="Поставщик" ItemsSource="{Binding Suppliers}" 
-                        ItemDisplayBinding="{Binding SupplierName}" 
-                        SelectedItem="{Binding SelectedSupplier}" />
+                    <!-- Поставщик -->
+                    <Border Grid.Column="1" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
+                        <Picker Title="Поставщик" ItemsSource="{Binding Suppliers}" 
+                                ItemDisplayBinding="{Binding SupplierName}" 
+                                SelectedItem="{Binding SelectedSupplier}"
+                                TextColor="Black" TitleColor="#666666" Margin="5,0"/>
+                    </Border>
+                </Grid>
 
-                <Entry Placeholder="Количество" Keyboard="Numeric" Text="{Binding QuantityText}" />
+                <!-- Количество -->
+                <Border Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
+                    <Entry Placeholder="Количество (например: 10.5)" Keyboard="Numeric" 
+                           Text="{Binding QuantityText}" 
+                           TextColor="Black" PlaceholderColor="#666666" Margin="5,0"/>
+                </Border>
 
-                <Button Text="Оформить поставку" Command="{Binding RegisterSupplyCommand}" BackgroundColor="#4CAF50"/>
-                <Label Text="{Binding StatusMessage}" TextColor="DarkSlateBlue" HorizontalOptions="Center"/>
+                <Button Text="Оформить поставку" Command="{Binding RegisterSupplyCommand}" BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold"/>
+                <Label Text="{Binding StatusMessage}" TextColor="#1565C0" HorizontalOptions="Center" FontAttributes="Bold"/>
             </VerticalStackLayout>
         </Border>
 
-        <Label Grid.Row="1" Text="Остатки на складе" FontAttributes="Bold" FontSize="18" Margin="0,10,0,0"/>
+        <!-- Заголовок и кнопка обновления -->
+        <Grid Grid.Row="1" ColumnDefinitions="*, Auto" Margin="0,10,0,0">
+            <Label Grid.Column="0" Text="Остатки на складе" FontAttributes="Bold" FontSize="18" TextColor="Black" VerticalOptions="Center"/>
+            <Button Grid.Column="1" Text="🔄 Обновить" Command="{Binding LoadDataCommand}" 
+                    BackgroundColor="#2196F3" TextColor="White" FontSize="12" HeightRequest="35" Padding="10,0"/>
+        </Grid>
 
         <!-- Таблица остатков -->
-        <RefreshView Grid.Row="2" IsRefreshing="False" Command="{Binding LoadDataCommand}">
+        <RefreshView Grid.Row="2" IsRefreshing="{Binding IsRefreshing}" Command="{Binding LoadDataCommand}">
             <CollectionView ItemsSource="{Binding StockList}">
+
+                <!-- Хак для Windows: EmptyView заставляет список перерисовываться -->
+                <CollectionView.EmptyView>
+                    <Label Text="Загрузка данных..." HorizontalOptions="Center" VerticalOptions="Center" TextColor="Gray"/>
+                </CollectionView.EmptyView>
+
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="services:StockBalanceDto">
-                        <!-- Подсветка красным, если остаток меньше минимума -->
-                        <Border Margin="0,3" Padding="10" StrokeThickness="1" StrokeShape="RoundRectangle 5">
-                            <Border.Triggers>
-                                <DataTrigger TargetType="Border" Binding="{Binding Balance}" Value="0">
-                                    <Setter Property="BackgroundColor" Value="#FFCDD2" />
-                                </DataTrigger>
-                                <!-- Упрощенный триггер: если баланс меньше минимума, красим в красноватый -->
-                            </Border.Triggers>
+                        <Border Margin="0,3" Padding="10" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White" Stroke="LightGray">
                             <Grid ColumnDefinitions="*, Auto, Auto">
-                                <Label Grid.Column="0" Text="{Binding IngredientName}" FontAttributes="Bold" VerticalOptions="Center"/>
-                                <Label Grid.Column="1" Text="{Binding Balance, StringFormat='{0} '}" TextColor="Blue" FontAttributes="Bold" VerticalOptions="Center"/>
-                                <Label Grid.Column="2" Text="{Binding UnitOfMeasure}" VerticalOptions="Center" TextColor="Gray"/>
+                                <VerticalStackLayout Grid.Column="0">
+                                    <Label Text="{Binding IngredientName}" FontAttributes="Bold" TextColor="Black" FontSize="16"/>
+                                    <Label Text="{Binding MinRemaining, StringFormat='Мин. остаток: {0}'}" FontSize="11" TextColor="Gray"/>
+                                </VerticalStackLayout>
+
+                                <Label Grid.Column="1" Text="{Binding Balance, StringFormat='{0}'}" 
+                                       TextColor="#1976D2" FontAttributes="Bold" FontSize="18" 
+                                       VerticalOptions="Center" Margin="0,0,5,0"/>
+
+                                <Label Grid.Column="2" Text="{Binding UnitOfMeasure}" 
+                                       TextColor="Gray" VerticalOptions="Center" FontSize="14"/>
                             </Grid>
                         </Border>
                     </DataTemplate>

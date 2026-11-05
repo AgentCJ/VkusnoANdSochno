@@ -10,26 +10,15 @@ namespace VkusnoAndSochno.App.ViewModels
         private readonly ApiService _apiService;
         private readonly UserSession _session;
 
-        [ObservableProperty]
-        private ObservableCollection<StockBalanceDto> stockList = new();
+        [ObservableProperty] private ObservableCollection<StockBalanceDto> stockList = new();
+        [ObservableProperty] private ObservableCollection<IngredientDto> ingredients = new();
+        [ObservableProperty] private ObservableCollection<SupplierDto> suppliers = new();
 
-        [ObservableProperty]
-        private ObservableCollection<IngredientDto> ingredients = new();
-
-        [ObservableProperty]
-        private ObservableCollection<SupplierDto> suppliers = new();
-
-        [ObservableProperty]
-        private IngredientDto? selectedIngredient;
-
-        [ObservableProperty]
-        private SupplierDto? selectedSupplier;
-
-        [ObservableProperty]
-        private string quantityText = string.Empty;
-
-        [ObservableProperty]
-        private string statusMessage = string.Empty;
+        [ObservableProperty] private IngredientDto? selectedIngredient;
+        [ObservableProperty] private SupplierDto? selectedSupplier;
+        [ObservableProperty] private string quantityText = string.Empty;
+        [ObservableProperty] private string statusMessage = string.Empty;
+        [ObservableProperty] private bool isRefreshing;
 
         public StorekeeperViewModel(ApiService apiService, UserSession session)
         {
@@ -40,24 +29,37 @@ namespace VkusnoAndSochno.App.ViewModels
         [RelayCommand]
         public async Task LoadDataAsync()
         {
+            IsRefreshing = true;
             try
             {
                 var stock = await _apiService.GetBalanceAsync(_session.BranchId);
-                StockList.Clear();
-                foreach (var item in stock) StockList.Add(item);
+
+                // ГЛАВНЫЙ ФИКС: Создаем НОВУЮ коллекцию. 
+                // На Windows MAUI это единственный способ заставить CollectionView перерисоваться.
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    StockList = new ObservableCollection<StockBalanceDto>(stock);
+                });
 
                 if (Ingredients.Count == 0)
                 {
                     var ings = await _apiService.GetIngredientsAsync();
-                    foreach (var i in ings) Ingredients.Add(i);
-
                     var sups = await _apiService.GetSuppliersAsync();
-                    foreach (var s in sups) Suppliers.Add(s);
+
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        Ingredients = new ObservableCollection<IngredientDto>(ings);
+                        Suppliers = new ObservableCollection<SupplierDto>(sups);
+                    });
                 }
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК");
+                await Shell.Current.DisplayAlert("Ошибка API", ex.Message, "ОК");
+            }
+            finally
+            {
+                IsRefreshing = false;
             }
         }
 
@@ -85,6 +87,7 @@ namespace VkusnoAndSochno.App.ViewModels
                 await _apiService.RegisterSupplyAsync(request);
                 StatusMessage = $"Успешно: {SelectedIngredient.IngredientName} +{qty}";
                 QuantityText = string.Empty;
+
                 await LoadDataAsync(); // Обновляем таблицу остатков
             }
             catch (Exception ex)

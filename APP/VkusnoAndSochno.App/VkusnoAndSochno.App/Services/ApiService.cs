@@ -38,6 +38,7 @@ namespace VkusnoAndSochno.App.Services
             if (!response.IsSuccessStatusCode)
                 throw new Exception(await response.Content.ReadAsStringAsync());
         }
+
         public async Task<LoginResponse?> LoginAsync(string login, string password)
         {
             var response = await _httpClient.PostAsJsonAsync("auth/login", new { Login = login, Password = password });
@@ -47,6 +48,7 @@ namespace VkusnoAndSochno.App.Services
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<LoginResponse>();
         }
+
         public async Task<List<ActiveOrderDto>> GetActiveOrdersAsync()
         {
             var response = await _httpClient.GetFromJsonAsync<List<ActiveOrderDto>>("orders/active");
@@ -59,9 +61,12 @@ namespace VkusnoAndSochno.App.Services
             if (!response.IsSuccessStatusCode)
                 throw new Exception(await response.Content.ReadAsStringAsync());
         }
+
         public async Task<List<StockBalanceDto>> GetBalanceAsync(int branchId)
         {
-            var res = await _httpClient.GetFromJsonAsync<List<StockBalanceDto>>($"warehouse/balance/{branchId}");
+            // ДОБАВЛЕНО: Параметр ?t=... обходит кэш браузера/Windows
+            var res = await _httpClient.GetFromJsonAsync<List<StockBalanceDto>>(
+                $"warehouse/balance/{branchId}?t={DateTime.Now.Ticks}");
             return res ?? new();
         }
 
@@ -83,6 +88,7 @@ namespace VkusnoAndSochno.App.Services
             if (!response.IsSuccessStatusCode)
                 throw new Exception(await response.Content.ReadAsStringAsync());
         }
+
         public async Task<List<SalesReportDto>> GetSalesReportAsync(DateTime from, DateTime to)
         {
             var fromStr = from.ToString("yyyy-MM-dd");
@@ -99,6 +105,7 @@ namespace VkusnoAndSochno.App.Services
             var res = await response.Content.ReadFromJsonAsync<List<SalesReportDto>>();
             return res ?? new();
         }
+
         public async Task<List<DishDto>> GetMenuAsync()
         {
             var res = await _httpClient.GetFromJsonAsync<List<DishDto>>("orders/menu");
@@ -111,9 +118,12 @@ namespace VkusnoAndSochno.App.Services
             if (!response.IsSuccessStatusCode)
                 throw new Exception(await response.Content.ReadAsStringAsync());
         }
-
-
     }
+
+    // ==========================================
+    // КЛАССЫ ДАННЫХ (DTO)
+    // ==========================================
+
     public class LoginResponse
     {
         public int EmployeeId { get; set; }
@@ -123,6 +133,7 @@ namespace VkusnoAndSochno.App.Services
     }
 
     public class CreateOrderResponse { public int OrderId { get; set; } }
+
     public class ActiveOrderDto
     {
         public int IdOrder { get; set; }
@@ -137,6 +148,7 @@ namespace VkusnoAndSochno.App.Services
         public string DishName { get; set; } = string.Empty;
         public int Quantity { get; set; }
     }
+
     public class StockBalanceDto
     {
         public int IdBranch { get; set; }
@@ -159,6 +171,7 @@ namespace VkusnoAndSochno.App.Services
         public decimal TotalRevenue { get; set; }
         public decimal AvgOrder { get; set; }
     }
+
     public class DishDto
     {
         public int IdDish { get; set; }
@@ -173,9 +186,8 @@ namespace VkusnoAndSochno.App.Services
         public string DishName { get; set; } = string.Empty;
         public decimal Price { get; set; }
 
-        // Автоматически уведомляет интерфейс при изменении
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(TotalPrice))] // Если меняется кол-во, обновляется и сумма
+        [NotifyPropertyChangedFor(nameof(TotalPrice))]
         private int quantity;
 
         public decimal TotalPrice => Price * Quantity;
