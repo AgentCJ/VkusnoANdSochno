@@ -19,7 +19,7 @@
                         <Picker Title="Ингредиент" ItemsSource="{Binding Ingredients}" 
                                 ItemDisplayBinding="{Binding IngredientName}" 
                                 SelectedItem="{Binding SelectedIngredient}"
-                                TextColor="Black" TitleColor="#666666" Margin="5,0"/>
+                                TextColor="Black" TitleColor="#666666" Margin="5,0" BackgroundColor="Transparent"/>
                     </Border>
 
                     <!-- Поставщик -->
@@ -27,7 +27,7 @@
                         <Picker Title="Поставщик" ItemsSource="{Binding Suppliers}" 
                                 ItemDisplayBinding="{Binding SupplierName}" 
                                 SelectedItem="{Binding SelectedSupplier}"
-                                TextColor="Black" TitleColor="#666666" Margin="5,0"/>
+                                TextColor="Black" TitleColor="#666666" Margin="5,0" BackgroundColor="Transparent"/>
                     </Border>
                 </Grid>
 
@@ -35,7 +35,7 @@
                 <Border Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
                     <Entry Placeholder="Количество (например: 10.5)" Keyboard="Numeric" 
                            Text="{Binding QuantityText}" 
-                           TextColor="Black" PlaceholderColor="#666666" Margin="5,0"/>
+                           TextColor="Black" PlaceholderColor="#666666" Margin="5,0" BackgroundColor="Transparent"/>
                 </Border>
 
                 <Button Text="Оформить поставку" Command="{Binding RegisterSupplyCommand}" BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold"/>

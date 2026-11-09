@@ -3,56 +3,68 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:services="clr-namespace:VkusnoAndSochno.App.Services"
              x:Class="VkusnoAndSochno.App.Views.CookPage"
-             Title="Кухня">
+             Title="Кухня"
+             BackgroundColor="#F5F5F5">
 
-    <Grid RowDefinitions="Auto, *" Padding="15">
-        <Button Grid.Row="0" Text="🔄 Обновить заказы" Command="{Binding LoadOrdersCommand}" Margin="0,0,0,10"/>
+    <Grid RowDefinitions="Auto, *" Padding="15" RowSpacing="10">
+
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto">
+            <Label Grid.Column="0" Text="Активные заказы" FontAttributes="Bold" FontSize="20" TextColor="Black" VerticalOptions="Center"/>
+            <Button Grid.Column="1" Text="🔄 Обновить" Command="{Binding LoadOrdersCommand}" 
+                    BackgroundColor="#2196F3" TextColor="White" FontSize="12" HeightRequest="35" Padding="10,0"/>
+        </Grid>
 
         <RefreshView Grid.Row="1" IsRefreshing="{Binding IsRefreshing}" Command="{Binding LoadOrdersCommand}">
             <CollectionView ItemsSource="{Binding ActiveOrders}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="services:ActiveOrderDto">
-                        <Frame Margin="0,5" Padding="10" BorderColor="Gray" CornerRadius="8">
-                            <VerticalStackLayout Spacing="5">
-                                <Label Text="{Binding IdOrder, StringFormat='Заказ №{0}'}" FontAttributes="Bold" FontSize="18"/>
-                                <Label Text="{Binding Status, StringFormat='Статус: {0}'}" TextColor="Blue"/>
-                                <Label Text="{Binding TotalAmount, StringFormat='Сумма: {0} ₽'}"/>
+                        <Border Margin="0,5" Padding="15" BackgroundColor="White" StrokeShape="RoundRectangle 10" StrokeThickness="1" Stroke="LightGray">
+                            <VerticalStackLayout Spacing="10">
+
+                                <!-- Шапка заказа -->
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <Label Grid.Column="0" Text="{Binding IdOrder, StringFormat='Заказ №{0}'}" FontAttributes="Bold" FontSize="18" TextColor="Black"/>
+                                    <Label Grid.Column="1" Text="{Binding TotalAmount, StringFormat='{0} ₽'}" TextColor="#4CAF50" FontAttributes="Bold" FontSize="16"/>
+                                </Grid>
+
+                                <!-- Статус (цветной бейдж) -->
+                                <Border BackgroundColor="#FFF3E0" StrokeShape="RoundRectangle 5" Padding="8,4" HorizontalOptions="Start">
+                                    <Label Text="{Binding Status, StringFormat='Статус: {0}'}" TextColor="#FF9800" FontAttributes="Bold" FontSize="12"/>
+                                </Border>
+
+                                <BoxView HeightRequest="1" Color="#EEEEEE"/>
 
                                 <!-- Список блюд в заказе -->
-                                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}" Margin="10,5,0,5">
+                                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}" Spacing="5">
                                     <BindableLayout.ItemTemplate>
                                         <DataTemplate x:DataType="services:OrderItemDto">
-                                            <Label Text="{Binding DishName, StringFormat='• {0}'}">
-                                                <Label.FormattedText>
-                                                    <FormattedString>
-                                                        <Span Text="• " />
-                                                        <Span Text="{Binding DishName}" />
-                                                        <Span Text=" (x" />
-                                                        <Span Text="{Binding Quantity}" />
-                                                        <Span Text=")" />
-                                                    </FormattedString>
-                                                </Label.FormattedText>
-                                            </Label>
+                                            <Grid ColumnDefinitions="*, Auto">
+                                                <Label Grid.Column="0" Text="{Binding DishName}" TextColor="Black" FontSize="15"/>
+                                                <Label Grid.Column="1" Text="{Binding Quantity, StringFormat='x{0}'}" TextColor="#1976D2" FontAttributes="Bold" FontSize="15"/>
+                                            </Grid>
                                         </DataTemplate>
                                     </BindableLayout.ItemTemplate>
                                 </VerticalStackLayout>
 
-                                <!-- Кнопки управления статусом -->
-                                <HorizontalStackLayout Spacing="10">
+                                <BoxView HeightRequest="1" Color="#EEEEEE"/>
+
+                                <!-- Кнопки управления -->
+                                <HorizontalStackLayout Spacing="10" HorizontalOptions="End" Margin="0,5,0,0">
                                     <Button Text="Начать готовить" 
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.StartCookingCommand}"
                                             CommandParameter="{Binding .}"
-                                            BackgroundColor="Orange"
+                                            BackgroundColor="#FF9800" TextColor="White" FontAttributes="Bold" CornerRadius="8"
                                             IsVisible="{Binding Status, Converter={StaticResource StatusToBoolConverter}, ConverterParameter='оплачен'}"/>
 
-                                    <Button Text="Выполнено" 
+                                    <Button Text="✅ Заказ готов" 
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.FinishCookingCommand}"
                                             CommandParameter="{Binding .}"
-                                            BackgroundColor="Green"
+                                            BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold" CornerRadius="8"
                                             IsVisible="{Binding Status, Converter={StaticResource StatusToBoolConverter}, ConverterParameter='готовится'}"/>
                                 </HorizontalStackLayout>
+
                             </VerticalStackLayout>
-                        </Frame>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
