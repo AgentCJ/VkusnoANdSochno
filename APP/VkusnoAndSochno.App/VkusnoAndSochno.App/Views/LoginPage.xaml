@@ -12,7 +12,7 @@
                 StrokeShape="RoundRectangle 15" StrokeThickness="1" Stroke="LightGray"
                 WidthRequest="400" HorizontalOptions="Center">
 
-            <VerticalStackLayout Spacing="20">
+            <VerticalStackLayout Spacing="15">
                 <Label Text="АИС «Вкусно и сочно»" FontSize="26" TextColor="Black" 
                        HorizontalOptions="Center" FontAttributes="Bold"/>
 
@@ -34,8 +34,13 @@
 
                 <BoxView HeightRequest="1" Color="LightGray" Margin="0,10"/>
 
+                <!-- НОВАЯ КНОПКА ДЛЯ ТЕСТОВОГО РЕЖИМА -->
+                <Button Text="🧪 Войти в тестовый режим" Clicked="OnTestModeClicked" 
+                        BackgroundColor="#9C27B0" TextColor="White" FontAttributes="Bold" FontSize="14" 
+                        HeightRequest="45" CornerRadius="8"/>
+
                 <Label Text="Тестовые аккаунты:&#10;cashier1 / hash_2 (кассир)&#10;cook1 / hash_3 (повар)" 
-                       FontSize="12" TextColor="Gray" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                       FontSize="12" TextColor="Gray" HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="0,5,0,0"/>
             </VerticalStackLayout>
         </Border>
     </Grid>
