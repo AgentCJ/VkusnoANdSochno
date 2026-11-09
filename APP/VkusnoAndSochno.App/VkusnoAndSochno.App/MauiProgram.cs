@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using CommunityToolkit.Maui; // <-- ОБЯЗАТЕЛЬНО ДОБАВИТЬ ЭТОТ USING
 
 namespace VkusnoAndSochno.App
 {
@@ -9,6 +10,7 @@ namespace VkusnoAndSochno.App
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit() // <-- ВОТ ЗДЕСЬ, СРАЗУ ПОСЛЕ UseMauiApp
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -16,26 +18,36 @@ namespace VkusnoAndSochno.App
                 });
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
             builder.Services.AddSingleton<Services.ApiService>();
             builder.Services.AddSingleton<Services.UserSession>();
+
             builder.Services.AddTransient<ViewModels.CashierViewModel>();
             builder.Services.AddTransient<Views.CashierPage>();
+
             builder.Services.AddTransient<Views.LoginPage>();
+
             builder.Services.AddTransient<ViewModels.CookViewModel>();
             builder.Services.AddTransient<Views.CookPage>();
+
             builder.Services.AddTransient<ViewModels.StorekeeperViewModel>();
             builder.Services.AddTransient<Views.StorekeeperPage>();
+
             builder.Services.AddTransient<ViewModels.ManagerViewModel>();
             builder.Services.AddTransient<Views.ManagerPage>();
-            builder.Services.AddTransient<Views.TestHubPage>(); //тестовый, удалить потом
+
+            builder.Services.AddTransient<Views.TestHubPage>();
+
             builder.Services.AddTransient<ViewModels.AdminViewModel>();
             builder.Services.AddTransient<Views.AdminPage>();
+
             builder.Services.AddTransient<ViewModels.MyScheduleViewModel>();
             builder.Services.AddTransient<Views.MySchedulePage>();
+
             builder.Services.AddTransient<ViewModels.MenuManagementViewModel>();
             builder.Services.AddTransient<Views.MenuManagementPage>();
+
             builder.Services.AddTransient<ViewModels.RecipeViewModel>();
             builder.Services.AddTransient<Views.RecipePage>();
 

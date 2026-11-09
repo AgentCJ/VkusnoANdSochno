@@ -15,7 +15,7 @@
             <HorizontalStackLayout Grid.Row="0" Spacing="10" HorizontalOptions="Center">
                 <Button Text="➕ Новый продукт" Command="{Binding OpenAddProductCommand}" BackgroundColor="#FF9800" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
                 <Button Text="📥 Принять поставку" Command="{Binding OpenReceiveSupplyCommand}" BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
-                <Button Text="📝 Заявка поставщику" BackgroundColor="#2196F3" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
+                <Button Text="📝 Заявка поставщику" Command="{Binding OpenRequestCommand}" BackgroundColor="#2196F3" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
             </HorizontalStackLayout>
 
             <Grid Grid.Row="1" ColumnDefinitions="*, Auto" Margin="0,10,0,0">
@@ -156,5 +156,43 @@
                 </Grid>
             </Border>
         </Grid>
+
+        <!-- ОКНО 3: Заявка поставщику -->
+        <Grid IsVisible="{Binding IsRequestVisible}" BackgroundColor="#80000000" Padding="20">
+            <Border BackgroundColor="White" StrokeShape="RoundRectangle 15" Padding="20" VerticalOptions="Center" HeightRequest="550">
+                <Grid RowDefinitions="Auto, Auto, *, Auto" RowSpacing="10">
+                    <Label Grid.Row="0" Text="Создание заявки на поставку" FontAttributes="Bold" FontSize="20" TextColor="Black" HorizontalOptions="Center"/>
+
+                    <VerticalStackLayout Grid.Row="1" Spacing="5">
+                        <Label Text="Поставщик" FontSize="12" TextColor="Gray"/>
+                        <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
+                            <Picker Title="Выберите поставщика" TitleColor="#999999" ItemsSource="{Binding Suppliers}" ItemDisplayBinding="{Binding SupplierName}" SelectedItem="{Binding SelectedSupplierForRequest}" TextColor="Black" Margin="5,0" VerticalOptions="Center"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <ScrollView Grid.Row="2">
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding RequestList}" Spacing="5">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="vm:RequestItemDto">
+                                    <Grid ColumnDefinitions="*, 100, 40" ColumnSpacing="10">
+                                        <Label Grid.Column="0" Text="{Binding IngredientName}" VerticalOptions="Center" TextColor="Black"/>
+                                        <Border Grid.Column="1" Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
+                                            <Entry Placeholder="0" Keyboard="Numeric" Text="{Binding RequestedQuantity}" TextColor="Black" BackgroundColor="Transparent" Margin="5,0"/>
+                                        </Border>
+                                        <Label Grid.Column="2" Text="{Binding UnitOfMeasure}" VerticalOptions="Center" TextColor="Gray"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </ScrollView>
+
+                    <VerticalStackLayout Grid.Row="3" Spacing="10" HorizontalOptions="Center">
+                        <Button Text="📄 Сформировать и сохранить DOCX" Command="{Binding GenerateDocxCommand}" BackgroundColor="#2B579A" TextColor="White" FontAttributes="Bold" WidthRequest="250"/>
+                        <Button Text="Отмена" Command="{Binding CloseRequestCommand}" BackgroundColor="Gray" TextColor="White" FontAttributes="Bold" WidthRequest="250"/>
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+        </Grid>
+
     </Grid>
 </ContentPage>

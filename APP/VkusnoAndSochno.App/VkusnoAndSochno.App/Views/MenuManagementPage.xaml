@@ -48,7 +48,7 @@
                 <!-- Кнопки управления формой -->
                 <HorizontalStackLayout Spacing="10">
                     <Button Text="{Binding ActionButtonText}" Command="{Binding SaveDishCommand}" 
-                            BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold" HorizontalOptions="FillAndExpand"/>
+                            BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold" HorizontalOptions="Fill"/>
 
                     <Button Text="Отмена" Command="{Binding CancelEditCommand}" 
                             BackgroundColor="Gray" TextColor="White" FontAttributes="Bold" 
