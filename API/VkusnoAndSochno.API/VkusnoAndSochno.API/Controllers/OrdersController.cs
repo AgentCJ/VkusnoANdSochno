@@ -103,8 +103,9 @@ namespace VkusnoAndSochno.API.Controllers
                     var recipeItems = await _context.RecipeIngredients.Where(ri => ri.IdRecipe == recipe.IdRecipe).ToListAsync();
                     foreach (var ri in recipeItems)
                     {
+                        // ИСПРАВЛЕНИЕ ЗДЕСЬ: добавляем AS "Value", чтобы EF Core понял, куда класть число
                         var balance = await _context.Database
-                            .SqlQueryRaw<decimal>("SELECT fn_ingredient_balance({0}, {1})", ri.IdIngredient, branchId)
+                            .SqlQueryRaw<decimal>("SELECT fn_ingredient_balance({0}, {1}) AS \"Value\"", ri.IdIngredient, branchId)
                             .FirstOrDefaultAsync();
 
                         if (balance < ri.Quantity)
