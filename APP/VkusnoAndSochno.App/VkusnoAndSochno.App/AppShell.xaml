@@ -7,11 +7,11 @@
     FlyoutBehavior="Disabled">
     <!-- Отключаем боковое меню для простоты -->
     <Shell.ToolbarItems>
-        <!-- Новая кнопка графика -->
-        <ToolbarItem Text="Мой график" Clicked="OnScheduleClicked" Order="Primary" Priority="1" />
+        <!-- Кнопка графика -->
+        <ToolbarItem x:Name="ScheduleBtn" Text="Мой график" Clicked="OnScheduleClicked" Order="Primary" Priority="0" />
 
-        <ToolbarItem x:Name="BackToTestMenuBtn" Text="В тест-меню" Clicked="OnBackToTestMenuClicked" />
-        <ToolbarItem Text="Выйти" Clicked="OnLogoutClicked" Order="Secondary" Priority="0" />
+        <!-- Кнопка выхода -->
+        <ToolbarItem x:Name="LogoutBtn" Text="Выйти" Clicked="OnLogoutClicked" Order="Primary" Priority="1" />
     </Shell.ToolbarItems>
     <!-- Стартовая страница - Авторизация -->
     <ShellContent
