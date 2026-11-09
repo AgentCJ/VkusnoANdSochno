@@ -3,10 +3,6 @@
   "WorkspaceRootPath": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\vkusnoandsochno\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\controllers\\shiftscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\controllers\\shiftscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\vkusnoandsochno\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -59,19 +55,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ShiftsController.cs",
-              "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\ShiftsController.cs",
-              "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Controllers\\ShiftsController.cs",
-              "ToolTip": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\ShiftsController.cs",
-              "RelativeToolTip": "VkusnoAndSochno.API\\Controllers\\ShiftsController.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAxwAIAAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-09T10:05:49.547Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "AdminController.cs",
               "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\AdminController.cs",
               "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Controllers\\AdminController.cs",
@@ -84,7 +67,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 5,
               "Title": "AuthController.cs",
               "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\AuthController.cs",
               "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Controllers\\AuthController.cs",
@@ -96,7 +79,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 8,
               "Title": "VkusnoAndSochno.API",
               "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj",
               "RelativeDocumentMoniker": "VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj",
@@ -107,7 +90,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 4,
               "Title": "OrdersController.cs",
               "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\OrdersController.cs",
               "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Controllers\\OrdersController.cs",
@@ -119,7 +102,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 7,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\appsettings.json",
               "RelativeDocumentMoniker": "VkusnoAndSochno.API\\appsettings.json",
@@ -131,7 +114,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Program.cs",
               "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Program.cs",
@@ -144,7 +127,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "WarehouseController.cs",
               "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\WarehouseController.cs",
               "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Controllers\\WarehouseController.cs",
@@ -156,7 +139,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "ReportsController.cs",
               "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\ReportsController.cs",
               "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Controllers\\ReportsController.cs",
@@ -168,7 +151,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 6,
               "Title": "launchSettings.json",
               "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Properties\\launchSettings.json",
               "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Properties\\launchSettings.json",
@@ -180,7 +163,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 9,
               "Title": "VkusnoDbContext.cs",
               "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Models\\VkusnoDbContext.cs",
               "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Models\\VkusnoDbContext.cs",

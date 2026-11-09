@@ -135,15 +135,12 @@ namespace VkusnoAndSochno.App.Services
             var res = await _httpClient.GetFromJsonAsync<List<ShiftDto>>($"shifts/my/{employeeId}");
             return res ?? new();
         }
-        public async Task<DashboardStatsDto> GetDashboardStatsAsync()
-        {
-            var res = await _httpClient.GetFromJsonAsync<DashboardStatsDto>("reports/dashboard");
-            return res ?? new();
-        }
 
     }
 
-    // классы данных
+    // ==========================================
+    // КЛАССЫ ДАННЫХ (DTO)
+    // ==========================================
 
     public class LoginResponse
     {
@@ -230,12 +227,6 @@ namespace VkusnoAndSochno.App.Services
         public TimeSpan EndTime { get; set; }
         public string Status { get; set; } = string.Empty;
         public decimal? HoursWorked { get; set; }
-    }
-    public class DashboardStatsDto
-    {
-        public decimal TotalRevenue { get; set; }
-        public int OrderCount { get; set; }
-        public string TopDish { get; set; } = string.Empty;
     }
 
 }

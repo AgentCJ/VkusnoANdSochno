@@ -3,10 +3,6 @@
   "WorkspaceRootPath": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\vkusnoandsochno\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\controllers\\reportscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\controllers\\reportscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\vkusnoandsochno\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\controllers\\shiftscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\controllers\\shiftscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -21,6 +17,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\vkusnoandsochno\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\controllers\\warehousecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\controllers\\warehousecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\vkusnoandsochno\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\controllers\\reportscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\controllers\\reportscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\vkusnoandsochno\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -54,11 +54,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "ShiftsController.cs",
               "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\ShiftsController.cs",
               "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Controllers\\ShiftsController.cs",
@@ -67,6 +67,19 @@
               "ViewState": "AgIAAAgAAAAAAAAAAAAxwAIAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-11-09T10:05:49.547Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Controllers\\AdminController.cs",
+              "ToolTip": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "VkusnoAndSochno.API\\Controllers\\AdminController.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAYwAIAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-09T09:54:17.036Z",
               "EditorCaption": ""
             },
             {
@@ -118,7 +131,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Program.cs",
               "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Program.cs",
@@ -131,33 +144,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "ReportsController.cs",
-              "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\ReportsController.cs",
-              "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Controllers\\ReportsController.cs",
-              "ToolTip": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\ReportsController.cs",
-              "RelativeToolTip": "VkusnoAndSochno.API\\Controllers\\ReportsController.cs",
-              "ViewState": "AgIAAEIAAAAAAAAAAAAiwEEAAAATAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-04T18:48:25.236Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AdminController.cs",
-              "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\AdminController.cs",
-              "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Controllers\\AdminController.cs",
-              "ToolTip": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\AdminController.cs",
-              "RelativeToolTip": "VkusnoAndSochno.API\\Controllers\\AdminController.cs",
-              "ViewState": "AgIAABIAAAAAAAAAAAAYwAIAAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-09T09:54:17.036Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "WarehouseController.cs",
               "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\WarehouseController.cs",
               "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Controllers\\WarehouseController.cs",
@@ -166,6 +153,18 @@
               "ViewState": "AgIAAE8AAAAAAAAAAAAmwGkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-11-04T18:36:06.845Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ReportsController.cs",
+              "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\ReportsController.cs",
+              "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Controllers\\ReportsController.cs",
+              "ToolTip": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\ReportsController.cs",
+              "RelativeToolTip": "VkusnoAndSochno.API\\Controllers\\ReportsController.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAAowDgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-04T18:48:25.236Z"
             },
             {
               "$type": "Document",
