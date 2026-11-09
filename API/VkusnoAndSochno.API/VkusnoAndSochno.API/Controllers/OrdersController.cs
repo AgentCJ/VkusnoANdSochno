@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using VkusnoAndSochno.API.Models; // <-- ваш namespace
+using VkusnoAndSochno.API.Models;
 
 namespace VkusnoAndSochno.API.Controllers
 {
@@ -25,10 +25,7 @@ namespace VkusnoAndSochno.API.Controllers
                     .ToListAsync();
                 return Ok(new { OrderId = result.FirstOrDefault() });
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.InnerException?.Message ?? ex.Message);
-            }
+            catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
 
         [HttpPost("{orderId}/add-item")]
@@ -40,10 +37,7 @@ namespace VkusnoAndSochno.API.Controllers
                     "CALL add_order_item({0}, {1}, {2})", orderId, dishId, quantity);
                 return Ok(new { Message = "Блюдо добавлено" });
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.InnerException?.Message ?? ex.Message);
-            }
+            catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
 
         [HttpPost("{orderId}/close")]
@@ -55,10 +49,7 @@ namespace VkusnoAndSochno.API.Controllers
                     "CALL close_order({0}, {1})", orderId, method);
                 return Ok(new { Message = "Заказ оплачен" });
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.InnerException?.Message ?? ex.Message);
-            }
+            catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
 
         [HttpGet("active")]
@@ -78,7 +69,6 @@ namespace VkusnoAndSochno.API.Controllers
                                              where oi.IdOrder == o.IdOrder
                                              select new { d.DishName, oi.Quantity }).ToList()
                                 }).ToListAsync();
-
             return Ok(orders);
         }
 
@@ -93,23 +83,42 @@ namespace VkusnoAndSochno.API.Controllers
                 if (result == 0) return NotFound("Заказ не найден");
                 return Ok(new { Message = $"Статус изменен на '{status}'" });
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.InnerException?.Message ?? ex.Message);
-            }
+            catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
 
-        [HttpGet("menu")]
-        public async Task<IActionResult> GetMenu()
+        // ОБНОВЛЕННЫЙ МЕТОД: Проверяет наличие ингредиентов
+        [HttpGet("menu/{branchId}")]
+        public async Task<IActionResult> GetMenu(int branchId)
         {
-            var dishes = await _context.Dishes
-                .Where(d => d.IsActive)
-                .Select(d => new { d.IdDish, d.DishName, d.Category, d.Price })
-                .ToListAsync();
-            return Ok(dishes);
+            var dishes = await _context.Dishes.Where(d => d.IsActive).ToListAsync();
+            var result = new List<object>();
+
+            foreach (var d in dishes)
+            {
+                bool isAvailable = true;
+                var recipe = await _context.Recipes.FirstOrDefaultAsync(r => r.IdDish == d.IdDish);
+
+                if (recipe != null)
+                {
+                    var recipeItems = await _context.RecipeIngredients.Where(ri => ri.IdRecipe == recipe.IdRecipe).ToListAsync();
+                    foreach (var ri in recipeItems)
+                    {
+                        var balance = await _context.Database
+                            .SqlQueryRaw<decimal>("SELECT fn_ingredient_balance({0}, {1})", ri.IdIngredient, branchId)
+                            .FirstOrDefaultAsync();
+
+                        if (balance < ri.Quantity)
+                        {
+                            isAvailable = false;
+                            break;
+                        }
+                    }
+                }
+                result.Add(new { d.IdDish, d.DishName, d.Category, d.Price, IsAvailable = isAvailable });
+            }
+            return Ok(result);
         }
 
-        // --- ИСПРАВЛЕННЫЙ МЕТОД УДАЛЕНИЯ ---
         [HttpDelete("{orderId}/items/{dishId}")]
         public async Task<IActionResult> RemoveItem(int orderId, int dishId)
         {
@@ -117,13 +126,9 @@ namespace VkusnoAndSochno.API.Controllers
             {
                 await _context.Database.ExecuteSqlRawAsync(
                     "DELETE FROM \"OrderItem\" WHERE id_order = {0} AND id_dish = {1}", orderId, dishId);
-
                 return Ok(new { Message = "Позиция удалена" });
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.InnerException?.Message ?? ex.Message);
-            }
+            catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
     }
 }

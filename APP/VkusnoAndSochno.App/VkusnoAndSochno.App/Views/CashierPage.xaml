@@ -7,89 +7,66 @@
              BackgroundColor="#F5F5F5">
 
     <Grid ColumnDefinitions="2*, 1*" Padding="10" ColumnSpacing="10">
-
-        <!-- ЛЕВАЯ ЧАСТЬ: МЕНЮ -->
         <Grid Grid.Column="0" RowDefinitions="Auto, *" RowSpacing="10">
-
             <Border Grid.Row="0" Padding="10" BackgroundColor="White" StrokeShape="RoundRectangle 8" StrokeThickness="0">
                 <Grid ColumnDefinitions="Auto, *" ColumnSpacing="10">
                     <Button Grid.Column="0" Text="🆕 Новый заказ" Command="{Binding CreateNewOrderCommand}" BackgroundColor="#2196F3"/>
-                    <Label Grid.Column="1" Text="{Binding StatusMessage}" TextColor="DarkSlateGray" 
-                           VerticalOptions="Center" FontAttributes="Bold" LineBreakMode="TailTruncation"/>
+                    <Label Grid.Column="1" Text="{Binding StatusMessage}" TextColor="DarkSlateGray" VerticalOptions="Center" FontAttributes="Bold" LineBreakMode="TailTruncation"/>
                 </Grid>
             </Border>
 
-            <!-- Сетка с блюдами -->
             <CollectionView Grid.Row="1" ItemsSource="{Binding Menu}">
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="3" HorizontalItemSpacing="10" VerticalItemSpacing="10"/>
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="services:DishDto">
-                        <Border Padding="10" BackgroundColor="White" StrokeShape="RoundRectangle 10" 
-                                StrokeThickness="1" Stroke="LightGray">
+                        <Border Padding="10" BackgroundColor="White" StrokeShape="RoundRectangle 10" StrokeThickness="1" Stroke="LightGray">
                             <Border.GestureRecognizers>
-                                <TapGestureRecognizer 
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AddToCartCommand}"
-                                    CommandParameter="{Binding .}" />
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AddToCartCommand}" CommandParameter="{Binding .}" />
                             </Border.GestureRecognizers>
-                            <VerticalStackLayout>
-                                <Label Text="{Binding DishName}" FontAttributes="Bold" FontSize="14" TextColor="Black" 
-                                       HorizontalTextAlignment="Center" LineBreakMode="TailTruncation" MaxLines="2"/>
-                                <Label Text="{Binding Price, StringFormat='{0} ₽'}" TextColor="#4CAF50" 
-                                       FontAttributes="Bold" HorizontalOptions="Center" Margin="0,10,0,0"/>
-                            </VerticalStackLayout>
+
+                            <!-- Оверлей блокировки -->
+                            <Grid>
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding DishName}" FontAttributes="Bold" FontSize="14" TextColor="Black" HorizontalTextAlignment="Center" LineBreakMode="TailTruncation" MaxLines="2"/>
+                                    <Label Text="{Binding Price, StringFormat='{0} ₽'}" TextColor="#4CAF50" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,10,0,0"/>
+                                </VerticalStackLayout>
+
+                                <Grid IsVisible="{Binding IsAvailable, Converter={StaticResource InverseBoolConverter}}" 
+                                      BackgroundColor="#B3FFFFFF" HorizontalOptions="Fill" VerticalOptions="Fill">
+                                    <Label Text="НЕТ ИНГРЕДИЕНТОВ" TextColor="#D32F2F" FontAttributes="Bold" 
+                                           HorizontalOptions="Center" VerticalOptions="Center" FontSize="12"/>
+                                </Grid>
+                            </Grid>
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </Grid>
 
-        <!-- ПРАВАЯ ЧАСТЬ: ЧЕК -->
         <Border Grid.Column="1" BackgroundColor="White" StrokeShape="RoundRectangle 10" Padding="10" StrokeThickness="0">
             <Grid RowDefinitions="Auto, *, Auto" RowSpacing="10">
-
                 <Label Grid.Row="0" Text="Текущий чек" FontSize="18" FontAttributes="Bold" TextColor="Black"/>
-
-                <!-- Список добавленных блюд -->
                 <CollectionView Grid.Row="1" ItemsSource="{Binding Cart}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="services:CartItemDto">
-
                             <Grid RowDefinitions="Auto, 1" Padding="0, 5">
-                                <!-- Клик по всей строке - Удаление с подтверждением -->
                                 <Grid.GestureRecognizers>
-                                    <TapGestureRecognizer 
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveFromCartCommand}"
-                                        CommandParameter="{Binding .}" />
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveFromCartCommand}" CommandParameter="{Binding .}" />
                                 </Grid.GestureRecognizers>
-
-                                <!-- Внутренняя сетка: Название | Минус | Кол-во | Цена -->
                                 <Grid Grid.Row="0" ColumnDefinitions="*, Auto, Auto, Auto" ColumnSpacing="5" Margin="5,0">
-
                                     <Label Grid.Column="0" Text="{Binding DishName}" TextColor="Black" VerticalOptions="Center" LineBreakMode="TailTruncation"/>
-
-                                    <!-- Кнопка минус (убавлять количество) -->
-                                    <Button Grid.Column="1" Text="−" 
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DecreaseQuantityCommand}"
-                                            CommandParameter="{Binding .}"
-                                            BackgroundColor="#E0E0E0" TextColor="Black" FontSize="18" FontAttributes="Bold" 
-                                            WidthRequest="30" HeightRequest="30" CornerRadius="15" Padding="0" VerticalOptions="Center"/>
-
+                                    <Button Grid.Column="1" Text="−" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DecreaseQuantityCommand}" CommandParameter="{Binding .}" BackgroundColor="#E0E0E0" TextColor="Black" FontSize="18" FontAttributes="Bold" WidthRequest="30" HeightRequest="30" CornerRadius="15" Padding="0" VerticalOptions="Center"/>
                                     <Label Grid.Column="2" Text="{Binding Quantity}" TextColor="Black" VerticalOptions="Center" HorizontalTextAlignment="Center" WidthRequest="25"/>
-
                                     <Label Grid.Column="3" Text="{Binding TotalPrice, StringFormat='{0} ₽'}" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center" HorizontalTextAlignment="End" WidthRequest="70"/>
                                 </Grid>
-
-                                <!-- Линия-разделитель -->
                                 <BoxView Grid.Row="1" Color="LightGray" HeightRequest="1" HorizontalOptions="Fill" Margin="0,5,0,0"/>
                             </Grid>
-
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
-                <!-- Итог и кнопка оплаты -->
                 <VerticalStackLayout Grid.Row="2" Spacing="10">
                     <Grid ColumnDefinitions="*, Auto">
                         <Label Grid.Column="0" Text="Итого:" FontSize="18" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>

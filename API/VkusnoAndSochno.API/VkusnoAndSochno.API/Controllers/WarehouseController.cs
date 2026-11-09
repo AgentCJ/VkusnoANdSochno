@@ -15,46 +15,33 @@ namespace VkusnoAndSochno.API.Controllers
             _context = context;
         }
 
-        // Получить остатки (из представления v_stock_balance)
+        // Обновленный запрос: теперь возвращает и CostPrice
         [HttpGet("balance/{branchId}")]
         public async Task<IActionResult> GetBalance(int branchId)
         {
             try
             {
-                // Явно указываем алиасы для колонок, чтобы они совпали с C#-классом
                 var sql = @"
-                    SELECT id_branch AS ""IdBranch"", 
-                           branch_name AS ""BranchName"", 
-                           id_ingredient AS ""IdIngredient"", 
-                           ingredient_name AS ""IngredientName"",
-                           unit_of_measure AS ""UnitOfMeasure"", 
-                           min_remaining AS ""MinRemaining"",
-                           balance AS ""Balance""
-                    FROM v_stock_balance 
-                    WHERE id_branch = {0}";
+                    SELECT {0} AS ""IdBranch"", i.id_ingredient AS ""IdIngredient"", i.ingredient_name AS ""IngredientName"",
+                           i.unit_of_measure AS ""UnitOfMeasure"", i.min_remaining AS ""MinRemaining"",
+                           i.cost_price AS ""CostPrice"", fn_ingredient_balance(i.id_ingredient, {0}) AS ""Balance""
+                    FROM ""Ingredient"" i";
 
-                var result = await _context.Database
-                    .SqlQueryRaw<StockBalanceDto>(sql, branchId)
-                    .ToListAsync();
+                var result = await _context.Database.SqlQueryRaw<StockBalanceDto>(sql, branchId).ToListAsync();
                 return Ok(result);
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            catch (Exception ex) { return StatusCode(500, ex.Message); }
         }
 
-        // Получить список всех ингредиентов (для выпадающего списка)
         [HttpGet("ingredients")]
         public async Task<IActionResult> GetIngredients()
         {
             var ingredients = await _context.Ingredients
-                .Select(i => new { i.IdIngredient, i.IngredientName })
+                .Select(i => new { i.IdIngredient, i.IngredientName, i.UnitOfMeasure })
                 .ToListAsync();
             return Ok(ingredients);
         }
 
-        // Получить список поставщиков (для выпадающего списка)
         [HttpGet("suppliers")]
         public async Task<IActionResult> GetSuppliers()
         {
@@ -64,7 +51,6 @@ namespace VkusnoAndSochno.API.Controllers
             return Ok(suppliers);
         }
 
-        // Зарегистрировать поставку (вызываем процедуру register_supply)
         [HttpPost("supply")]
         public async Task<IActionResult> RegisterSupply([FromBody] SupplyRequest request)
         {
@@ -74,24 +60,114 @@ namespace VkusnoAndSochno.API.Controllers
                     "CALL register_supply({0}, {1}, {2}, {3}, {4}, {5})",
                     request.EmployeeId, request.BranchId, request.SupplierId,
                     request.IngredientId, request.Quantity, request.Comment);
-
                 return Ok(new { Message = "Поставка успешно зарегистрирована" });
             }
-            catch (Exception ex)
+            catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
+        }
+
+        [HttpPost("ingredient")]
+        public async Task<IActionResult> AddIngredient([FromBody] IngredientRequest request)
+        {
+            try
             {
-                return BadRequest(ex.InnerException?.Message ?? ex.Message);
+                var exists = await _context.Ingredients
+                    .AnyAsync(i => i.IngredientName.ToLower() == request.IngredientName.ToLower());
+
+                if (exists) return BadRequest("Продукт с таким названием уже существует.");
+
+                var ingredient = new Ingredient
+                {
+                    IngredientName = request.IngredientName,
+                    UnitOfMeasure = request.UnitOfMeasure,
+                    CostPrice = request.CostPrice,
+                    MinRemaining = request.MinRemaining
+                };
+                _context.Ingredients.Add(ingredient);
+                await _context.SaveChangesAsync();
+
+                // Если указано начальное количество, создаем операцию "приход"
+                if (request.InitialQuantity > 0)
+                {
+                    var op = new WarehouseOperation
+                    {
+                        IdEmployee = request.EmployeeId,
+                        IdBranch = request.BranchId,
+                        OperationType = "приход",
+                        Comment = "Начальный остаток при создании продукта",
+                        // ИСПРАВЛЕНИЕ: Используем Unspecified, чтобы избежать ошибки с timestamp
+                        OperationDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified)
+                    };
+                    _context.WarehouseOperations.Add(op);
+                    await _context.SaveChangesAsync();
+
+                    _context.OperationItems.Add(new OperationItem
+                    {
+                        IdOperation = op.IdOperation,
+                        IdIngredient = ingredient.IdIngredient,
+                        Quantity = request.InitialQuantity
+                    });
+                    await _context.SaveChangesAsync();
+                }
+
+                return Ok(new { Message = "Продукт добавлен" });
             }
+            catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
+        }
+
+        [HttpPut("ingredient/{id}")]
+        public async Task<IActionResult> UpdateIngredient(int id, [FromBody] IngredientRequest request)
+        {
+            try
+            {
+                var ingredient = await _context.Ingredients.FindAsync(id);
+                if (ingredient == null) return NotFound("Продукт не найден");
+
+                var exists = await _context.Ingredients
+                    .AnyAsync(i => i.IngredientName.ToLower() == request.IngredientName.ToLower() && i.IdIngredient != id);
+
+                if (exists) return BadRequest("Продукт с таким названием уже существует.");
+
+                ingredient.IngredientName = request.IngredientName;
+                ingredient.UnitOfMeasure = request.UnitOfMeasure;
+                ingredient.CostPrice = request.CostPrice;
+                ingredient.MinRemaining = request.MinRemaining;
+
+                await _context.SaveChangesAsync();
+                return Ok(new { Message = "Продукт обновлен" });
+            }
+            catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
+        }
+
+        [HttpDelete("ingredient/{id}")]
+        public async Task<IActionResult> DeleteIngredient(int id)
+        {
+            try
+            {
+                var ingredient = await _context.Ingredients.FindAsync(id);
+                if (ingredient == null) return NotFound("Продукт не найден");
+
+                _context.Ingredients.Remove(ingredient);
+                await _context.SaveChangesAsync();
+                return Ok(new { Message = "Продукт удален" });
+            }
+            catch (DbUpdateException)
+            {
+                return BadRequest("Невозможно удалить продукт: он используется в рецептах или истории поставок.");
+            }
+            catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
     }
+
     public class StockBalanceDto
     {
         public int IdBranch { get; set; }
-        public string BranchName { get; set; } = string.Empty;
         public int IdIngredient { get; set; }
         public string IngredientName { get; set; } = string.Empty;
         public string UnitOfMeasure { get; set; } = string.Empty;
         public decimal MinRemaining { get; set; }
+        public decimal CostPrice { get; set; }
         public decimal Balance { get; set; }
+        public bool IsLowStock => Balance < MinRemaining;
     }
 
     public class SupplyRequest
@@ -102,5 +178,16 @@ namespace VkusnoAndSochno.API.Controllers
         public int IngredientId { get; set; }
         public decimal Quantity { get; set; }
         public string? Comment { get; set; }
+    }
+
+    public class IngredientRequest
+    {
+        public string IngredientName { get; set; } = string.Empty;
+        public string UnitOfMeasure { get; set; } = string.Empty;
+        public decimal CostPrice { get; set; }
+        public decimal MinRemaining { get; set; }
+        public decimal InitialQuantity { get; set; }
+        public int BranchId { get; set; }
+        public int EmployeeId { get; set; }
     }
 }

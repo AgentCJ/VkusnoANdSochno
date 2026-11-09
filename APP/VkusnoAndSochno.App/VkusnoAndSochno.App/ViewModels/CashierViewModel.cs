@@ -10,6 +10,7 @@ namespace VkusnoAndSochno.App.ViewModels
         private readonly ApiService _apiService;
         private readonly UserSession _session;
         private int _currentOrderId;
+
         [ObservableProperty] private string statusMessage = "Нажмите 'Новый заказ' для начала работы";
         [ObservableProperty] private ObservableCollection<DishDto> menu = new();
         [ObservableProperty] private ObservableCollection<CartItemDto> cart = new();
@@ -27,9 +28,11 @@ namespace VkusnoAndSochno.App.ViewModels
         {
             try
             {
-                var dishes = await _apiService.GetMenuAsync();
-                Menu.Clear();
-                foreach (var d in dishes) Menu.Add(d);
+                var dishes = await _apiService.GetMenuAsync(_session.BranchId);
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    Menu = new ObservableCollection<DishDto>(dishes);
+                });
             }
             catch (Exception ex) { StatusMessage = $"Ошибка меню: {ex.Message}"; }
         }
@@ -51,9 +54,11 @@ namespace VkusnoAndSochno.App.ViewModels
         [RelayCommand]
         public async Task AddToCartAsync(DishDto dish)
         {
-            if (!IsOrderCreated)
+            if (!IsOrderCreated) { StatusMessage = "Сначала создайте заказ!"; return; }
+
+            if (!dish.IsAvailable)
             {
-                StatusMessage = "Сначала создайте заказ!";
+                StatusMessage = "Невозможно добавить: закончились ингредиенты!";
                 return;
             }
 
@@ -62,14 +67,8 @@ namespace VkusnoAndSochno.App.ViewModels
                 await _apiService.AddItemAsync(_currentOrderId, dish.IdDish, 1);
 
                 var existingItem = Cart.FirstOrDefault(c => c.IdDish == dish.IdDish);
-                if (existingItem != null)
-                {
-                    existingItem.Quantity++;
-                }
-                else
-                {
-                    Cart.Add(new CartItemDto { IdDish = dish.IdDish, DishName = dish.DishName, Price = dish.Price, Quantity = 1 });
-                }
+                if (existingItem != null) { existingItem.Quantity++; }
+                else { Cart.Add(new CartItemDto { IdDish = dish.IdDish, DishName = dish.DishName, Price = dish.Price, Quantity = 1 }); }
 
                 RecalculateTotal();
                 StatusMessage = $"Добавлено: {dish.DishName}";
@@ -80,46 +79,31 @@ namespace VkusnoAndSochno.App.ViewModels
         [RelayCommand]
         public async Task DecreaseQuantityAsync(CartItemDto item)
         {
-            if (!IsOrderCreated) return;
-            if (item.Quantity <= 0) return;
+            if (!IsOrderCreated || item.Quantity <= 0) return;
 
             try
             {
                 if (item.Quantity > 1)
                 {
-                    // Сначала обращаемся к базе
                     await _apiService.AddItemAsync(_currentOrderId, item.IdDish, -1);
-
-                    // Если база не выдала ошибку, обновляем UI
                     item.Quantity--;
                 }
                 else
                 {
-                    // Сначала обращаемся к базе (удаление)
                     await _apiService.RemoveItemAsync(_currentOrderId, item.IdDish);
-
-                    // Если база не выдала ошибку, удаляем из UI
                     Cart.Remove(item);
                 }
-
                 RecalculateTotal();
                 StatusMessage = $"Убавлено: {item.DishName}";
             }
-            catch (Exception ex)
-            {
-                // Если база данных выдаст ошибку, мы ее увидим, а интерфейс не сломается
-                StatusMessage = $"Ошибка: {ex.Message}";
-            }
+            catch (Exception ex) { StatusMessage = $"Ошибка: {ex.Message}"; }
         }
 
         [RelayCommand]
         public async Task RemoveFromCartAsync(CartItemDto item)
         {
             if (!IsOrderCreated) return;
-
-            bool confirm = await Shell.Current.DisplayAlert("Удаление",
-                $"Удалить '{item.DishName}' из заказа?\n(Требуется подтверждение менеджера)", "Да", "Отмена");
-
+            bool confirm = await Shell.Current.DisplayAlert("Удаление", $"Удалить '{item.DishName}' из заказа?\n(Требуется подтверждение менеджера)", "Да", "Отмена");
             if (!confirm) return;
 
             try
@@ -145,13 +129,11 @@ namespace VkusnoAndSochno.App.ViewModels
                 IsOrderCreated = false;
                 Cart.Clear();
                 TotalAmount = 0;
+                await LoadMenuAsync(); // Обновляем меню, т.к. остатки списались
             }
             catch (Exception ex) { StatusMessage = $"Ошибка: {ex.Message}"; }
         }
 
-        private void RecalculateTotal()
-        {
-            TotalAmount = Cart.Sum(item => item.TotalPrice);
-        }
+        private void RecalculateTotal() => TotalAmount = Cart.Sum(item => item.TotalPrice);
     }
 }
