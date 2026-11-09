@@ -36,7 +36,8 @@ namespace VkusnoAndSochno.App
             builder.Services.AddTransient<Views.MySchedulePage>();
             builder.Services.AddTransient<ViewModels.MenuManagementViewModel>();
             builder.Services.AddTransient<Views.MenuManagementPage>();
-
+            builder.Services.AddTransient<ViewModels.RecipeViewModel>();
+            builder.Services.AddTransient<Views.RecipePage>();
 
             return builder.Build();
         }

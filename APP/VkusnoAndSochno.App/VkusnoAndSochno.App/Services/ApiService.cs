@@ -172,6 +172,26 @@ namespace VkusnoAndSochno.App.Services
             if (!response.IsSuccessStatusCode)
                 throw new Exception(await response.Content.ReadAsStringAsync());
         }
+        public async Task<List<RecipeItemDto>> GetRecipeAsync(int dishId)
+        {
+            var res = await _httpClient.GetFromJsonAsync<List<RecipeItemDto>>($"recipes/{dishId}");
+            return res ?? new();
+        }
+
+        public async Task AddRecipeItemAsync(int dishId, object request)
+        {
+            var response = await _httpClient.PostAsJsonAsync($"recipes/{dishId}", request);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(await response.Content.ReadAsStringAsync());
+        }
+
+        public async Task RemoveRecipeItemAsync(int dishId, int ingredientId)
+        {
+            var response = await _httpClient.DeleteAsync($"recipes/{dishId}/ingredients/{ingredientId}");
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(await response.Content.ReadAsStringAsync());
+        }
+
     }
 
     // классы данных
@@ -275,6 +295,13 @@ namespace VkusnoAndSochno.App.Services
         public decimal TotalRevenue { get; set; }
         public int OrderCount { get; set; }
         public string TopDish { get; set; } = string.Empty;
+    }
+    public class RecipeItemDto
+    {
+        public int IdIngredient { get; set; }
+        public string IngredientName { get; set; } = string.Empty;
+        public decimal Quantity { get; set; }
+        public string UnitOfMeasure { get; set; } = string.Empty;
     }
 
 }
