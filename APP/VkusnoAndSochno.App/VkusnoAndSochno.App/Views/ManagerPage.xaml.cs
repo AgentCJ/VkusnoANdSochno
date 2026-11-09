@@ -15,8 +15,8 @@ namespace VkusnoAndSochno.App.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            // Автоматически формируем отчет при открытии экрана
-            await _viewModel.GenerateReportAsync();
+            await _viewModel.LoadDashboardAsync(); // Загружаем сводку
+            await _viewModel.GenerateReportAsync(); // Загружаем отчет по умолчанию
         }
     }
 }

@@ -9,24 +9,37 @@ namespace VkusnoAndSochno.App.ViewModels
     {
         private readonly ApiService _apiService;
 
-        [ObservableProperty]
-        private DateTime fromDate = DateTime.Today.AddDays(-7); // По умолчанию неделя назад
+        // Свойства для Дашборда
+        [ObservableProperty] private decimal todayRevenue;
+        [ObservableProperty] private int todayOrdersCount;
+        [ObservableProperty] private string topDish = "-";
 
-        [ObservableProperty]
-        private DateTime toDate = DateTime.Today;
-
-        [ObservableProperty]
-        private ObservableCollection<SalesReportDto> reportData = new();
-
-        [ObservableProperty]
-        private bool isRefreshing;
-
-        [ObservableProperty]
-        private string totalSummary = string.Empty;
+        // Свойства для Отчетов
+        [ObservableProperty] private DateTime fromDate = DateTime.Today.AddDays(-7);
+        [ObservableProperty] private DateTime toDate = DateTime.Today;
+        [ObservableProperty] private ObservableCollection<SalesReportDto> reportData = new();
+        [ObservableProperty] private string totalSummary = string.Empty;
+        [ObservableProperty] private bool isRefreshing;
 
         public ManagerViewModel(ApiService apiService)
         {
             _apiService = apiService;
+        }
+
+        [RelayCommand]
+        public async Task LoadDashboardAsync()
+        {
+            try
+            {
+                var stats = await _apiService.GetDashboardStatsAsync();
+                TodayRevenue = stats.TotalRevenue;
+                TodayOrdersCount = stats.OrderCount;
+                TopDish = stats.TopDish;
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Ошибка API", ex.Message, "ОК");
+            }
         }
 
         [RelayCommand]

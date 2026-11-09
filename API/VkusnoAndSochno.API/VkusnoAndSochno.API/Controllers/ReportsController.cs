@@ -44,6 +44,46 @@ namespace VkusnoAndSochno.API.Controllers
                 return StatusCode(500, ex.InnerException?.Message ?? ex.Message);
             }
         }
+        // GET: api/reports/dashboard
+        [HttpGet("dashboard")]
+        public async Task<IActionResult> GetDashboardStats()
+        {
+            try
+            {
+                var today = DateTime.Today;
+
+                // Выручка и количество заказов за сегодня (только выполненные)
+                var stats = await _context.Orders
+                    .Where(o => o.Status == "выполнен" && o.OrderTime.Date == today)
+                    .GroupBy(o => 1)
+                    .Select(g => new
+                    {
+                        TotalRevenue = g.Sum(o => o.TotalAmount),
+                        OrderCount = g.Count()
+                    })
+                    .FirstOrDefaultAsync();
+
+                // Самое популярное блюдо за сегодня
+                var topDish = await (from oi in _context.OrderItems
+                                     join o in _context.Orders on oi.IdOrder equals o.IdOrder
+                                     join d in _context.Dishes on oi.IdDish equals d.IdDish
+                                     where o.Status == "выполнен" && o.OrderTime.Date == today
+                                     group oi by d.DishName into g
+                                     orderby g.Sum(x => x.Quantity) descending
+                                     select g.Key).FirstOrDefaultAsync();
+
+                return Ok(new
+                {
+                    TotalRevenue = stats?.TotalRevenue ?? 0,
+                    OrderCount = stats?.OrderCount ?? 0,
+                    TopDish = topDish ?? "Нет данных"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 
     public class SalesReportDto
