@@ -9,6 +9,8 @@ public partial class AppShell : Shell
     public AppShell()
     {
         InitializeComponent();
+        Routing.RegisterRoute("MenuManagementPage", typeof(Views.MenuManagementPage));
+
     }
 
     protected override void OnNavigated(ShellNavigatedEventArgs args)

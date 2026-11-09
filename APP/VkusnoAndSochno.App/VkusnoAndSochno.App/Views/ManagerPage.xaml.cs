@@ -15,8 +15,13 @@ namespace VkusnoAndSochno.App.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            // Автоматически формируем отчет при открытии экрана
+            await _viewModel.LoadDashboardAsync();
             await _viewModel.GenerateReportAsync();
+        }
+
+        private async void OnMenuManagementClicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync("MenuManagementPage");
         }
     }
 }

@@ -135,12 +135,34 @@ namespace VkusnoAndSochno.App.Services
             var res = await _httpClient.GetFromJsonAsync<List<ShiftDto>>($"shifts/my/{employeeId}");
             return res ?? new();
         }
+        public async Task<List<AdminDishDto>> GetAllDishesAsync()
+        {
+            var res = await _httpClient.GetFromJsonAsync<List<AdminDishDto>>("menu/all");
+            return res ?? new();
+        }
+
+        public async Task AddDishAsync(object request)
+        {
+            var response = await _httpClient.PostAsJsonAsync("menu", request);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(await response.Content.ReadAsStringAsync());
+        }
+
+        public async Task ToggleDishAsync(int dishId)
+        {
+            var response = await _httpClient.PutAsync($"menu/{dishId}/toggle", null);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(await response.Content.ReadAsStringAsync());
+        }
+        public async Task<DashboardStatsDto> GetDashboardStatsAsync()
+        {
+            var res = await _httpClient.GetFromJsonAsync<DashboardStatsDto>("reports/dashboard");
+            return res ?? new();
+        }
 
     }
 
-    // ==========================================
-    // КЛАССЫ ДАННЫХ (DTO)
-    // ==========================================
+    // классы данных
 
     public class LoginResponse
     {
@@ -227,6 +249,20 @@ namespace VkusnoAndSochno.App.Services
         public TimeSpan EndTime { get; set; }
         public string Status { get; set; } = string.Empty;
         public decimal? HoursWorked { get; set; }
+    }
+    public class AdminDishDto
+    {
+        public int IdDish { get; set; }
+        public string DishName { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
+        public decimal Price { get; set; }
+        public bool IsActive { get; set; }
+    }
+    public class DashboardStatsDto
+    {
+        public decimal TotalRevenue { get; set; }
+        public int OrderCount { get; set; }
+        public string TopDish { get; set; } = string.Empty;
     }
 
 }

@@ -7,6 +7,7 @@
         <ResourceDictionary>
             <converters:StatusToBoolConverter x:Key="StatusToBoolConverter" />
             <converters:BoolToBlockTextConverter x:Key="BoolToBlockTextConverter" />
+            <converters:BoolToDishStatusConverter x:Key="BoolToDishStatusConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
