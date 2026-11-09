@@ -159,7 +159,19 @@ namespace VkusnoAndSochno.App.Services
             var res = await _httpClient.GetFromJsonAsync<DashboardStatsDto>("reports/dashboard");
             return res ?? new();
         }
+        public async Task UpdateDishAsync(int id, object request)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"menu/{id}", request);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(await response.Content.ReadAsStringAsync());
+        }
 
+        public async Task DeleteDishAsync(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"menu/{id}");
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(await response.Content.ReadAsStringAsync());
+        }
     }
 
     // классы данных

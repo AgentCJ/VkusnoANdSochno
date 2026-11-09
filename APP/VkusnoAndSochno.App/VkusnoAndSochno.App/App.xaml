@@ -8,6 +8,8 @@
             <converters:StatusToBoolConverter x:Key="StatusToBoolConverter" />
             <converters:BoolToBlockTextConverter x:Key="BoolToBlockTextConverter" />
             <converters:BoolToDishStatusConverter x:Key="BoolToDishStatusConverter" />
+            <converters:IsStringNullOrEmptyConverter x:Key="IsStringNullOrEmptyConverter" />
+            <converters:IsStringNotNullOrEmptyConverter x:Key="IsStringNotNullOrEmptyConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

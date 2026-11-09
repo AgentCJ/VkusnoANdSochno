@@ -8,12 +8,23 @@ namespace VkusnoAndSochno.App.ViewModels
     public partial class MenuManagementViewModel : ObservableObject
     {
         private readonly ApiService _apiService;
+        private int? _editingDishId = null; // ID блюда, если мы в режиме редактирования
 
         [ObservableProperty] private ObservableCollection<AdminDishDto> dishes = new();
         [ObservableProperty] private string newDishName = string.Empty;
-        [ObservableProperty] private string newDishCategory = string.Empty;
         [ObservableProperty] private string newDishPrice = string.Empty;
         [ObservableProperty] private bool isRefreshing;
+
+        [ObservableProperty] private bool isEditing = false;
+        [ObservableProperty] private string formTitle = "Добавить новое блюдо";
+        [ObservableProperty] private string actionButtonText = "Добавить в меню";
+
+        public ObservableCollection<string> Categories { get; } = new()
+        {
+            "Бургеры", "Закуски", "Напитки", "Десерты", "Соусы"
+        };
+
+        [ObservableProperty] private string selectedCategory = string.Empty;
 
         public MenuManagementViewModel(ApiService apiService)
         {
@@ -37,23 +48,74 @@ namespace VkusnoAndSochno.App.ViewModels
         }
 
         [RelayCommand]
-        public async Task AddDishAsync()
+        public async Task SaveDishAsync()
         {
-            if (string.IsNullOrWhiteSpace(NewDishName) || !decimal.TryParse(NewDishPrice, out var price) || price <= 0)
+            if (string.IsNullOrWhiteSpace(NewDishName) || string.IsNullOrWhiteSpace(SelectedCategory) || !decimal.TryParse(NewDishPrice, out var price) || price <= 0)
             {
-                await Shell.Current.DisplayAlert("Ошибка", "Заполните название и корректную цену", "ОК");
+                await Shell.Current.DisplayAlert("Ошибка", "Заполните название, выберите категорию и укажите корректную цену", "ОК");
                 return;
             }
 
             try
             {
-                await _apiService.AddDishAsync(new { DishName = NewDishName, Category = NewDishCategory, Price = price });
-                NewDishName = string.Empty;
-                NewDishCategory = string.Empty;
-                NewDishPrice = string.Empty;
+                if (IsEditing && _editingDishId.HasValue)
+                {
+                    // Обновляем
+                    await _apiService.UpdateDishAsync(_editingDishId.Value, new { DishName = NewDishName, Category = SelectedCategory, Price = price });
+                }
+                else
+                {
+                    // Создаем новое
+                    await _apiService.AddDishAsync(new { DishName = NewDishName, Category = SelectedCategory, Price = price });
+                }
+
+                CancelEdit(); // Сбрасываем форму
                 await LoadDishesAsync();
             }
             catch (Exception ex) { await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК"); }
+        }
+
+        [RelayCommand]
+        public void EditDish(AdminDishDto dish)
+        {
+            _editingDishId = dish.IdDish;
+            NewDishName = dish.DishName;
+            SelectedCategory = dish.Category;
+            NewDishPrice = dish.Price.ToString();
+
+            IsEditing = true;
+            FormTitle = "Редактировать блюдо";
+            ActionButtonText = "Сохранить изменения";
+        }
+
+        [RelayCommand]
+        public void CancelEdit()
+        {
+            _editingDishId = null;
+            NewDishName = string.Empty;
+            SelectedCategory = string.Empty;
+            NewDishPrice = string.Empty;
+
+            IsEditing = false;
+            FormTitle = "Добавить новое блюдо";
+            ActionButtonText = "Добавить в меню";
+        }
+
+        [RelayCommand]
+        public async Task DeleteDishAsync(AdminDishDto dish)
+        {
+            bool confirm = await Shell.Current.DisplayAlert("Удаление", $"Вы уверены, что хотите удалить '{dish.DishName}'?", "Да", "Нет");
+            if (!confirm) return;
+
+            try
+            {
+                await _apiService.DeleteDishAsync(dish.IdDish);
+                await LoadDishesAsync();
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Внимание", ex.Message, "ОК");
+            }
         }
 
         [RelayCommand]
@@ -65,6 +127,18 @@ namespace VkusnoAndSochno.App.ViewModels
                 await LoadDishesAsync();
             }
             catch (Exception ex) { await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК"); }
+        }
+
+        [RelayCommand]
+        public async Task SelectCategoryAsync()
+        {
+            // Открываем системное меню выбора (как выпадающий список)
+            var result = await Shell.Current.DisplayActionSheet("Выберите категорию", "Отмена", null, Categories.ToArray());
+
+            if (!string.IsNullOrEmpty(result) && result != "Отмена")
+            {
+                SelectedCategory = result;
+            }
         }
     }
 }

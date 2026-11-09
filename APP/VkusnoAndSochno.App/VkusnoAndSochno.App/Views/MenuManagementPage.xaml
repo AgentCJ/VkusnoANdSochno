@@ -7,22 +7,60 @@
              BackgroundColor="#F5F5F5">
     <Grid RowDefinitions="Auto, Auto, *" Padding="15" RowSpacing="10">
 
-        <!-- Форма добавления -->
+        <!-- Форма добавления/редактирования -->
         <Border Grid.Row="0" Padding="15" BackgroundColor="#E3F2FD" StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="#90CAF9">
             <VerticalStackLayout Spacing="10">
-                <Label Text="Добавить новое блюдо" FontAttributes="Bold" FontSize="16" TextColor="#1565C0"/>
+                <Label Text="{Binding FormTitle}" FontAttributes="Bold" FontSize="16" TextColor="#1565C0"/>
+
                 <Grid ColumnDefinitions="2*, 1*, 1*" ColumnSpacing="10">
+                    <!-- Название -->
                     <Border Grid.Column="0" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
-                        <Entry Placeholder="Название" Text="{Binding NewDishName}" TextColor="Black" Margin="5,0" BackgroundColor="Transparent"/>
+                        <Entry Placeholder="Название" PlaceholderColor="#999999" 
+                               Text="{Binding NewDishName}" TextColor="Black" Margin="5,0" BackgroundColor="Transparent"/>
                     </Border>
-                    <Border Grid.Column="1" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
-                        <Entry Placeholder="Категория" Text="{Binding NewDishCategory}" TextColor="Black" Margin="5,0" BackgroundColor="Transparent"/>
+
+                    <!-- Категория -->
+                    <Border Grid.Column="1" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White" HeightRequest="40">
+
+                        <!-- Обработчик нажатия на всю область -->
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectCategoryCommand}" />
+                        </Border.GestureRecognizers>
+
+                        <!-- Сетка для текста и стрелочки -->
+                        <Grid ColumnDefinitions="*, Auto">
+                            <!-- Если ничего не выбрано, показываем серый текст -->
+                            <Label Grid.Column="0" Text="Категория" TextColor="#999999" 
+                                   VerticalOptions="Center" Margin="10,0" 
+                                   IsVisible="{Binding SelectedCategory, Converter={StaticResource IsStringNullOrEmptyConverter}}"/>
+
+                            <!-- Если выбрано, показываем черный текст -->
+                            <Label Grid.Column="0" Text="{Binding SelectedCategory}" TextColor="Black" 
+                                   VerticalOptions="Center" Margin="10,0" 
+                                   IsVisible="{Binding SelectedCategory, Converter={StaticResource IsStringNotNullOrEmptyConverter}}"/>
+
+                            <!-- Стрелочка вниз (визуальная имитация выпадающего списка) -->
+                            <Label Grid.Column="1" Text="▼" TextColor="Gray" 
+                                   VerticalOptions="Center" Margin="0,0,10,0" FontSize="10"/>
+                        </Grid>
                     </Border>
+
+                    <!-- Цена -->
                     <Border Grid.Column="2" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
-                        <Entry Placeholder="Цена" Keyboard="Numeric" Text="{Binding NewDishPrice}" TextColor="Black" Margin="5,0" BackgroundColor="Transparent"/>
+                        <Entry Placeholder="Цена (₽)" PlaceholderColor="#999999" Keyboard="Numeric" 
+                               Text="{Binding NewDishPrice}" TextColor="Black" Margin="5,0" BackgroundColor="Transparent"/>
                     </Border>
                 </Grid>
-                <Button Text="Добавить в меню" Command="{Binding AddDishCommand}" BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold"/>
+
+                <!-- Кнопки управления формой -->
+                <HorizontalStackLayout Spacing="10">
+                    <Button Text="{Binding ActionButtonText}" Command="{Binding SaveDishCommand}" 
+                            BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold" HorizontalOptions="FillAndExpand"/>
+
+                    <Button Text="Отмена" Command="{Binding CancelEditCommand}" 
+                            BackgroundColor="Gray" TextColor="White" FontAttributes="Bold" 
+                            IsVisible="{Binding IsEditing}"/>
+                </HorizontalStackLayout>
             </VerticalStackLayout>
         </Border>
 
@@ -37,19 +75,23 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="services:AdminDishDto">
                         <Border Margin="0,3" Padding="10" BackgroundColor="White" StrokeShape="RoundRectangle 5" Stroke="LightGray" StrokeThickness="1">
-                            <Grid ColumnDefinitions="*, Auto, Auto" ColumnSpacing="10">
+
+                            <!-- -->
+                            <Grid ColumnDefinitions="*, Auto, Auto, Auto, Auto" ColumnSpacing="8">
+
                                 <VerticalStackLayout Grid.Column="0">
                                     <Label Text="{Binding DishName}" FontAttributes="Bold" TextColor="Black" FontSize="15"/>
                                     <Label Text="{Binding Category}" TextColor="Gray" FontSize="12"/>
                                 </VerticalStackLayout>
 
-                                <Label Grid.Column="1" Text="{Binding Price, StringFormat='{0} ₽'}" TextColor="#1976D2" FontAttributes="Bold" VerticalOptions="Center"/>
+                                <Label Grid.Column="1" Text="{Binding Price, StringFormat='{0} ₽'}" TextColor="#1976D2" FontAttributes="Bold" VerticalOptions="Center" Margin="5,0,10,0"/>
 
+                                <!-- Кнопка Снять с продажи / Вернуть в меню -->
                                 <Button Grid.Column="2" 
                                         Text="{Binding IsActive, Converter={StaticResource BoolToDishStatusConverter}}"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ToggleDishCommand}"
                                         CommandParameter="{Binding .}"
-                                        VerticalOptions="Center" WidthRequest="100" HeightRequest="35" FontSize="11" FontAttributes="Bold">
+                                        VerticalOptions="Center" WidthRequest="130" HeightRequest="35" FontSize="11" FontAttributes="Bold">
                                     <Button.Triggers>
                                         <DataTrigger TargetType="Button" Binding="{Binding IsActive}" Value="True">
                                             <Setter Property="BackgroundColor" Value="#FFEBEE" />
@@ -61,6 +103,19 @@
                                         </DataTrigger>
                                     </Button.Triggers>
                                 </Button>
+
+                                <!-- Кнопка Изменить -->
+                                <Button Grid.Column="3" Text="✏️" 
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditDishCommand}"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="#FFC107" TextColor="Black" WidthRequest="40" HeightRequest="35" FontSize="16" CornerRadius="5" Padding="0" VerticalOptions="Center"/>
+
+                                <!-- Кнопка Удалить -->
+                                <Button Grid.Column="4" Text="🗑️" 
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteDishCommand}"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="#F44336" TextColor="White" WidthRequest="40" HeightRequest="35" FontSize="16" CornerRadius="5" Padding="0" VerticalOptions="Center"/>
+
                             </Grid>
                         </Border>
                     </DataTemplate>

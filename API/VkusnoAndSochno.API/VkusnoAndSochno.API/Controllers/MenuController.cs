@@ -15,7 +15,6 @@ namespace VkusnoAndSochno.API.Controllers
             _context = context;
         }
 
-        // Получить ВСЕ блюда (включая снятые с продажи) для управляющего
         [HttpGet("all")]
         public async Task<IActionResult> GetAllDishes()
         {
@@ -27,7 +26,6 @@ namespace VkusnoAndSochno.API.Controllers
             return Ok(dishes);
         }
 
-        // Добавить новое блюдо
         [HttpPost]
         public async Task<IActionResult> AddDish([FromBody] DishRequest request)
         {
@@ -43,7 +41,41 @@ namespace VkusnoAndSochno.API.Controllers
             return Ok(new { Message = "Блюдо добавлено", Id = dish.IdDish });
         }
 
-        // Переключить статус (снять/вернуть в продажу)
+        // Обновление блюда
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateDish(int id, [FromBody] DishRequest request)
+        {
+            var dish = await _context.Dishes.FindAsync(id);
+            if (dish == null) return NotFound("Блюдо не найдено");
+
+            dish.DishName = request.DishName;
+            dish.Category = request.Category;
+            dish.Price = request.Price;
+
+            await _context.SaveChangesAsync();
+            return Ok(new { Message = "Блюдо обновлено" });
+        }
+
+        // Удаление блюда
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteDish(int id)
+        {
+            var dish = await _context.Dishes.FindAsync(id);
+            if (dish == null) return NotFound("Блюдо не найдено");
+
+            try
+            {
+                _context.Dishes.Remove(dish);
+                await _context.SaveChangesAsync();
+                return Ok(new { Message = "Блюдо удалено" });
+            }
+            catch (DbUpdateException)
+            {
+                // Если блюдо уже есть в заказах, БД выдаст ошибку внешнего ключа
+                return BadRequest("Невозможно удалить блюдо, так как оно уже есть в истории заказов. Используйте «Снять с продажи».");
+            }
+        }
+
         [HttpPut("{id}/toggle")]
         public async Task<IActionResult> ToggleDish(int id)
         {
