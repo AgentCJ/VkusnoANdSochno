@@ -130,6 +130,11 @@ namespace VkusnoAndSochno.App.Services
             if (!response.IsSuccessStatusCode)
                 throw new Exception(await response.Content.ReadAsStringAsync());
         }
+        public async Task<List<ShiftDto>> GetMyShiftsAsync(int employeeId)
+        {
+            var res = await _httpClient.GetFromJsonAsync<List<ShiftDto>>($"shifts/my/{employeeId}");
+            return res ?? new();
+        }
 
     }
 
@@ -213,6 +218,15 @@ namespace VkusnoAndSochno.App.Services
         public string RoleName { get; set; } = string.Empty;
         public string BranchName { get; set; } = string.Empty;
         public bool IsActive { get; set; }
+    }
+    public class ShiftDto
+    {
+        public int IdShift { get; set; }
+        public DateTime ShiftDate { get; set; }
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan EndTime { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public decimal? HoursWorked { get; set; }
     }
 
 }

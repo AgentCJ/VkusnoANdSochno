@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:services="clr-namespace:VkusnoAndSochno.App.Services"
+             x:Class="VkusnoAndSochno.App.Views.MySchedulePage"
+             Title="Мой график"
+             BackgroundColor="#F5F5F5">
+    <Grid RowDefinitions="Auto, *" Padding="15" RowSpacing="10">
+
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto">
+            <Label Grid.Column="0" Text="Мои смены" FontAttributes="Bold" FontSize="18" TextColor="Black" VerticalOptions="Center"/>
+            <Button Grid.Column="1" Text="🔄 Обновить" Command="{Binding LoadShiftsCommand}" 
+                    BackgroundColor="#2196F3" TextColor="White" FontSize="12" HeightRequest="35" Padding="10,0"/>
+        </Grid>
+
+        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsRefreshing}" Command="{Binding LoadShiftsCommand}">
+            <CollectionView ItemsSource="{Binding Shifts}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="services:ShiftDto">
+                        <Border Margin="0,5" Padding="10" BackgroundColor="White" StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="LightGray">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <VerticalStackLayout Grid.Column="0" Spacing="5">
+                                    <Label Text="{Binding ShiftDate, StringFormat='{0:dd.MM.yyyy}'}" FontAttributes="Bold" FontSize="16" TextColor="Black"/>
+
+                                    <HorizontalStackLayout Spacing="5">
+                                        <Label Text="Время:" TextColor="Gray" FontSize="12"/>
+                                        <Label Text="{Binding StartTime, StringFormat='{0:hh\\:mm}'}" TextColor="Black" FontSize="12"/>
+                                        <Label Text="—" TextColor="Black" FontSize="12"/>
+                                        <Label Text="{Binding EndTime, StringFormat='{0:hh\\:mm}'}" TextColor="Black" FontSize="12"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center">
+                                    <Label Text="{Binding Status}" TextColor="#1976D2" FontAttributes="Bold" HorizontalTextAlignment="End"/>
+                                    <Label Text="{Binding HoursWorked, StringFormat='Отработано: {0} ч.'}" TextColor="Gray" FontSize="11" HorizontalTextAlignment="End"/>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

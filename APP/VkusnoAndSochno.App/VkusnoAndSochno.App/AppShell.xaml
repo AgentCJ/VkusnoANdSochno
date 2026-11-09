@@ -7,10 +7,10 @@
     FlyoutBehavior="Disabled">
     <!-- Отключаем боковое меню для простоты -->
     <Shell.ToolbarItems>
-        <!-- Кнопка возврата в тест-меню (по умолчанию её не будет на экране) -->
-        <ToolbarItem x:Name="BackToTestMenuBtn" Text="В тест-меню" Clicked="OnBackToTestMenuClicked" />
+        <!-- Новая кнопка графика -->
+        <ToolbarItem Text="Мой график" Clicked="OnScheduleClicked" Order="Primary" Priority="1" />
 
-        <!-- существующая кнопка выхода -->
+        <ToolbarItem x:Name="BackToTestMenuBtn" Text="В тест-меню" Clicked="OnBackToTestMenuClicked" />
         <ToolbarItem Text="Выйти" Clicked="OnLogoutClicked" Order="Secondary" Priority="0" />
     </Shell.ToolbarItems>
     <!-- Стартовая страница - Авторизация -->
@@ -32,4 +32,5 @@
     <ShellContent Title="Отчеты" ContentTemplate="{DataTemplate views:ManagerPage}" Route="ManagerPage" />
     <ShellContent Title="Тест" ContentTemplate="{DataTemplate views:TestHubPage}" Route="TestHubPage" /> <!-- удалить тестовое-->
     <ShellContent Title="Админ" ContentTemplate="{DataTemplate views:AdminPage}" Route="AdminPage" />
+    <ShellContent Title="График" ContentTemplate="{DataTemplate views:MySchedulePage}" Route="MySchedulePage" />
 </Shell>

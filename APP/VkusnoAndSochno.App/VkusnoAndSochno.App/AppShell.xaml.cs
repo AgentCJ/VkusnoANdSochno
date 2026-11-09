@@ -66,4 +66,8 @@ public partial class AppShell : Shell
             }
         }
     }
+    private async void OnScheduleClicked(object sender, EventArgs e)
+    {
+        await GoToAsync("//MySchedulePage");
+    }
 }

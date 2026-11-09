@@ -31,8 +31,11 @@
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ToggleUserStatusCommand}"
                                         CommandParameter="{Binding .}"
                                         VerticalOptions="Center"
-                                        WidthRequest="110" HeightRequest="40"
-                                        FontSize="12" FontAttributes="Bold">
+                                        WidthRequest="140" 
+                                        HeightRequest="40"
+                                        Padding="5,0"
+                                        FontSize="12" 
+                                        FontAttributes="Bold">
                                     <Button.Triggers>
                                         <!-- Красная кнопка, если пользователь активен (нажать = заблокировать) -->
                                         <DataTrigger TargetType="Button" Binding="{Binding IsActive}" Value="True">
