@@ -13,7 +13,6 @@ namespace VkusnoAndSochno.App.ViewModels
         [ObservableProperty] private ObservableCollection<StockBalanceDto> stockList = new();
         [ObservableProperty] private ObservableCollection<IngredientDto> ingredients = new();
         [ObservableProperty] private ObservableCollection<SupplierDto> suppliers = new();
-
         [ObservableProperty] private IngredientDto? selectedIngredient;
         [ObservableProperty] private SupplierDto? selectedSupplier;
         [ObservableProperty] private string quantityText = string.Empty;
@@ -33,9 +32,6 @@ namespace VkusnoAndSochno.App.ViewModels
             try
             {
                 var stock = await _apiService.GetBalanceAsync(_session.BranchId);
-
-                // ГЛАВНЫЙ ФИКС: Создаем НОВУЮ коллекцию. 
-                // На Windows MAUI это единственный способ заставить CollectionView перерисоваться.
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     StockList = new ObservableCollection<StockBalanceDto>(stock);

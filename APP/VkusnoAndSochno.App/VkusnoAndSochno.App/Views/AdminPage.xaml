@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:services="clr-namespace:VkusnoAndSochno.App.Services"
+             x:Class="VkusnoAndSochno.App.Views.AdminPage"
+             Title="Управление пользователями"
+             BackgroundColor="#F5F5F5">
+    <Grid RowDefinitions="Auto, *" Padding="15" RowSpacing="10">
+
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto">
+            <Label Grid.Column="0" Text="Список учетных записей" FontAttributes="Bold" FontSize="18" TextColor="Black" VerticalOptions="Center"/>
+            <Button Grid.Column="1" Text="🔄 Обновить" Command="{Binding LoadUsersCommand}" 
+                    BackgroundColor="#2196F3" TextColor="White" FontSize="12" HeightRequest="35" Padding="10,0"/>
+        </Grid>
+
+        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsRefreshing}" Command="{Binding LoadUsersCommand}">
+            <CollectionView ItemsSource="{Binding Users}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="services:AdminUserDto">
+                        <Border Margin="0,5" Padding="10" BackgroundColor="White" StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="LightGray">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                    <Label Text="{Binding EmployeeName}" FontAttributes="Bold" TextColor="Black" FontSize="16"/>
+                                    <Label Text="{Binding RoleName, StringFormat='Роль: {0}'}" TextColor="#1976D2" FontSize="12" FontAttributes="Bold"/>
+                                    <Label Text="{Binding Login, StringFormat='Логин: {0}'}" TextColor="Gray" FontSize="12"/>
+                                    <Label Text="{Binding BranchName, StringFormat='Филиал: {0}'}" TextColor="Gray" FontSize="12"/>
+                                </VerticalStackLayout>
+
+                                <Button Grid.Column="1" 
+                                        Text="{Binding IsActive, Converter={StaticResource BoolToBlockTextConverter}}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ToggleUserStatusCommand}"
+                                        CommandParameter="{Binding .}"
+                                        VerticalOptions="Center"
+                                        WidthRequest="110" HeightRequest="40"
+                                        FontSize="12" FontAttributes="Bold">
+                                    <Button.Triggers>
+                                        <!-- Красная кнопка, если пользователь активен (нажать = заблокировать) -->
+                                        <DataTrigger TargetType="Button" Binding="{Binding IsActive}" Value="True">
+                                            <Setter Property="BackgroundColor" Value="#F44336" />
+                                            <Setter Property="TextColor" Value="White" />
+                                        </DataTrigger>
+                                        <!-- Зеленая кнопка, если пользователь заблокирован (нажать = разблокировать) -->
+                                        <DataTrigger TargetType="Button" Binding="{Binding IsActive}" Value="False">
+                                            <Setter Property="BackgroundColor" Value="#4CAF50" />
+                                            <Setter Property="TextColor" Value="White" />
+                                        </DataTrigger>
+                                    </Button.Triggers>
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

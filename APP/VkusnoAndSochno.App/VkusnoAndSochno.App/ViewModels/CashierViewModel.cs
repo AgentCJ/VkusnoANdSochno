@@ -10,7 +10,6 @@ namespace VkusnoAndSochno.App.ViewModels
         private readonly ApiService _apiService;
         private readonly UserSession _session;
         private int _currentOrderId;
-
         [ObservableProperty] private string statusMessage = "Нажмите 'Новый заказ' для начала работы";
         [ObservableProperty] private ObservableCollection<DishDto> menu = new();
         [ObservableProperty] private ObservableCollection<CartItemDto> cart = new();
@@ -88,18 +87,18 @@ namespace VkusnoAndSochno.App.ViewModels
             {
                 if (item.Quantity > 1)
                 {
-                    // 1. Сначала стучимся в базу
+                    // Сначала обращаемся к базе
                     await _apiService.AddItemAsync(_currentOrderId, item.IdDish, -1);
 
-                    // 2. Если база не выдала ошибку, обновляем UI
+                    // Если база не выдала ошибку, обновляем UI
                     item.Quantity--;
                 }
                 else
                 {
-                    // 1. Сначала стучимся в базу (удаление)
+                    // Сначала обращаемся к базе (удаление)
                     await _apiService.RemoveItemAsync(_currentOrderId, item.IdDish);
 
-                    // 2. Если база не выдала ошибку, удаляем из UI
+                    // Если база не выдала ошибку, удаляем из UI
                     Cart.Remove(item);
                 }
 

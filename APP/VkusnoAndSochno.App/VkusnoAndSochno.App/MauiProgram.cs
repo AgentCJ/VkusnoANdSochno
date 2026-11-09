@@ -30,7 +30,8 @@ namespace VkusnoAndSochno.App
             builder.Services.AddTransient<ViewModels.ManagerViewModel>();
             builder.Services.AddTransient<Views.ManagerPage>();
             builder.Services.AddTransient<Views.TestHubPage>(); //тестовый, удалить потом
-
+            builder.Services.AddTransient<ViewModels.AdminViewModel>();
+            builder.Services.AddTransient<Views.AdminPage>();
 
             return builder.Build();
         }

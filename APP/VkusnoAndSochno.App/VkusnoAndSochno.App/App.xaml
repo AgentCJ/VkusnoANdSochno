@@ -6,6 +6,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <converters:StatusToBoolConverter x:Key="StatusToBoolConverter" />
+            <converters:BoolToBlockTextConverter x:Key="BoolToBlockTextConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

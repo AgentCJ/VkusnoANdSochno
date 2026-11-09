@@ -118,6 +118,19 @@ namespace VkusnoAndSochno.App.Services
             if (!response.IsSuccessStatusCode)
                 throw new Exception(await response.Content.ReadAsStringAsync());
         }
+        public async Task<List<AdminUserDto>> GetUsersAsync()
+        {
+            var res = await _httpClient.GetFromJsonAsync<List<AdminUserDto>>("admin/users");
+            return res ?? new();
+        }
+
+        public async Task ToggleUserStatusAsync(int userId)
+        {
+            var response = await _httpClient.PutAsync($"admin/users/{userId}/toggle", null);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(await response.Content.ReadAsStringAsync());
+        }
+
     }
 
     // ==========================================
@@ -192,4 +205,14 @@ namespace VkusnoAndSochno.App.Services
 
         public decimal TotalPrice => Price * Quantity;
     }
+    public class AdminUserDto
+    {
+        public int IdUser { get; set; }
+        public string Login { get; set; } = string.Empty;
+        public string EmployeeName { get; set; } = string.Empty;
+        public string RoleName { get; set; } = string.Empty;
+        public string BranchName { get; set; } = string.Empty;
+        public bool IsActive { get; set; }
+    }
+
 }

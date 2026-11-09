@@ -54,7 +54,7 @@
         <RefreshView Grid.Row="2" IsRefreshing="{Binding IsRefreshing}" Command="{Binding LoadDataCommand}">
             <CollectionView ItemsSource="{Binding StockList}">
 
-                <!-- Хак для Windows: EmptyView заставляет список перерисовываться -->
+                <!-- EmptyView заставляет список перерисовываться -->
                 <CollectionView.EmptyView>
                     <Label Text="Загрузка данных..." HorizontalOptions="Center" VerticalOptions="Center" TextColor="Gray"/>
                 </CollectionView.EmptyView>

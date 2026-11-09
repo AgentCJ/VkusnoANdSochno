@@ -60,11 +60,14 @@ namespace VkusnoAndSochno.App.Views
             {
                 await Shell.Current.GoToAsync("//TestHubPage");
             }
+            else if (result.RoleName == "administrator")
+            {
+                await Shell.Current.GoToAsync("//AdminPage");
+            }
             else
             {
                 await DisplayAlert("Успех", $"Вы вошли как {result.RoleName}. Экран в разработке.", "ОК");
             }
-
         }
     }
 }

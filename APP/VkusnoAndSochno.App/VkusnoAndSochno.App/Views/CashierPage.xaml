@@ -45,7 +45,7 @@
             </CollectionView>
         </Grid>
 
-        <!-- ПРАВАЯ ЧАСТЬ: КОРЗИНА (ЧЕК) -->
+        <!-- ПРАВАЯ ЧАСТЬ: ЧЕК -->
         <Border Grid.Column="1" BackgroundColor="White" StrokeShape="RoundRectangle 10" Padding="10" StrokeThickness="0">
             <Grid RowDefinitions="Auto, *, Auto" RowSpacing="10">
 
@@ -57,7 +57,7 @@
                         <DataTemplate x:DataType="services:CartItemDto">
 
                             <Grid RowDefinitions="Auto, 1" Padding="0, 5">
-                                <!-- Клик по всей строке = Удаление с подтверждением -->
+                                <!-- Клик по всей строке - Удаление с подтверждением -->
                                 <Grid.GestureRecognizers>
                                     <TapGestureRecognizer 
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveFromCartCommand}"
@@ -69,7 +69,7 @@
 
                                     <Label Grid.Column="0" Text="{Binding DishName}" TextColor="Black" VerticalOptions="Center" LineBreakMode="TailTruncation"/>
 
-                                    <!-- Кнопка МИНУС -->
+                                    <!-- Кнопка минус (убавлять количество) -->
                                     <Button Grid.Column="1" Text="−" 
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DecreaseQuantityCommand}"
                                             CommandParameter="{Binding .}"

@@ -11,7 +11,8 @@ namespace VkusnoAndSochno.App.Views
         private async void OnCookClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//CookPage");
         private async void OnStorekeeperClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//StorekeeperPage");
         private async void OnManagerClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//ManagerPage");
-
+        private async void OnAdminClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//AdminPage");
+        
         private async void OnLogoutClicked(object sender, EventArgs e)
         {
             await Shell.Current.GoToAsync("//LoginPage");

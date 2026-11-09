@@ -31,4 +31,5 @@
     <ShellContent Title="Склад" ContentTemplate="{DataTemplate views:StorekeeperPage}" Route="StorekeeperPage" />
     <ShellContent Title="Отчеты" ContentTemplate="{DataTemplate views:ManagerPage}" Route="ManagerPage" />
     <ShellContent Title="Тест" ContentTemplate="{DataTemplate views:TestHubPage}" Route="TestHubPage" /> <!-- удалить тестовое-->
+    <ShellContent Title="Админ" ContentTemplate="{DataTemplate views:AdminPage}" Route="AdminPage" />
 </Shell>
