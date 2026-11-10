@@ -11,6 +11,7 @@ public partial class AppShell : Shell
         InitializeComponent();
         Routing.RegisterRoute("MenuManagementPage", typeof(Views.MenuManagementPage));
         Routing.RegisterRoute("RecipePage", typeof(Views.RecipePage));
+        Routing.RegisterRoute("OrderHistoryPage", typeof(Views.OrderHistoryPage));
     }
 
     protected override void OnNavigated(ShellNavigatedEventArgs args)
@@ -24,7 +25,8 @@ public partial class AppShell : Shell
         bool isTestHubPage = currentRoute.Contains("TestHubPage");
         bool isSchedulePage = currentRoute.Contains("MySchedulePage");
         bool isRecipePage = currentRoute.Contains("RecipePage");
-        bool isMenuManagementPage = currentRoute.Contains("MenuManagementPage"); // Добавили проверку для меню
+        bool isMenuManagementPage = currentRoute.Contains("MenuManagementPage");
+        bool isOrderHistoryPage = currentRoute.Contains("OrderHistoryPage"); // Добавили проверку для истории
 
         // 1. Управляем видимостью кнопки "Мой график"
         if (isLoginPage || isTestHubPage)
@@ -39,13 +41,13 @@ public partial class AppShell : Shell
         }
 
         // 2. Запоминаем маршрут для кнопки "Назад"
-        if (!isSchedulePage && !isLoginPage && !isRecipePage && !isMenuManagementPage)
+        if (!isSchedulePage && !isLoginPage && !isRecipePage && !isMenuManagementPage && !isOrderHistoryPage)
         {
             _previousRoute = currentRoute;
         }
 
         // 3. Управляем текстом кнопки выхода
-        if (isSchedulePage || isRecipePage || isMenuManagementPage)
+        if (isSchedulePage || isRecipePage || isMenuManagementPage || isOrderHistoryPage)
         {
             LogoutBtn.Text = "Назад";
         }
@@ -69,8 +71,8 @@ public partial class AppShell : Shell
         var currentRoute = CurrentState.Location.OriginalString;
         var session = IPlatformApplication.Current?.Services.GetService<UserSession>();
 
-        // 1. Если мы на рецепте ИЛИ в управлении меню — возвращаемся на предыдущую страницу
-        if (currentRoute.Contains("RecipePage") || currentRoute.Contains("MenuManagementPage"))
+        // 1. Если мы на рецепте, в управлении меню ИЛИ в истории — возвращаемся на предыдущую страницу
+        if (currentRoute.Contains("RecipePage") || currentRoute.Contains("MenuManagementPage") || currentRoute.Contains("OrderHistoryPage"))
         {
             await GoToAsync(".."); // Возврат на шаг назад
             return;

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:services="clr-namespace:VkusnoAndSochno.App.Services"
+             x:Class="VkusnoAndSochno.App.Views.OrderHistoryPage"
+             Title="История заказов"
+             BackgroundColor="#F5F5F5">
+    <Grid RowDefinitions="Auto, *" Padding="15" RowSpacing="10">
+
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto">
+            <Label Grid.Column="0" Text="Последние 50 заказов" FontAttributes="Bold" FontSize="18" TextColor="Black" VerticalOptions="Center"/>
+            <Button Grid.Column="1" Text="Обновить" Clicked="OnRefreshClicked" BackgroundColor="#2196F3" TextColor="White" FontSize="12" HeightRequest="35" Padding="10,0"/>
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding HistoryList}" Spacing="10">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="services:OrderHistoryDto">
+                        <Border Margin="0" Padding="15" BackgroundColor="White" StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="LightGray">
+
+                            <!-- Обработчик клика на всю карточку -->
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnOrderTapped" />
+                            </Border.GestureRecognizers>
+
+                            <VerticalStackLayout Spacing="5">
+                                <!-- Шапка заказа (видна всегда) -->
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <VerticalStackLayout Grid.Column="0">
+                                        <Label Text="{Binding IdOrder, StringFormat='Заказ №{0}'}" FontAttributes="Bold" TextColor="Black" FontSize="16"/>
+                                        <Label Text="{Binding OrderTime, StringFormat='Время: {0:dd.MM.yyyy HH:mm}'}" FontSize="12" TextColor="Gray"/>
+                                        <Label Text="{Binding CashierName, StringFormat='Кассир: {0}'}" FontSize="12" TextColor="Gray"/>
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout Grid.Column="1" HorizontalOptions="End">
+                                        <Label Text="{Binding TotalAmount, StringFormat='{0:N2} ₽'}" TextColor="#4CAF50" FontAttributes="Bold" FontSize="18" HorizontalTextAlignment="End"/>
+                                        <Label Text="{Binding Status}" TextColor="#1976D2" FontAttributes="Bold" FontSize="12" HorizontalTextAlignment="End"/>
+                                    </VerticalStackLayout>
+                                </Grid>
+
+                                <!-- ДЕТАЛИ ЗАКАЗА (Видны только если IsExpanded = true) -->
+                                <VerticalStackLayout IsVisible="{Binding IsExpanded}" Spacing="5" Margin="0,10,0,0">
+                                    <BoxView HeightRequest="1" Color="LightGray" Margin="0,5"/>
+                                    <Label Text="Состав заказа:" FontAttributes="Bold" FontSize="13" TextColor="Gray"/>
+
+                                    <!-- Список блюд -->
+                                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}" Spacing="2">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate x:DataType="services:OrderHistoryItemDto">
+                                                <Grid ColumnDefinitions="*, Auto, Auto" ColumnSpacing="10">
+                                                    <Label Grid.Column="0" Text="{Binding DishName}" TextColor="Black"/>
+                                                    <Label Grid.Column="1" Text="{Binding Quantity, StringFormat='x{0}'}" TextColor="Gray"/>
+                                                    <Label Grid.Column="2" Text="{Binding PriceAtSale, StringFormat='{0:N2} ₽'}" TextColor="Black" HorizontalTextAlignment="End" WidthRequest="80"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </VerticalStackLayout>
+
+                                    <BoxView HeightRequest="1" Color="LightGray" Margin="0,5"/>
+                                    <Label Text="{Binding PaymentMethod, StringFormat='Способ оплаты: {0}'}" FontSize="12" TextColor="Gray"/>
+                                </VerticalStackLayout>
+
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

@@ -10,7 +10,7 @@
 
         <Grid Grid.Row="0" ColumnDefinitions="*, Auto">
             <Label Grid.Column="0" Text="Активные заказы" FontAttributes="Bold" FontSize="20" TextColor="Black" VerticalOptions="Center"/>
-            <Button Grid.Column="1" Text="🔄 Обновить" Command="{Binding LoadOrdersCommand}" 
+            <Button Grid.Column="1" Text="Обновить" Command="{Binding LoadOrdersCommand}" 
                     BackgroundColor="#2196F3" TextColor="White" FontSize="12" HeightRequest="35" Padding="10,0"/>
         </Grid>
 
@@ -56,7 +56,7 @@
                                             BackgroundColor="#FF9800" TextColor="White" FontAttributes="Bold" CornerRadius="8"
                                             IsVisible="{Binding Status, Converter={StaticResource StatusToBoolConverter}, ConverterParameter='оплачен'}"/>
 
-                                    <Button Text="✅ Заказ готов" 
+                                    <Button Text="Заказ готов" 
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.FinishCookingCommand}"
                                             CommandParameter="{Binding .}"
                                             BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold" CornerRadius="8"

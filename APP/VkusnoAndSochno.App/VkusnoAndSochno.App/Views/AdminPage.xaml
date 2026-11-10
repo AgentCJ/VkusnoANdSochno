@@ -9,7 +9,7 @@
 
         <Grid Grid.Row="0" ColumnDefinitions="*, Auto">
             <Label Grid.Column="0" Text="Список учетных записей" FontAttributes="Bold" FontSize="18" TextColor="Black" VerticalOptions="Center"/>
-            <Button Grid.Column="1" Text="🔄 Обновить" Command="{Binding LoadUsersCommand}" 
+            <Button Grid.Column="1" Text="Обновить" Command="{Binding LoadUsersCommand}" 
                     BackgroundColor="#2196F3" TextColor="White" FontSize="12" HeightRequest="35" Padding="10,0"/>
         </Grid>
 

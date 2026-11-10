@@ -131,5 +131,50 @@ namespace VkusnoAndSochno.API.Controllers
             }
             catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
+        // ОТМЕНА ЗАКАЗА
+        [HttpPost("{orderId}/cancel")]
+        public async Task<IActionResult> CancelOrder(int orderId)
+        {
+            try
+            {
+                // Меняем статус на "отменён" только если он еще "создан"
+                var result = await _context.Database.ExecuteSqlRawAsync(
+                    "UPDATE \"Order\" SET status = 'отменён' WHERE id_order = {0} AND status = 'создан'", orderId);
+
+                if (result == 0) return BadRequest("Заказ нельзя отменить (возможно, он уже оплачен).");
+                return Ok(new { Message = "Заказ отменен" });
+            }
+            catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
+        }
+
+        // ИСТОРИЯ ЗАКАЗОВ (последние 50 заказов филиала)
+        [HttpGet("history/{branchId}")]
+        public async Task<IActionResult> GetOrderHistory(int branchId)
+        {
+            var history = await (from o in _context.Orders
+                                 join e in _context.Employees on o.IdEmployee equals e.IdEmployee
+                                 where o.IdBranch == branchId
+                                 orderby o.OrderTime descending
+                                 select new
+                                 {
+                                     o.IdOrder,
+                                     o.OrderTime,
+                                     o.TotalAmount,
+                                     o.Status,
+                                     o.PaymentMethod,
+                                     CashierName = e.FullName,
+                                     // Загружаем состав заказа
+                                     Items = (from oi in _context.OrderItems
+                                              join d in _context.Dishes on oi.IdDish equals d.IdDish
+                                              where oi.IdOrder == o.IdOrder
+                                              select new
+                                              {
+                                                  d.DishName,
+                                                  oi.Quantity,
+                                                  oi.PriceAtSale
+                                              }).ToList()
+                                 }).Take(50).ToListAsync();
+            return Ok(history);
+        }
     }
 }

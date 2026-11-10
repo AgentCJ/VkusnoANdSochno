@@ -6,12 +6,12 @@
     <VerticalStackLayout Padding="20" Spacing="15" VerticalOptions="Center">
         <Label Text="Выберите экран для тестирования:" FontSize="20" HorizontalOptions="Center" FontAttributes="Bold"/>
 
-        <Button Text="🧑‍💼 Экран Кассира" Clicked="OnCashierClicked" BackgroundColor="#2196F3"/>
-        <Button Text="👨‍🍳 Экран Повара (Кухня)" Clicked="OnCookClicked" BackgroundColor="#FF9800"/>
-        <Button Text="📦 Экран Кладовщика (Склад)" Clicked="OnStorekeeperClicked" BackgroundColor="#4CAF50"/>
-        <Button Text="📊 Экран Управляющего (Отчеты)" Clicked="OnManagerClicked" BackgroundColor="#9C27B0"/>
-        <Button Text="👑 Экран Администратора" Clicked="OnAdminClicked" BackgroundColor="#E91E63"/>
+        <Button Text="Экран Кассира" Clicked="OnCashierClicked" BackgroundColor="#2196F3"/>
+        <Button Text="Экран Повара (Кухня)" Clicked="OnCookClicked" BackgroundColor="#FF9800"/>
+        <Button Text="Экран Кладовщика (Склад)" Clicked="OnStorekeeperClicked" BackgroundColor="#4CAF50"/>
+        <Button Text="Экран Управляющего (Отчеты)" Clicked="OnManagerClicked" BackgroundColor="#9C27B0"/>
+        <Button Text="Экран Администратора" Clicked="OnAdminClicked" BackgroundColor="#E91E63"/>
 
-        <Button Text="🚪 Выйти" Clicked="OnLogoutClicked" BackgroundColor="Gray" Margin="0,20,0,0"/>
+        <Button Text="Выйти" Clicked="OnLogoutClicked" BackgroundColor="Gray" Margin="0,20,0,0"/>
     </VerticalStackLayout>
 </ContentPage>
