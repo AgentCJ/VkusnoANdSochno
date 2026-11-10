@@ -225,6 +225,11 @@ namespace VkusnoAndSochno.App.Services
             if (!res.IsSuccessStatusCode)
                 throw new Exception(await res.Content.ReadAsStringAsync());
         }
+        public async Task AdjustStockAsync(object request)
+        {
+            var res = await _httpClient.PostAsJsonAsync("warehouse/adjust", request);
+            if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
+        }
     }
 
     // ==========================================

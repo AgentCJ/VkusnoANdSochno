@@ -13,16 +13,62 @@ namespace VkusnoAndSochno.App.ViewModels
 
         [ObservableProperty] private string statusMessage = "Нажмите 'Новый заказ' для начала работы";
         [ObservableProperty] private ObservableCollection<DishDto> menu = new();
+        [ObservableProperty] private ObservableCollection<DishDto> filteredMenu = new();
         [ObservableProperty] private ObservableCollection<CartItemDto> cart = new();
         [ObservableProperty] private decimal totalAmount = 0;
         [ObservableProperty] private bool isOrderCreated = false;
-
         [ObservableProperty] private string globalQuantity = "1";
+
+        // Поиск и Сортировка
+        [ObservableProperty] private string searchText = string.Empty;
+        [ObservableProperty] private string selectedSort = "По умолчанию";
+
+        public ObservableCollection<string> SortOptions { get; } = new()
+        {
+            "По умолчанию",
+            "По названию (А-Я)",
+            "По цене (возр.)",
+            "По цене (убыв.)",
+            "По категории"
+        };
 
         public CashierViewModel(ApiService apiService, UserSession session)
         {
             _apiService = apiService;
             _session = session;
+        }
+
+        partial void OnSearchTextChanged(string value) => ApplyFilterAndSort();
+
+        // КОМАНДА ДЛЯ ОТКРЫТИЯ МЕНЮ СОРТИРОВКИ
+        [RelayCommand]
+        public async Task ChangeSortAsync()
+        {
+            var result = await Shell.Current.DisplayActionSheet("Выберите сортировку", "Отмена", null, SortOptions.ToArray());
+            if (!string.IsNullOrEmpty(result) && result != "Отмена")
+            {
+                SelectedSort = result;
+                ApplyFilterAndSort();
+            }
+        }
+
+        private void ApplyFilterAndSort()
+        {
+            var result = Menu.AsEnumerable();
+
+            if (!string.IsNullOrWhiteSpace(SearchText))
+                result = result.Where(x => x.DishName.ToLower().Contains(SearchText.ToLower()));
+
+            result = SelectedSort switch
+            {
+                "По названию (А-Я)" => result.OrderBy(x => x.DishName),
+                "По цене (возр.)" => result.OrderBy(x => x.Price),
+                "По цене (убыв.)" => result.OrderByDescending(x => x.Price),
+                "По категории" => result.OrderBy(x => x.Category).ThenBy(x => x.DishName),
+                _ => result
+            };
+
+            FilteredMenu = new ObservableCollection<DishDto>(result);
         }
 
         [RelayCommand]
@@ -31,7 +77,11 @@ namespace VkusnoAndSochno.App.ViewModels
             try
             {
                 var dishes = await _apiService.GetMenuAsync(_session.BranchId);
-                MainThread.BeginInvokeOnMainThread(() => Menu = new ObservableCollection<DishDto>(dishes));
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    Menu = new ObservableCollection<DishDto>(dishes);
+                    ApplyFilterAndSort();
+                });
             }
             catch (Exception ex) { StatusMessage = $"Ошибка меню: {ex.Message}"; }
         }
@@ -55,23 +105,17 @@ namespace VkusnoAndSochno.App.ViewModels
         public async Task ChangeQuantityAsync()
         {
             string result = await Shell.Current.DisplayPromptAsync(
-                "Количество",
-                "Сколько позиций добавить за раз?",
-                "ОК", "Отмена",
-                initialValue: GlobalQuantity,
-                keyboard: Keyboard.Numeric);
+                "Количество", "Сколько позиций добавить за раз?", "ОК", "Отмена",
+                initialValue: GlobalQuantity, keyboard: Keyboard.Numeric);
 
             if (!string.IsNullOrWhiteSpace(result) && int.TryParse(result, out var qty) && qty > 0)
-            {
                 GlobalQuantity = result;
-            }
         }
 
         [RelayCommand]
         public async Task CancelOrderAsync()
         {
             if (!IsOrderCreated) return;
-
             bool confirm = await Shell.Current.DisplayAlert("Отмена", "Вы уверены, что хотите отменить текущий заказ?", "Да", "Нет");
             if (!confirm) return;
 
@@ -104,8 +148,6 @@ namespace VkusnoAndSochno.App.ViewModels
 
                 RecalculateTotal();
                 StatusMessage = $"Добавлено: {dish.DishName} (x{qtyToAdd})";
-
-                // Сбрасываем количество обратно на 1 после добавления
                 GlobalQuantity = "1";
             }
             catch (Exception ex) { StatusMessage = $"Ошибка: {ex.Message}"; }
@@ -132,18 +174,14 @@ namespace VkusnoAndSochno.App.ViewModels
             catch (Exception ex) { StatusMessage = $"Ошибка: {ex.Message}"; }
         }
 
-        // ОБНОВЛЕНО: Удаление с выбором количества
         [RelayCommand]
         public async Task RemoveFromCartAsync(CartItemDto item)
         {
             if (!IsOrderCreated) return;
 
             string result = await Shell.Current.DisplayPromptAsync(
-                "Удаление из чека",
-                $"Сколько '{item.DishName}' убрать? (В чеке: {item.Quantity})",
-                "Убрать", "Отмена",
-                initialValue: item.Quantity.ToString(),
-                keyboard: Keyboard.Numeric);
+                "Удаление", $"Сколько '{item.DishName}' убрать? (В чеке: {item.Quantity})", "Убрать", "Отмена",
+                initialValue: item.Quantity.ToString(), keyboard: Keyboard.Numeric);
 
             if (string.IsNullOrWhiteSpace(result) || !int.TryParse(result, out var qtyToRemove) || qtyToRemove <= 0) return;
 
@@ -151,18 +189,15 @@ namespace VkusnoAndSochno.App.ViewModels
             {
                 if (qtyToRemove >= item.Quantity)
                 {
-                    // Если ввели число больше или равное, удаляем позицию полностью
                     await _apiService.RemoveItemAsync(_currentOrderId, item.IdDish);
                     Cart.Remove(item);
                 }
                 else
                 {
-                    // Иначе отнимаем нужное количество
                     await _apiService.AddItemAsync(_currentOrderId, item.IdDish, -qtyToRemove);
                     item.Quantity -= qtyToRemove;
                 }
                 RecalculateTotal();
-                StatusMessage = $"Убрано: {item.DishName} (x{qtyToRemove})";
             }
             catch (Exception ex) { StatusMessage = $"Ошибка: {ex.Message}"; }
         }
@@ -186,10 +221,7 @@ namespace VkusnoAndSochno.App.ViewModels
         }
 
         [RelayCommand]
-        public async Task GoToHistoryAsync()
-        {
-            await Shell.Current.GoToAsync("OrderHistoryPage");
-        }
+        public async Task GoToHistoryAsync() => await Shell.Current.GoToAsync("OrderHistoryPage");
 
         private void RecalculateTotal() => TotalAmount = Cart.Sum(item => item.TotalPrice);
     }

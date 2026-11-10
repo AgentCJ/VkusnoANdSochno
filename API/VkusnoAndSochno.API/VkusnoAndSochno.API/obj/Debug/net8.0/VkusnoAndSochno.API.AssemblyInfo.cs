@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VkusnoAndSochno.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a4fc3523782c710c3f1a4644064704ffd6c55afb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cdcb7c5f36aadcfe9ce859ad38356fd765a18601")]
 [assembly: System.Reflection.AssemblyProductAttribute("VkusnoAndSochno.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VkusnoAndSochno.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

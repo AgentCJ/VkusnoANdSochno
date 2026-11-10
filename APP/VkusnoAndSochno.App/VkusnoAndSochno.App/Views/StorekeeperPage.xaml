@@ -8,24 +8,42 @@
              BackgroundColor="#F5F5F5">
 
     <Grid>
-        <!-- Основной контент -->
-        <Grid RowDefinitions="Auto, Auto, *" Padding="15" RowSpacing="10">
+        <Grid RowDefinitions="Auto, *" Padding="15" RowSpacing="10">
 
-            <!-- Панель кнопок -->
-            <HorizontalStackLayout Grid.Row="0" Spacing="10" HorizontalOptions="Center">
-                <Button Text="Новый продукт" Command="{Binding OpenAddProductCommand}" BackgroundColor="#FF9800" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
-                <Button Text="Принять поставку" Command="{Binding OpenReceiveSupplyCommand}" BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
-                <Button Text="Заявка поставщику" Command="{Binding OpenRequestCommand}" BackgroundColor="#2196F3" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
-            </HorizontalStackLayout>
+            <!-- ВЕРХНЯЯ ПАНЕЛЬ (Кнопки, Поиск, Сортировка) -->
+            <VerticalStackLayout Grid.Row="0" Spacing="10">
 
-            <Grid Grid.Row="1" ColumnDefinitions="*, Auto" Margin="0,10,0,0">
-                <Label Grid.Column="0" Text="Остатки на складе" FontAttributes="Bold" FontSize="18" TextColor="Black" VerticalOptions="Center"/>
-                <Button Grid.Column="1" Text="🔄 Обновить" Command="{Binding LoadDataCommand}" BackgroundColor="#2196F3" TextColor="White" FontSize="12" HeightRequest="35" Padding="10,0"/>
-            </Grid>
+                <!-- Кнопки поставок -->
+                <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                    <Button Text="📥 Принять поставку" Command="{Binding OpenReceiveSupplyCommand}" BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
+                    <Button Text="📝 Заявка поставщику" Command="{Binding OpenRequestCommand}" BackgroundColor="#2196F3" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
+                </HorizontalStackLayout>
+
+                <!-- Строка поиска -->
+                <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
+                    <SearchBar Placeholder="Поиск продукта..." Text="{Binding SearchText}" BackgroundColor="Transparent" CancelButtonColor="Gray"/>
+                </Border>
+
+                <!-- Кнопки сортировки и обновления (в отдельной строке) -->
+                <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
+                    <Button Grid.Column="0" 
+                            Text="{Binding SelectedSort, StringFormat='🔽 {0}'}" 
+                            Command="{Binding ChangeSortCommand}" 
+                            BackgroundColor="#E3F2FD" TextColor="#1565C0" FontSize="13" FontAttributes="Bold" 
+                            HeightRequest="40" CornerRadius="5" HorizontalOptions="Start" Padding="15,0"/>
+
+                    <Button Grid.Column="1" 
+                            Text="🔄 Обновить" 
+                            Command="{Binding LoadDataCommand}" 
+                            BackgroundColor="#2196F3" TextColor="White" FontSize="12" 
+                            HeightRequest="40" WidthRequest="120" Padding="0" CornerRadius="5"/>
+                </Grid>
+
+            </VerticalStackLayout>
 
             <!-- Таблица остатков -->
-            <ScrollView Grid.Row="2">
-                <VerticalStackLayout BindableLayout.ItemsSource="{Binding StockList}" Spacing="8">
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding FilteredStockList}" Spacing="8">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="services:StockBalanceDto">
                             <Border Margin="0" Padding="10" StrokeShape="RoundRectangle 8" StrokeThickness="1">
@@ -40,7 +58,7 @@
                                     </DataTrigger>
                                 </Border.Triggers>
 
-                                <Grid ColumnDefinitions="*, Auto, Auto, Auto, Auto" ColumnSpacing="10">
+                                <Grid ColumnDefinitions="*, Auto, Auto, Auto" ColumnSpacing="10">
                                     <VerticalStackLayout Grid.Column="0">
                                         <Label Text="{Binding IngredientName}" FontAttributes="Bold" TextColor="Black" FontSize="16"/>
                                         <Label Text="{Binding MinRemaining, StringFormat='Мин. остаток: {0:0.###}'}" FontSize="11" TextColor="Gray"/>
@@ -49,8 +67,7 @@
                                     <Label Grid.Column="1" Text="{Binding Balance, StringFormat='{0:0.###}'}" TextColor="#1976D2" FontAttributes="Bold" FontSize="18" VerticalOptions="Center"/>
                                     <Label Grid.Column="2" Text="{Binding UnitOfMeasure}" TextColor="Gray" VerticalOptions="Center" FontSize="14" Margin="0,0,10,0"/>
 
-                                    <Button Grid.Column="3" Text="✏️" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditProductCommand}" CommandParameter="{Binding .}" BackgroundColor="#FFC107" TextColor="Black" WidthRequest="40" HeightRequest="35" FontSize="16" CornerRadius="5" Padding="0" VerticalOptions="Center"/>
-                                    <Button Grid.Column="4" Text="🗑️" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteProductCommand}" CommandParameter="{Binding .}" BackgroundColor="#F44336" TextColor="White" WidthRequest="40" HeightRequest="35" FontSize="16" CornerRadius="5" Padding="0" VerticalOptions="Center"/>
+                                    <Button Grid.Column="3" Text="🔄" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenAdjustCommand}" CommandParameter="{Binding .}" BackgroundColor="#FFC107" TextColor="Black" WidthRequest="40" HeightRequest="35" FontSize="16" CornerRadius="5" Padding="0" VerticalOptions="Center"/>
                                 </Grid>
                             </Border>
                         </DataTemplate>
@@ -59,62 +76,21 @@
             </ScrollView>
         </Grid>
 
-        <!-- ОКНО 1: Создание / Редактирование продукта -->
-        <Grid IsVisible="{Binding IsAddProductVisible}" BackgroundColor="#80000000" Padding="20">
+        <!-- ОКНО 1: ИНВЕНТАРИЗАЦИЯ -->
+        <Grid IsVisible="{Binding IsAdjustVisible}" BackgroundColor="#80000000" Padding="20">
             <Border BackgroundColor="White" StrokeShape="RoundRectangle 15" Padding="20" VerticalOptions="Center">
                 <VerticalStackLayout Spacing="15">
-                    <Label Text="{Binding FormTitle}" FontAttributes="Bold" FontSize="20" TextColor="Black" HorizontalOptions="Center"/>
-
+                    <Label Text="Инвентаризация" FontAttributes="Bold" FontSize="20" TextColor="Black" HorizontalOptions="Center"/>
+                    <Label Text="{Binding AdjustProductName, StringFormat='Продукт: {0}'}" FontSize="16" TextColor="Gray" HorizontalOptions="Center"/>
                     <VerticalStackLayout Spacing="5">
-                        <Label Text="Название" FontSize="12" TextColor="Gray"/>
+                        <Label Text="Фактическое количество на складе" FontSize="12" TextColor="Gray"/>
                         <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
-                            <Entry Text="{Binding NewIngName}" TextColor="Black" BackgroundColor="Transparent" Margin="5,0"/>
+                            <Entry Keyboard="Numeric" Text="{Binding AdjustFactQty}" TextColor="Black" BackgroundColor="Transparent" Margin="5,0"/>
                         </Border>
                     </VerticalStackLayout>
-
-                    <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
-                        <!-- Единица измерения (Заменена на Label) -->
-                        <VerticalStackLayout Grid.Column="0" Spacing="5">
-                            <Label Text="Ед. измерения" FontSize="12" TextColor="Gray"/>
-                            <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White" HeightRequest="40">
-                                <Border.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding SelectUnitCommand}" />
-                                </Border.GestureRecognizers>
-                                <Grid ColumnDefinitions="*, Auto">
-                                    <Label Grid.Column="0" Text="{Binding SelectedUnit}" TextColor="Black" VerticalOptions="Center" Margin="10,0"/>
-                                    <Label Grid.Column="1" Text="▼" TextColor="Gray" VerticalOptions="Center" Margin="0,0,10,0" FontSize="10"/>
-                                </Grid>
-                            </Border>
-                        </VerticalStackLayout>
-
-                        <VerticalStackLayout Grid.Column="1" Spacing="5">
-                            <Label Text="Себестоимость (₽)" FontSize="12" TextColor="Gray"/>
-                            <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
-                                <Entry Keyboard="Numeric" Text="{Binding NewIngCost}" TextColor="Black" BackgroundColor="Transparent" Margin="5,0"/>
-                            </Border>
-                        </VerticalStackLayout>
-                    </Grid>
-
-                    <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
-                        <VerticalStackLayout Grid.Column="0" Spacing="5">
-                            <Label Text="Мин. остаток" FontSize="12" TextColor="Gray"/>
-                            <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
-                                <Entry Keyboard="Numeric" Text="{Binding NewIngMin}" TextColor="Black" BackgroundColor="Transparent" Margin="5,0"/>
-                            </Border>
-                        </VerticalStackLayout>
-
-                        <!-- Поле "Сейчас на складе" показывается ТОЛЬКО при создании (когда IsEditingMode = false) -->
-                        <VerticalStackLayout Grid.Column="1" Spacing="5" IsVisible="{Binding IsEditingMode, Converter={StaticResource InverseBoolConverter}}">
-                            <Label Text="Сейчас на складе" FontSize="12" TextColor="Gray"/>
-                            <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
-                                <Entry Keyboard="Numeric" Text="{Binding NewIngInitialQty}" TextColor="Black" BackgroundColor="Transparent" Margin="5,0"/>
-                            </Border>
-                        </VerticalStackLayout>
-                    </Grid>
-
                     <HorizontalStackLayout Spacing="10" HorizontalOptions="Center" Margin="0,10,0,0">
-                        <Button Text="{Binding ActionButtonText}" Command="{Binding SaveProductCommand}" BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold" WidthRequest="140"/>
-                        <Button Text="Отмена" Command="{Binding CloseAddProductCommand}" BackgroundColor="Gray" TextColor="White" FontAttributes="Bold" WidthRequest="100"/>
+                        <Button Text="💾 Сохранить" Command="{Binding SaveAdjustCommand}" BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold" WidthRequest="140"/>
+                        <Button Text="Отмена" Command="{Binding CloseAdjustCommand}" BackgroundColor="Gray" TextColor="White" FontAttributes="Bold" WidthRequest="100"/>
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
             </Border>
@@ -125,14 +101,12 @@
             <Border BackgroundColor="White" StrokeShape="RoundRectangle 15" Padding="20" VerticalOptions="Center" HeightRequest="500">
                 <Grid RowDefinitions="Auto, Auto, *, Auto" RowSpacing="10">
                     <Label Grid.Row="0" Text="Приемка поставки на склад" FontAttributes="Bold" FontSize="20" TextColor="Black" HorizontalOptions="Center"/>
-
                     <VerticalStackLayout Grid.Row="1" Spacing="5">
                         <Label Text="Поставщик" FontSize="12" TextColor="Gray"/>
                         <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
                             <Picker Title="Выберите поставщика" TitleColor="#999999" ItemsSource="{Binding Suppliers}" ItemDisplayBinding="{Binding SupplierName}" SelectedItem="{Binding SelectedSupplierForReceive}" TextColor="Black" Margin="5,0" VerticalOptions="Center"/>
                         </Border>
                     </VerticalStackLayout>
-
                     <ScrollView Grid.Row="2">
                         <VerticalStackLayout BindableLayout.ItemsSource="{Binding ReceiveList}" Spacing="5">
                             <BindableLayout.ItemTemplate>
@@ -148,9 +122,8 @@
                             </BindableLayout.ItemTemplate>
                         </VerticalStackLayout>
                     </ScrollView>
-
                     <HorizontalStackLayout Grid.Row="3" Spacing="10" HorizontalOptions="Center">
-                        <Button Text="Принять на склад" Command="{Binding ApplyReceiveSupplyCommand}" BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold"/>
+                        <Button Text="📥 Принять на склад" Command="{Binding ApplyReceiveSupplyCommand}" BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold"/>
                         <Button Text="Отмена" Command="{Binding CloseReceiveSupplyCommand}" BackgroundColor="Gray" TextColor="White" FontAttributes="Bold"/>
                     </HorizontalStackLayout>
                 </Grid>
@@ -162,14 +135,12 @@
             <Border BackgroundColor="White" StrokeShape="RoundRectangle 15" Padding="20" VerticalOptions="Center" HeightRequest="550">
                 <Grid RowDefinitions="Auto, Auto, *, Auto" RowSpacing="10">
                     <Label Grid.Row="0" Text="Создание заявки на поставку" FontAttributes="Bold" FontSize="20" TextColor="Black" HorizontalOptions="Center"/>
-
                     <VerticalStackLayout Grid.Row="1" Spacing="5">
                         <Label Text="Поставщик" FontSize="12" TextColor="Gray"/>
                         <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
                             <Picker Title="Выберите поставщика" TitleColor="#999999" ItemsSource="{Binding Suppliers}" ItemDisplayBinding="{Binding SupplierName}" SelectedItem="{Binding SelectedSupplierForRequest}" TextColor="Black" Margin="5,0" VerticalOptions="Center"/>
                         </Border>
                     </VerticalStackLayout>
-
                     <ScrollView Grid.Row="2">
                         <VerticalStackLayout BindableLayout.ItemsSource="{Binding RequestList}" Spacing="5">
                             <BindableLayout.ItemTemplate>
@@ -185,7 +156,6 @@
                             </BindableLayout.ItemTemplate>
                         </VerticalStackLayout>
                     </ScrollView>
-
                     <VerticalStackLayout Grid.Row="3" Spacing="10" HorizontalOptions="Center">
                         <Button Text="📄 Сформировать и сохранить" Command="{Binding GenerateDocxCommand}" BackgroundColor="#2B579A" TextColor="White" FontAttributes="Bold" WidthRequest="250"/>
                         <Button Text="Отмена" Command="{Binding CloseRequestCommand}" BackgroundColor="Gray" TextColor="White" FontAttributes="Bold" WidthRequest="250"/>
@@ -193,6 +163,5 @@
                 </Grid>
             </Border>
         </Grid>
-
     </Grid>
 </ContentPage>

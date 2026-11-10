@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="VkusnoAndSochno.App.Views.ProductManagementPage"
+             Title="Управление продуктами"
+             BackgroundColor="#F5F5F5">
+    <Grid Padding="20">
+        <Border BackgroundColor="White" StrokeShape="RoundRectangle 15" Padding="20" VerticalOptions="Start">
+            <VerticalStackLayout Spacing="15">
+                <Label Text="Создание нового продукта" FontAttributes="Bold" FontSize="20" TextColor="Black" HorizontalOptions="Center"/>
+
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Название" FontSize="12" TextColor="Gray"/>
+                    <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
+                        <Entry Text="{Binding NewIngName}" TextColor="Black" BackgroundColor="Transparent" Margin="5,0"/>
+                    </Border>
+                </VerticalStackLayout>
+
+                <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
+                    <VerticalStackLayout Grid.Column="0" Spacing="5">
+                        <Label Text="Ед. измерения" FontSize="12" TextColor="Gray"/>
+                        <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White" HeightRequest="40">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectUnitCommand}" />
+                            </Border.GestureRecognizers>
+                            <Grid ColumnDefinitions="*, Auto">
+                                <Label Grid.Column="0" Text="{Binding SelectedUnit}" TextColor="Black" VerticalOptions="Center" Margin="10,0"/>
+                                <Label Grid.Column="1" Text="▼" TextColor="Gray" VerticalOptions="Center" Margin="0,0,10,0" FontSize="10"/>
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Column="1" Spacing="5">
+                        <Label Text="Себестоимость (₽)" FontSize="12" TextColor="Gray"/>
+                        <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
+                            <Entry Keyboard="Numeric" Text="{Binding NewIngCost}" TextColor="Black" BackgroundColor="Transparent" Margin="5,0"/>
+                        </Border>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
+                    <VerticalStackLayout Grid.Column="0" Spacing="5">
+                        <Label Text="Мин. остаток" FontSize="12" TextColor="Gray"/>
+                        <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
+                            <Entry Keyboard="Numeric" Text="{Binding NewIngMin}" TextColor="Black" BackgroundColor="Transparent" Margin="5,0"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Column="1" Spacing="5">
+                        <Label Text="Сейчас на складе" FontSize="12" TextColor="Gray"/>
+                        <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
+                            <Entry Keyboard="Numeric" Text="{Binding NewIngInitialQty}" TextColor="Black" BackgroundColor="Transparent" Margin="5,0"/>
+                        </Border>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <Button Text="Сохранить продукт" Command="{Binding SaveProductCommand}" BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold" Margin="0,10,0,0" HeightRequest="45"/>
+
+                <Label Text="{Binding StatusMessage}" TextColor="#1976D2" HorizontalOptions="Center" FontAttributes="Bold"/>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>

@@ -156,6 +156,53 @@ namespace VkusnoAndSochno.API.Controllers
             }
             catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
+        // Инвентаризация (Корректировка остатка)
+        [HttpPost("adjust")]
+        public async Task<IActionResult> AdjustStock([FromBody] AdjustRequest request)
+        {
+            try
+            {
+                // Текущий остаток
+                var currentBalance = await _context.Database
+                    .SqlQueryRaw<decimal>("SELECT fn_ingredient_balance({0}, {1}) AS \"Value\"", request.IngredientId, request.BranchId)
+                    .FirstOrDefaultAsync();
+
+                var diff = request.FactQuantity - currentBalance;
+
+                if (diff == 0) return Ok(new { Message = "Остаток не изменился" });
+
+                // Создаем операцию
+                var op = new WarehouseOperation
+                {
+                    IdEmployee = request.EmployeeId,
+                    IdBranch = request.BranchId,
+                    OperationType = diff > 0 ? "приход" : "списание",
+                    Comment = "Корректировка (Инвентаризация)",
+                    OperationDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified)
+                };
+                _context.WarehouseOperations.Add(op);
+                await _context.SaveChangesAsync();
+
+                _context.OperationItems.Add(new OperationItem
+                {
+                    IdOperation = op.IdOperation,
+                    IdIngredient = request.IngredientId,
+                    Quantity = Math.Abs(diff) // Берем модуль разницы
+                });
+                await _context.SaveChangesAsync();
+
+                return Ok(new { Message = "Остаток скорректирован" });
+            }
+            catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
+        }
+
+        public class AdjustRequest
+        {
+            public int EmployeeId { get; set; }
+            public int BranchId { get; set; }
+            public int IngredientId { get; set; }
+            public decimal FactQuantity { get; set; }
+        }
     }
 
     public class StockBalanceDto
@@ -190,4 +237,5 @@ namespace VkusnoAndSochno.API.Controllers
         public int BranchId { get; set; }
         public int EmployeeId { get; set; }
     }
+
 }

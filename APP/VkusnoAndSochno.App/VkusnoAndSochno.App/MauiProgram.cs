@@ -52,6 +52,10 @@ namespace VkusnoAndSochno.App
             builder.Services.AddTransient<Views.RecipePage>();
 
             builder.Services.AddTransient<Views.OrderHistoryPage>();
+
+            builder.Services.AddTransient<ViewModels.ProductManagementViewModel>();
+            builder.Services.AddTransient<Views.ProductManagementPage>();
+
             return builder.Build();
         }
     }

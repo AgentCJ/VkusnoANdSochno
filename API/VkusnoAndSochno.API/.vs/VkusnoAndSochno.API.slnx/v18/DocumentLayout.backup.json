@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\vkusnoandsochno\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\vkusnoandsochno\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\controllers\\warehousecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\controllers\\warehousecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\vkusnoandsochno\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|solutionrelative:vkusnoandsochno.api\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5B1CAB79-EB2D-BDDC-E86B-E0E921599824}|VkusnoAndSochno.API\\VkusnoAndSochno.API.csproj|d:\\github\\vkusnoandsochno\\api\\vkusnoandsochno.api\\vkusnoandsochno.api\\controllers\\shiftscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -62,7 +62,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Document",
@@ -90,13 +90,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "OrdersController.cs",
               "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\OrdersController.cs",
               "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Controllers\\OrdersController.cs",
               "ToolTip": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\OrdersController.cs",
               "RelativeToolTip": "VkusnoAndSochno.API\\Controllers\\OrdersController.cs",
-              "ViewState": "AgIAAIAAAAAAAAAAAAAcwJYAAAAnAAAAAAAAAA==",
+              "ViewState": "AgIAAJEAAAAAAAAAAADwv7EAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-11-04T16:56:51.319Z",
               "EditorCaption": ""
@@ -139,15 +139,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "WarehouseController.cs",
               "DocumentMoniker": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\WarehouseController.cs",
               "RelativeDocumentMoniker": "VkusnoAndSochno.API\\Controllers\\WarehouseController.cs",
               "ToolTip": "D:\\github\\VkusnoAndSochno\\API\\VkusnoAndSochno.API\\VkusnoAndSochno.API\\Controllers\\WarehouseController.cs",
               "RelativeToolTip": "VkusnoAndSochno.API\\Controllers\\WarehouseController.cs",
-              "ViewState": "AgIAAJkAAAAAAAAAAAAcwMAAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAKUAAAAAAAAAAAAcwMwAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-04T18:36:06.845Z"
+              "WhenOpened": "2026-11-04T18:36:06.845Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
