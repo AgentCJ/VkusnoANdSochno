@@ -244,13 +244,20 @@ namespace VkusnoAndSochno.App.Services
         public int OrderId { get; set; }
     }
 
-    public class ActiveOrderDto
+    public partial class ActiveOrderDto : ObservableObject
     {
         public int IdOrder { get; set; }
         public string Status { get; set; } = string.Empty;
         public decimal TotalAmount { get; set; }
         public DateTime OrderTime { get; set; }
         public List<OrderItemDto> Items { get; set; } = new();
+
+        // Свойства для таймера
+        [ObservableProperty]
+        private string timeElapsed = "00:00";
+
+        [ObservableProperty]
+        private bool isOverdue = false;
     }
 
     public class OrderItemDto
