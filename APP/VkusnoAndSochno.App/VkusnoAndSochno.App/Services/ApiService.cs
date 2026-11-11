@@ -131,6 +131,12 @@ namespace VkusnoAndSochno.App.Services
                 throw new Exception(await res.Content.ReadAsStringAsync());
         }
 
+        public async Task AdjustStockAsync(object request)
+        {
+            var res = await _httpClient.PostAsJsonAsync("warehouse/adjust", request);
+            if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
+        }
+
         public async Task<List<SalesReportDto>> GetSalesReportAsync(DateTime from, DateTime to)
         {
             var res = await _httpClient.GetAsync($"reports/sales?from={from:yyyy-MM-dd}&to={to:yyyy-MM-dd}");
@@ -164,10 +170,46 @@ namespace VkusnoAndSochno.App.Services
                 throw new Exception(await res.Content.ReadAsStringAsync());
         }
 
+        public async Task<AdminMetadataDto> GetAdminMetadataAsync()
+        {
+            var res = await _httpClient.GetFromJsonAsync<AdminMetadataDto>("admin/metadata");
+            return res ?? new AdminMetadataDto();
+        }
+
+        public async Task CreateUserAsync(object request)
+        {
+            var res = await _httpClient.PostAsJsonAsync("admin/users", request);
+            if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
+        }
+
+        public async Task UpdateUserAsync(int id, object request)
+        {
+            var res = await _httpClient.PutAsJsonAsync($"admin/users/{id}", request);
+            if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
+        }
+
+        public async Task DeleteUserAsync(int id)
+        {
+            var res = await _httpClient.DeleteAsync($"admin/users/{id}");
+            if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
+        }
+
         public async Task<List<ShiftDto>> GetMyShiftsAsync(int employeeId)
         {
             var res = await _httpClient.GetFromJsonAsync<List<ShiftDto>>($"shifts/my/{employeeId}");
             return res ?? new List<ShiftDto>();
+        }
+
+        public async Task<List<BranchShiftDto>> GetBranchShiftsAsync(int branchId) => await _httpClient.GetFromJsonAsync<List<BranchShiftDto>>($"shifts/branch/{branchId}") ?? new();
+        public async Task<List<EmployeeShortDto>> GetEmployeesForShiftsAsync(int branchId) => await _httpClient.GetFromJsonAsync<List<EmployeeShortDto>>($"shifts/employees/{branchId}") ?? new();
+        public async Task CreateShiftAsync(object request) { var r = await _httpClient.PostAsJsonAsync("shifts", request); if (!r.IsSuccessStatusCode) throw new Exception(await r.Content.ReadAsStringAsync()); }
+        public async Task UpdateShiftAsync(int id, object request) { var r = await _httpClient.PutAsJsonAsync($"shifts/{id}", request); if (!r.IsSuccessStatusCode) throw new Exception(await r.Content.ReadAsStringAsync()); }
+        public async Task DeleteShiftAsync(int id) { var r = await _httpClient.DeleteAsync($"shifts/{id}"); if (!r.IsSuccessStatusCode) throw new Exception(await r.Content.ReadAsStringAsync()); }
+
+        public async Task ToggleShiftStatusAsync(int id)
+        {
+            var res = await _httpClient.PutAsync($"shifts/{id}/toggle-status", null);
+            if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
         }
 
         public async Task<List<AdminDishDto>> GetAllDishesAsync()
@@ -223,36 +265,6 @@ namespace VkusnoAndSochno.App.Services
             if (!res.IsSuccessStatusCode)
                 throw new Exception(await res.Content.ReadAsStringAsync());
         }
-
-        public async Task AdjustStockAsync(object request)
-        {
-            var res = await _httpClient.PostAsJsonAsync("warehouse/adjust", request);
-            if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
-        }
-        public async Task<AdminMetadataDto> GetAdminMetadataAsync()
-        {
-            var res = await _httpClient.GetFromJsonAsync<AdminMetadataDto>("admin/metadata");
-            return res ?? new AdminMetadataDto();
-        }
-
-        public async Task CreateUserAsync(object request)
-        {
-            var res = await _httpClient.PostAsJsonAsync("admin/users", request);
-            if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
-        }
-
-        public async Task UpdateUserAsync(int id, object request)
-        {
-            var res = await _httpClient.PutAsJsonAsync($"admin/users/{id}", request);
-            if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
-        }
-
-        public async Task DeleteUserAsync(int id)
-        {
-            var res = await _httpClient.DeleteAsync($"admin/users/{id}");
-            if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
-        }
-
     }
 
     public class LoginResponse
@@ -411,6 +423,7 @@ namespace VkusnoAndSochno.App.Services
         public decimal Quantity { get; set; }
         public string UnitOfMeasure { get; set; } = string.Empty;
     }
+
     public class AdminUserDto
     {
         public int IdUser { get; set; }
@@ -429,4 +442,18 @@ namespace VkusnoAndSochno.App.Services
     public class PositionDto { public int IdPosition { get; set; } public string PositionName { get; set; } = string.Empty; }
     public class AdminMetadataDto { public List<RoleDto> Roles { get; set; } = new(); public List<BranchDto> Branches { get; set; } = new(); public List<PositionDto> Positions { get; set; } = new(); }
 
+    public class BranchShiftDto
+    {
+        public int IdShift { get; set; }
+        public DateOnly ShiftDate { get; set; }
+        public TimeOnly StartTime { get; set; }
+        public TimeOnly EndTime { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public int IdEmployee { get; set; }
+        public string EmployeeName { get; set; } = string.Empty;
+        public decimal? HoursWorked { get; set; }
+        public bool IsToday => ShiftDate == DateOnly.FromDateTime(DateTime.Today);
+    }
+
+    public class EmployeeShortDto { public int IdEmployee { get; set; } public string FullName { get; set; } = string.Empty; }
 }

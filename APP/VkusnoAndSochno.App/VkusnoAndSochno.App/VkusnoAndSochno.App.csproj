@@ -103,6 +103,9 @@
 	  <MauiXaml Update="Views\RecipePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\ScheduleManagementPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\StorekeeperPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

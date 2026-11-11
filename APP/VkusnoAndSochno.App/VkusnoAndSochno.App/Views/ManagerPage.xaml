@@ -9,11 +9,13 @@
     <ScrollView>
         <VerticalStackLayout Padding="15" Spacing="15">
 
-            <Grid ColumnDefinitions="Auto, Auto, Auto, Auto" ColumnSpacing="10" HorizontalOptions="Start">
+            <!-- Панель кнопок -->
+            <Grid ColumnDefinitions="Auto, Auto, Auto, Auto, Auto" ColumnSpacing="10" HorizontalOptions="Start">
                 <Button Grid.Column="0" Text="🍔 Управление меню" Clicked="OnMenuManagementClicked" BackgroundColor="#FF9800" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
                 <Button Grid.Column="1" Text="📦 Создание продуктов" Clicked="OnProductManagementClicked" BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
-                <Button Grid.Column="2" Text="📄 Скачать отчет (DOCX)" Command="{Binding GenerateDetailedDocxCommand}" BackgroundColor="#2B579A" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
-                <Button Grid.Column="3" Text="🕒 История заказов" Clicked="OnHistoryClicked" BackgroundColor="#9C27B0" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
+                <Button Grid.Column="2" Text="📅 Управление графиком" Clicked="OnScheduleManagementClicked" BackgroundColor="#9C27B0" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
+                <Button Grid.Column="3" Text="📄 Скачать отчет (DOCX)" Command="{Binding GenerateDetailedDocxCommand}" BackgroundColor="#2B579A" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
+                <Button Grid.Column="4" Text="🕒 История заказов" Clicked="OnHistoryClicked" BackgroundColor="#607D8B" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
             </Grid>
 
             <Label Text="Сводка за сегодня" FontAttributes="Bold" FontSize="18" TextColor="Black"/>

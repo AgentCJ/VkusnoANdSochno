@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:services="clr-namespace:VkusnoAndSochno.App.Services"
+             xmlns:vm="clr-namespace:VkusnoAndSochno.App.ViewModels"
+             x:Class="VkusnoAndSochno.App.Views.ScheduleManagementPage"
+             Title="Управление графиком"
+             BackgroundColor="#F5F5F5">
+    <Grid>
+        <Grid RowDefinitions="Auto, Auto, *" Padding="15" RowSpacing="10">
+
+            <Grid Grid.Row="0" ColumnDefinitions="Auto, Auto, *, Auto, Auto" ColumnSpacing="10">
+                <Label Grid.Column="0" Text="Выбрать неделю:" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black"/>
+
+                <Border Grid.Column="1" Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
+                    <DatePicker Date="{Binding SelectedWeekDate}" Format="dd.MM.yyyy" TextColor="Black" BackgroundColor="Transparent" WidthRequest="140"/>
+                </Border>
+
+                <Button Grid.Column="3" Text="📄 Экспорт в DOCX" Command="{Binding ExportToDocxCommand}" BackgroundColor="#2B579A" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
+                <Button Grid.Column="4" Text="➕ Добавить" Command="{Binding OpenCreateFormCommand}" BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
+            </Grid>
+
+            <Label Grid.Row="1" Text="{Binding WeekDisplay}" FontSize="16" TextColor="#2196F3" FontAttributes="Bold" HorizontalOptions="Center"/>
+
+            <ScrollView Grid.Row="2" Orientation="Horizontal" HorizontalScrollBarVisibility="Always">
+                <HorizontalStackLayout BindableLayout.ItemsSource="{Binding WeekDays}" Spacing="10" Padding="0,5,0,20">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:WeekDayDto">
+                            <Border WidthRequest="260" BackgroundColor="#ECEFF1" StrokeShape="RoundRectangle 10" Padding="10">
+                                <VerticalStackLayout Spacing="10">
+                                    <VerticalStackLayout Spacing="2" Margin="0,0,0,5">
+                                        <Label Text="{Binding DayName}" FontAttributes="Bold" FontSize="16" TextColor="Black" HorizontalOptions="Center"/>
+                                        <Label Text="{Binding DateString}" FontSize="14" TextColor="Gray" HorizontalOptions="Center"/>
+                                    </VerticalStackLayout>
+
+                                    <ScrollView>
+                                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding Shifts}" Spacing="8">
+                                            <BindableLayout.ItemTemplate>
+                                                <DataTemplate x:DataType="services:BranchShiftDto">
+                                                    <Border BackgroundColor="White" StrokeShape="RoundRectangle 8" Padding="10" StrokeThickness="1" Stroke="LightGray">
+                                                        <VerticalStackLayout Spacing="5">
+                                                            <Label Text="{Binding EmployeeName}" FontAttributes="Bold" FontSize="14" TextColor="Black" LineBreakMode="TailTruncation"/>
+
+                                                            <HorizontalStackLayout Spacing="5">
+                                                                <Label Text="{Binding StartTime, StringFormat='{0:HH\\:mm}'}" FontSize="13" TextColor="#1976D2" FontAttributes="Bold"/>
+                                                                <Label Text="—" FontSize="13" TextColor="Gray"/>
+                                                                <Label Text="{Binding EndTime, StringFormat='{0:HH\\:mm}'}" FontSize="13" TextColor="#1976D2" FontAttributes="Bold"/>
+                                                            </HorizontalStackLayout>
+
+                                                            <Button Text="{Binding Status}" 
+                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ToggleStatusCommand}"
+                                                                    CommandParameter="{Binding .}"
+                                                                    HeightRequest="30" FontSize="10" FontAttributes="Bold" CornerRadius="5" Padding="0" Margin="0,5,0,0">
+                                                                <Button.Triggers>
+                                                                    <DataTrigger TargetType="Button" Binding="{Binding Status}" Value="запланирована">
+                                                                        <Setter Property="BackgroundColor" Value="#FFF3E0" />
+                                                                        <Setter Property="TextColor" Value="#FF9800" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Button" Binding="{Binding Status}" Value="отработана">
+                                                                        <Setter Property="BackgroundColor" Value="#E8F5E9" />
+                                                                        <Setter Property="TextColor" Value="#2E7D32" />
+                                                                    </DataTrigger>
+                                                                </Button.Triggers>
+                                                            </Button>
+
+                                                            <Grid ColumnDefinitions="*, *" ColumnSpacing="5" Margin="0,5,0,0">
+                                                                <Button Grid.Column="0" Text="✏️ Изм." Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditShiftCommand}" CommandParameter="{Binding .}" BackgroundColor="#FFC107" TextColor="Black" HeightRequest="30" FontSize="11" CornerRadius="5" Padding="0"/>
+                                                                <Button Grid.Column="1" Text="🗑️ Удл." Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteShiftCommand}" CommandParameter="{Binding .}" BackgroundColor="#F44336" TextColor="White" HeightRequest="30" FontSize="11" CornerRadius="5" Padding="0"/>
+                                                            </Grid>
+                                                        </VerticalStackLayout>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </BindableLayout.ItemTemplate>
+                                        </VerticalStackLayout>
+                                    </ScrollView>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </HorizontalStackLayout>
+            </ScrollView>
+        </Grid>
+
+        <!-- Форма добавления/редактирования -->
+        <Grid IsVisible="{Binding IsFormVisible}" BackgroundColor="#80000000" Padding="20">
+            <Border BackgroundColor="White" StrokeShape="RoundRectangle 15" Padding="20" VerticalOptions="Center">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="{Binding FormTitle}" FontAttributes="Bold" FontSize="20" TextColor="Black" HorizontalOptions="Center"/>
+
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Сотрудник" FontSize="12" TextColor="Gray"/>
+                        <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
+                            <Picker Title="Выберите сотрудника" TitleColor="Gray" ItemsSource="{Binding Employees}" ItemDisplayBinding="{Binding FullName}" SelectedItem="{Binding SelectedEmployee}" TextColor="Black" Margin="5,0"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Дата" FontSize="12" TextColor="Gray"/>
+                        <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
+                            <DatePicker Date="{Binding SelectedDate}" Format="dd.MM.yyyy" TextColor="Black" BackgroundColor="Transparent"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
+                        <VerticalStackLayout Grid.Column="0" Spacing="5">
+                            <Label Text="Начало (ЧЧ:ММ)" FontSize="12" TextColor="Gray"/>
+                            <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
+                                <Entry Text="{Binding StartTimeText}" Placeholder="10:00" TextColor="Black" BackgroundColor="Transparent" Margin="5,0"/>
+                            </Border>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                            <Label Text="Конец (ЧЧ:ММ)" FontSize="12" TextColor="Gray"/>
+                            <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
+                                <Entry Text="{Binding EndTimeText}" Placeholder="22:00" TextColor="Black" BackgroundColor="Transparent" Margin="5,0"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <HorizontalStackLayout Spacing="10" HorizontalOptions="Center" Margin="0,10,0,0">
+                        <Button Text="💾 Сохранить" Command="{Binding SaveShiftCommand}" BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold" WidthRequest="140"/>
+                        <Button Text="Отмена" Command="{Binding CloseFormCommand}" BackgroundColor="Gray" TextColor="White" FontAttributes="Bold" WidthRequest="100"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>

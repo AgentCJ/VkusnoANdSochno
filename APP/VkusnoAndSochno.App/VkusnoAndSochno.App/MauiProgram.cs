@@ -56,6 +56,9 @@ namespace VkusnoAndSochno.App
             builder.Services.AddTransient<ViewModels.ProductManagementViewModel>();
             builder.Services.AddTransient<Views.ProductManagementPage>();
 
+            builder.Services.AddTransient<ViewModels.ScheduleManagementViewModel>();
+            builder.Services.AddTransient<Views.ScheduleManagementPage>();
+
             return builder.Build();
         }
     }

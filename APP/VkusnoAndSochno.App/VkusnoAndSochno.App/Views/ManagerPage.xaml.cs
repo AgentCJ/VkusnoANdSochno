@@ -29,6 +29,11 @@ namespace VkusnoAndSochno.App.Views
             await Shell.Current.GoToAsync("ProductManagementPage");
         }
 
+        private async void OnScheduleManagementClicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync("ScheduleManagementPage");
+        }
+
         private async void OnHistoryClicked(object sender, EventArgs e)
         {
             await Shell.Current.GoToAsync("OrderHistoryPage");
