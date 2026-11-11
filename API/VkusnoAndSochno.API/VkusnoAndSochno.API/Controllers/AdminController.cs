@@ -15,7 +15,6 @@ namespace VkusnoAndSochno.API.Controllers
             _context = context;
         }
 
-        // Получить список всех пользователей
         [HttpGet("users")]
         public async Task<IActionResult> GetUsers()
         {
@@ -27,27 +26,141 @@ namespace VkusnoAndSochno.API.Controllers
                                {
                                    u.IdUser,
                                    u.Login,
+                                   u.IdEmployee,
                                    EmployeeName = e.FullName,
                                    RoleName = r.RoleName,
+                                   u.IdRole,
                                    BranchName = b.BranchName,
+                                   e.IdBranch,
                                    u.IsActive
                                }).ToListAsync();
 
             return Ok(users);
         }
 
-        // Заблокировать / Разблокировать пользователя
+        [HttpGet("metadata")]
+        public async Task<IActionResult> GetMetadata()
+        {
+            var roles = await _context.Roles.Select(r => new { r.IdRole, r.RoleName }).ToListAsync();
+            var branches = await _context.Branches.Select(b => new { b.IdBranch, b.BranchName }).ToListAsync();
+            var positions = await _context.Positions.Select(p => new { p.IdPosition, p.PositionName }).ToListAsync();
+            return Ok(new { Roles = roles, Branches = branches, Positions = positions });
+        }
+
+        [HttpPost("users")]
+        public async Task<IActionResult> CreateUser([FromBody] UserRequest request)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(request.Login) || request.Login.Length < 5)
+                    return BadRequest("Логин должен содержать минимум 5 символов.");
+
+                if (string.IsNullOrWhiteSpace(request.Password) || request.Password.Length < 5)
+                    return BadRequest("Пароль должен содержать минимум 5 символов.");
+
+                if (string.IsNullOrWhiteSpace(request.EmployeeName) ||
+                    request.EmployeeName.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length != 3)
+                    return BadRequest("Введите ФИО полностью (Фамилия Имя Отчество).");
+
+                var employee = new Employee
+                {
+                    FullName = request.EmployeeName.Trim(),
+                    IdBranch = request.BranchId,
+                    IdPosition = request.PositionId,
+                    HireDate = DateOnly.FromDateTime(DateTime.Today),
+                    Phone = request.Phone
+                };
+                _context.Employees.Add(employee);
+                await _context.SaveChangesAsync();
+
+                var user = new User
+                {
+                    IdEmployee = employee.IdEmployee,
+                    IdRole = request.RoleId,
+                    Login = request.Login,
+                    PasswordHash = request.Password,
+                    IsActive = true
+                };
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { Message = "Пользователь создан" });
+            }
+            catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
+        }
+
+        [HttpPut("users/{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserRequest request)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(request.Login) || request.Login.Length < 5)
+                    return BadRequest("Логин должен содержать минимум 5 символов.");
+
+                if (!string.IsNullOrWhiteSpace(request.Password) && request.Password.Length < 5)
+                    return BadRequest("Пароль должен содержать минимум 5 символов.");
+
+                if (string.IsNullOrWhiteSpace(request.EmployeeName) ||
+                    request.EmployeeName.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length != 3)
+                    return BadRequest("Введите ФИО полностью (Фамилия Имя Отчество).");
+
+                var user = await _context.Users.Include(u => u.IdEmployeeNavigation).FirstOrDefaultAsync(u => u.IdUser == id);
+                if (user == null) return NotFound("Пользователь не найден");
+
+                user.IdEmployeeNavigation.FullName = request.EmployeeName.Trim();
+                user.IdEmployeeNavigation.IdBranch = request.BranchId;
+                user.IdEmployeeNavigation.Phone = request.Phone;
+
+                user.Login = request.Login;
+                user.IdRole = request.RoleId;
+                if (!string.IsNullOrWhiteSpace(request.Password)) user.PasswordHash = request.Password;
+
+                await _context.SaveChangesAsync();
+                return Ok(new { Message = "Пользователь обновлен" });
+            }
+            catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
+        }
+
         [HttpPut("users/{id}/toggle")]
         public async Task<IActionResult> ToggleUserStatus(int id)
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null) return NotFound("Пользователь не найден");
 
-            // Меняем статус на противоположный
             user.IsActive = !user.IsActive;
             await _context.SaveChangesAsync();
-
-            return Ok(new { Message = "Статус изменен", IsActive = user.IsActive });
+            return Ok(new { Message = "Статус изменен" });
         }
+
+        [HttpDelete("users/{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            try
+            {
+                var user = await _context.Users.Include(u => u.IdEmployeeNavigation).FirstOrDefaultAsync(u => u.IdUser == id);
+                if (user == null) return NotFound("Пользователь не найден");
+
+                _context.Users.Remove(user);
+                _context.Employees.Remove(user.IdEmployeeNavigation);
+                await _context.SaveChangesAsync();
+                return Ok(new { Message = "Пользователь удален" });
+            }
+            catch (DbUpdateException)
+            {
+                return BadRequest("Невозможно удалить: сотрудник имеет связанные заказы или смены.");
+            }
+            catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
+        }
+    }
+
+    public class UserRequest
+    {
+        public string EmployeeName { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
+        public int BranchId { get; set; }
+        public int PositionId { get; set; }
+        public string Login { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public int RoleId { get; set; }
     }
 }

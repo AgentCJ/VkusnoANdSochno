@@ -229,6 +229,30 @@ namespace VkusnoAndSochno.App.Services
             var res = await _httpClient.PostAsJsonAsync("warehouse/adjust", request);
             if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
         }
+        public async Task<AdminMetadataDto> GetAdminMetadataAsync()
+        {
+            var res = await _httpClient.GetFromJsonAsync<AdminMetadataDto>("admin/metadata");
+            return res ?? new AdminMetadataDto();
+        }
+
+        public async Task CreateUserAsync(object request)
+        {
+            var res = await _httpClient.PostAsJsonAsync("admin/users", request);
+            if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
+        }
+
+        public async Task UpdateUserAsync(int id, object request)
+        {
+            var res = await _httpClient.PutAsJsonAsync($"admin/users/{id}", request);
+            if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
+        }
+
+        public async Task DeleteUserAsync(int id)
+        {
+            var res = await _httpClient.DeleteAsync($"admin/users/{id}");
+            if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
+        }
+
     }
 
     public class LoginResponse
@@ -343,16 +367,6 @@ namespace VkusnoAndSochno.App.Services
         public decimal TotalPrice => Price * Quantity;
     }
 
-    public class AdminUserDto
-    {
-        public int IdUser { get; set; }
-        public string Login { get; set; } = string.Empty;
-        public string EmployeeName { get; set; } = string.Empty;
-        public string RoleName { get; set; } = string.Empty;
-        public string BranchName { get; set; } = string.Empty;
-        public bool IsActive { get; set; }
-    }
-
     public class ShiftDto
     {
         public int IdShift { get; set; }
@@ -397,4 +411,22 @@ namespace VkusnoAndSochno.App.Services
         public decimal Quantity { get; set; }
         public string UnitOfMeasure { get; set; } = string.Empty;
     }
+    public class AdminUserDto
+    {
+        public int IdUser { get; set; }
+        public string Login { get; set; } = string.Empty;
+        public int IdEmployee { get; set; }
+        public string EmployeeName { get; set; } = string.Empty;
+        public string RoleName { get; set; } = string.Empty;
+        public int IdRole { get; set; }
+        public string BranchName { get; set; } = string.Empty;
+        public int IdBranch { get; set; }
+        public bool IsActive { get; set; }
+    }
+
+    public class RoleDto { public int IdRole { get; set; } public string RoleName { get; set; } = string.Empty; }
+    public class BranchDto { public int IdBranch { get; set; } public string BranchName { get; set; } = string.Empty; }
+    public class PositionDto { public int IdPosition { get; set; } public string PositionName { get; set; } = string.Empty; }
+    public class AdminMetadataDto { public List<RoleDto> Roles { get; set; } = new(); public List<BranchDto> Branches { get; set; } = new(); public List<PositionDto> Positions { get; set; } = new(); }
+
 }

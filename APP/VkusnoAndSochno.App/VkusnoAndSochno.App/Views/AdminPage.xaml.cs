@@ -15,7 +15,7 @@ namespace VkusnoAndSochno.App.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            await _viewModel.LoadUsersAsync();
+            await _viewModel.LoadDataAsync();
         }
     }
 }
