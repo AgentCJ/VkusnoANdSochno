@@ -24,10 +24,14 @@ namespace VkusnoAndSochno.App.Views
             await Shell.Current.GoToAsync("MenuManagementPage");
         }
 
-        // НОВЫЙ ОБРАБОТЧИК
         private async void OnProductManagementClicked(object sender, EventArgs e)
         {
             await Shell.Current.GoToAsync("ProductManagementPage");
+        }
+
+        private async void OnHistoryClicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync("OrderHistoryPage");
         }
     }
 }

@@ -15,7 +15,6 @@ namespace VkusnoAndSochno.API.Controllers
             _context = context;
         }
 
-        // GET: api/reports/sales?from=2023-10-01&to=2023-10-31
         [HttpGet("sales")]
         public async Task<IActionResult> GetSalesReport(DateTime from, DateTime to)
         {
@@ -44,7 +43,6 @@ namespace VkusnoAndSochno.API.Controllers
             }
         }
 
-        // GET: api/reports/dashboard
         [HttpGet("dashboard")]
         public async Task<IActionResult> GetDashboardStats()
         {
@@ -52,7 +50,6 @@ namespace VkusnoAndSochno.API.Controllers
             {
                 var today = DateTime.Today;
 
-                // 1. Выручка и количество заказов за сегодня (только выполненные)
                 var stats = await _context.Orders
                     .Where(o => o.Status == "выполнен" && o.OrderTime.Date == today)
                     .GroupBy(o => 1)
@@ -63,7 +60,6 @@ namespace VkusnoAndSochno.API.Controllers
                     })
                     .FirstOrDefaultAsync();
 
-                // 2. Самое популярное блюдо за сегодня
                 var topDish = await (from oi in _context.OrderItems
                                      join o in _context.Orders on oi.IdOrder equals o.IdOrder
                                      join d in _context.Dishes on oi.IdDish equals d.IdDish
@@ -77,6 +73,76 @@ namespace VkusnoAndSochno.API.Controllers
                     TotalRevenue = stats?.TotalRevenue ?? 0,
                     OrderCount = stats?.OrderCount ?? 0,
                     TopDish = topDish ?? "Нет данных"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.InnerException?.Message ?? ex.Message);
+            }
+        }
+
+        [HttpGet("detailed/{branchId}")]
+        public async Task<IActionResult> GetDetailedReport(int branchId)
+        {
+            try
+            {
+                var today = DateTime.Today;
+
+                var orders = await _context.Orders
+                    .Where(o => o.Status == "выполнен" && o.OrderTime.Date == today && o.IdBranch == branchId)
+                    .ToListAsync();
+
+                int ordersCount = orders.Count;
+                decimal revenue = orders.Sum(o => o.TotalAmount);
+
+                var dishStats = await (from oi in _context.OrderItems
+                                       join o in _context.Orders on oi.IdOrder equals o.IdOrder
+                                       join d in _context.Dishes on oi.IdDish equals d.IdDish
+                                       where o.Status == "выполнен" && o.OrderTime.Date == today && o.IdBranch == branchId
+                                       group oi by d.DishName into g
+                                       select new { DishName = g.Key, TotalQty = g.Sum(x => x.Quantity) })
+                                       .OrderByDescending(x => x.TotalQty)
+                                       .ToListAsync();
+
+                string topDish = dishStats.FirstOrDefault()?.DishName ?? "Нет данных";
+                string bottomDish = dishStats.LastOrDefault()?.DishName ?? "Нет данных";
+
+                int employeesOnShift = await (from se in _context.ShiftEmployees
+                                              join s in _context.Shifts on se.IdShift equals s.IdShift
+                                              where s.ShiftDate == DateOnly.FromDateTime(today) && s.IdBranch == branchId
+                                              select se.IdEmployee).Distinct().CountAsync();
+
+                decimal totalCost = 0;
+                var soldItems = await (from oi in _context.OrderItems
+                                       join o in _context.Orders on oi.IdOrder equals o.IdOrder
+                                       where o.Status == "выполнен" && o.OrderTime.Date == today && o.IdBranch == branchId
+                                       select new { oi.IdDish, oi.Quantity }).ToListAsync();
+
+                foreach (var item in soldItems)
+                {
+                    var recipe = await _context.Recipes.FirstOrDefaultAsync(r => r.IdDish == item.IdDish);
+                    if (recipe != null)
+                    {
+                        var ingredients = await _context.RecipeIngredients.Where(ri => ri.IdRecipe == recipe.IdRecipe).ToListAsync();
+                        foreach (var ing in ingredients)
+                        {
+                            var ingInfo = await _context.Ingredients.FindAsync(ing.IdIngredient);
+                            if (ingInfo != null) totalCost += (ingInfo.CostPrice * ing.Quantity) * item.Quantity;
+                        }
+                    }
+                }
+
+                decimal profit = revenue - totalCost;
+
+                return Ok(new
+                {
+                    Date = today.ToString("dd.MM.yyyy"),
+                    OrdersCount = ordersCount,
+                    TotalRevenue = revenue,
+                    TotalProfit = profit,
+                    TopDish = topDish,
+                    BottomDish = bottomDish,
+                    EmployeesOnShift = employeesOnShift
                 });
             }
             catch (Exception ex)

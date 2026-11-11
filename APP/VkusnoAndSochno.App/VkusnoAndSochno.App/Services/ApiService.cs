@@ -14,7 +14,6 @@ namespace VkusnoAndSochno.App.Services
             _httpClient.DefaultRequestHeaders.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue { NoCache = true, NoStore = true };
         }
 
-        // --- ЗАКАЗЫ ---
         public async Task<int> CreateOrderAsync(int employeeId, int branchId)
         {
             var response = await _httpClient.PostAsync($"orders/create?employeeId={employeeId}&branchId={branchId}", null);
@@ -76,7 +75,6 @@ namespace VkusnoAndSochno.App.Services
             return res ?? new List<DishDto>();
         }
 
-        // --- АВТОРИЗАЦИЯ ---
         public async Task<LoginResponse?> LoginAsync(string login, string password)
         {
             var response = await _httpClient.PostAsJsonAsync("auth/login", new { Login = login, Password = password });
@@ -87,7 +85,6 @@ namespace VkusnoAndSochno.App.Services
             return await response.Content.ReadFromJsonAsync<LoginResponse>();
         }
 
-        // --- СКЛАД ---
         public async Task<List<StockBalanceDto>> GetBalanceAsync(int branchId)
         {
             var res = await _httpClient.GetFromJsonAsync<List<StockBalanceDto>>($"warehouse/balance/{branchId}?t={DateTime.Now.Ticks}");
@@ -134,7 +131,6 @@ namespace VkusnoAndSochno.App.Services
                 throw new Exception(await res.Content.ReadAsStringAsync());
         }
 
-        // --- ОТЧЕТЫ И ДАШБОРД ---
         public async Task<List<SalesReportDto>> GetSalesReportAsync(DateTime from, DateTime to)
         {
             var res = await _httpClient.GetAsync($"reports/sales?from={from:yyyy-MM-dd}&to={to:yyyy-MM-dd}");
@@ -149,7 +145,12 @@ namespace VkusnoAndSochno.App.Services
             return res ?? new DashboardStatsDto();
         }
 
-        // --- АДМИНИСТРАТОР ---
+        public async Task<DetailedReportDto> GetDetailedReportAsync(int branchId)
+        {
+            var res = await _httpClient.GetFromJsonAsync<DetailedReportDto>($"reports/detailed/{branchId}");
+            return res ?? new DetailedReportDto();
+        }
+
         public async Task<List<AdminUserDto>> GetUsersAsync()
         {
             var res = await _httpClient.GetFromJsonAsync<List<AdminUserDto>>("admin/users");
@@ -163,14 +164,12 @@ namespace VkusnoAndSochno.App.Services
                 throw new Exception(await res.Content.ReadAsStringAsync());
         }
 
-        // --- ГРАФИК СМЕН ---
         public async Task<List<ShiftDto>> GetMyShiftsAsync(int employeeId)
         {
             var res = await _httpClient.GetFromJsonAsync<List<ShiftDto>>($"shifts/my/{employeeId}");
             return res ?? new List<ShiftDto>();
         }
 
-        // --- УПРАВЛЕНИЕ МЕНЮ ---
         public async Task<List<AdminDishDto>> GetAllDishesAsync()
         {
             var res = await _httpClient.GetFromJsonAsync<List<AdminDishDto>>("menu/all");
@@ -205,7 +204,6 @@ namespace VkusnoAndSochno.App.Services
                 throw new Exception(await res.Content.ReadAsStringAsync());
         }
 
-        // --- РЕЦЕПТЫ ---
         public async Task<List<RecipeItemDto>> GetRecipeAsync(int dishId)
         {
             var res = await _httpClient.GetFromJsonAsync<List<RecipeItemDto>>($"recipes/{dishId}");
@@ -225,16 +223,13 @@ namespace VkusnoAndSochno.App.Services
             if (!res.IsSuccessStatusCode)
                 throw new Exception(await res.Content.ReadAsStringAsync());
         }
+
         public async Task AdjustStockAsync(object request)
         {
             var res = await _httpClient.PostAsJsonAsync("warehouse/adjust", request);
             if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
         }
     }
-
-    // ==========================================
-    // КЛАССЫ ДАННЫХ (DTO) - ВСЕ ВНУТРИ NAMESPACE!
-    // ==========================================
 
     public class LoginResponse
     {
@@ -257,7 +252,6 @@ namespace VkusnoAndSochno.App.Services
         public DateTime OrderTime { get; set; }
         public List<OrderItemDto> Items { get; set; } = new();
 
-        // Свойства для таймера
         [ObservableProperty]
         private string timeElapsed = "00:00";
 
@@ -282,12 +276,10 @@ namespace VkusnoAndSochno.App.Services
 
         public List<OrderHistoryItemDto> Items { get; set; } = new();
 
-        // Свойство для разворачивания карточки
         [ObservableProperty]
         private bool isExpanded = false;
     }
 
-    // Новый класс для блюда в истории
     public class OrderHistoryItemDto
     {
         public string DishName { get; set; } = string.Empty;
@@ -385,6 +377,17 @@ namespace VkusnoAndSochno.App.Services
         public decimal TotalRevenue { get; set; }
         public int OrderCount { get; set; }
         public string TopDish { get; set; } = string.Empty;
+    }
+
+    public class DetailedReportDto
+    {
+        public string Date { get; set; } = string.Empty;
+        public int OrdersCount { get; set; }
+        public decimal TotalRevenue { get; set; }
+        public decimal TotalProfit { get; set; }
+        public string TopDish { get; set; } = string.Empty;
+        public string BottomDish { get; set; } = string.Empty;
+        public int EmployeesOnShift { get; set; }
     }
 
     public class RecipeItemDto
