@@ -15,7 +15,7 @@ namespace VkusnoAndSochno.App.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            await _viewModel.LoadOrdersAsync(); // Автозагрузка при открытии
+            await _viewModel.LoadOrdersAsync();
         }
     }
 }

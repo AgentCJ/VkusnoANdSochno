@@ -15,7 +15,7 @@ namespace VkusnoAndSochno.API.Controllers
             _context = context;
         }
 
-        // Обновленный запрос: теперь возвращает и CostPrice
+        // Получение текущих остатков на складе филиала
         [HttpGet("balance/{branchId}")]
         public async Task<IActionResult> GetBalance(int branchId)
         {
@@ -33,6 +33,7 @@ namespace VkusnoAndSochno.API.Controllers
             catch (Exception ex) { return StatusCode(500, ex.Message); }
         }
 
+        // Получение списка ингредиентов
         [HttpGet("ingredients")]
         public async Task<IActionResult> GetIngredients()
         {
@@ -42,6 +43,7 @@ namespace VkusnoAndSochno.API.Controllers
             return Ok(ingredients);
         }
 
+        // Получение списка поставщиков
         [HttpGet("suppliers")]
         public async Task<IActionResult> GetSuppliers()
         {
@@ -51,6 +53,7 @@ namespace VkusnoAndSochno.API.Controllers
             return Ok(suppliers);
         }
 
+        // Регистрация поставки через хранимую процедуру
         [HttpPost("supply")]
         public async Task<IActionResult> RegisterSupply([FromBody] SupplyRequest request)
         {
@@ -65,11 +68,13 @@ namespace VkusnoAndSochno.API.Controllers
             catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
 
+        // Создание нового продукта в справочнике
         [HttpPost("ingredient")]
         public async Task<IActionResult> AddIngredient([FromBody] IngredientRequest request)
         {
             try
             {
+                // Проверка на дубликат названия
                 var exists = await _context.Ingredients
                     .AnyAsync(i => i.IngredientName.ToLower() == request.IngredientName.ToLower());
 
@@ -85,7 +90,7 @@ namespace VkusnoAndSochno.API.Controllers
                 _context.Ingredients.Add(ingredient);
                 await _context.SaveChangesAsync();
 
-                // Если указано начальное количество, создаем операцию "приход"
+                // Если задано начальное количество, создаем операцию "приход"
                 if (request.InitialQuantity > 0)
                 {
                     var op = new WarehouseOperation
@@ -94,7 +99,7 @@ namespace VkusnoAndSochno.API.Controllers
                         IdBranch = request.BranchId,
                         OperationType = "приход",
                         Comment = "Начальный остаток при создании продукта",
-                        // ИСПРАВЛЕНИЕ: Используем Unspecified, чтобы избежать ошибки с timestamp
+                        // Используем Unspecified во избежание конфликта типов Npgsql
                         OperationDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified)
                     };
                     _context.WarehouseOperations.Add(op);
@@ -114,6 +119,7 @@ namespace VkusnoAndSochno.API.Controllers
             catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
 
+        // Редактирование карточки продукта
         [HttpPut("ingredient/{id}")]
         public async Task<IActionResult> UpdateIngredient(int id, [FromBody] IngredientRequest request)
         {
@@ -138,6 +144,7 @@ namespace VkusnoAndSochno.API.Controllers
             catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
 
+        // Удаление продукта
         [HttpDelete("ingredient/{id}")]
         public async Task<IActionResult> DeleteIngredient(int id)
         {
@@ -156,13 +163,14 @@ namespace VkusnoAndSochno.API.Controllers
             }
             catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
-        // Инвентаризация (Корректировка остатка)
+
+        // Инвентаризация: корректировка фактического остатка
         [HttpPost("adjust")]
         public async Task<IActionResult> AdjustStock([FromBody] AdjustRequest request)
         {
             try
             {
-                // Текущий остаток
+                // Получаем текущий остаток из БД
                 var currentBalance = await _context.Database
                     .SqlQueryRaw<decimal>("SELECT fn_ingredient_balance({0}, {1}) AS \"Value\"", request.IngredientId, request.BranchId)
                     .FirstOrDefaultAsync();
@@ -171,7 +179,7 @@ namespace VkusnoAndSochno.API.Controllers
 
                 if (diff == 0) return Ok(new { Message = "Остаток не изменился" });
 
-                // Создаем операцию
+                // Создаем операцию прихода или списания в зависимости от разницы
                 var op = new WarehouseOperation
                 {
                     IdEmployee = request.EmployeeId,
@@ -237,5 +245,4 @@ namespace VkusnoAndSochno.API.Controllers
         public int BranchId { get; set; }
         public int EmployeeId { get; set; }
     }
-
 }

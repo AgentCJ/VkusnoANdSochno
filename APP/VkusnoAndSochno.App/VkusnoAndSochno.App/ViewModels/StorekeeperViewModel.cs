@@ -33,7 +33,6 @@ namespace VkusnoAndSochno.App.ViewModels
         [ObservableProperty] private ObservableCollection<StockBalanceDto> stockList = new();
         [ObservableProperty] private ObservableCollection<StockBalanceDto> filteredStockList = new();
 
-        // Поля для поиска и сортировки
         [ObservableProperty] private string searchText = string.Empty;
         [ObservableProperty] private string selectedSort = "По названию (А-Я)";
 
@@ -67,7 +66,6 @@ namespace VkusnoAndSochno.App.ViewModels
 
         partial void OnSearchTextChanged(string value) => ApplyFilterAndSort();
 
-        // КОМАНДА ДЛЯ ОТКРЫТИЯ МЕНЮ СОРТИРОВКИ
         [RelayCommand]
         public async Task ChangeSortAsync()
         {
@@ -83,16 +81,14 @@ namespace VkusnoAndSochno.App.ViewModels
         {
             var result = StockList.AsEnumerable();
 
-            // Поиск
             if (!string.IsNullOrWhiteSpace(SearchText))
                 result = result.Where(x => x.IngredientName.ToLower().Contains(SearchText.ToLower()));
 
-            // Сортировка
             result = SelectedSort switch
             {
                 "По остатку (возр.)" => result.OrderBy(x => x.Balance),
                 "По остатку (убыв.)" => result.OrderByDescending(x => x.Balance),
-                _ => result.OrderBy(x => x.IngredientName) // По умолчанию (и по названию А-Я)
+                _ => result.OrderBy(x => x.IngredientName)
             };
 
             FilteredStockList = new ObservableCollection<StockBalanceDto>(result);
@@ -124,7 +120,6 @@ namespace VkusnoAndSochno.App.ViewModels
             catch (Exception ex) { await Shell.Current.DisplayAlert("Ошибка API", ex.Message, "ОК"); }
         }
 
-        // --- ИНВЕНТАРИЗАЦИЯ ---
         [RelayCommand]
         public void OpenAdjust(StockBalanceDto item)
         {
@@ -152,7 +147,6 @@ namespace VkusnoAndSochno.App.ViewModels
             catch (Exception ex) { await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК"); }
         }
 
-        // --- ОКНО ПОСТАВКИ ---
         [RelayCommand]
         public async Task OpenReceiveSupply()
         {
@@ -180,7 +174,6 @@ namespace VkusnoAndSochno.App.ViewModels
             catch (Exception ex) { await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК"); }
         }
 
-        // --- ОКНО ЗАЯВКИ ---
         [RelayCommand]
         public async Task OpenRequest()
         {
@@ -206,11 +199,13 @@ namespace VkusnoAndSochno.App.ViewModels
                     var title = document.InsertParagraph("Заявка на поставку");
                     title.FontSize(22).Bold().Alignment = Alignment.center;
                     var info = document.InsertParagraph($"\nПоставщик: {SelectedSupplierForRequest.SupplierName}\nДата: {DateTime.Now:dd.MM.yyyy}\n").FontSize(12);
+
                     var table = document.AddTable(itemsToRequest.Count + 1, 3);
                     table.Design = TableDesign.TableGrid;
                     table.Rows[0].Cells[0].Paragraphs[0].Append("Наименование").Bold();
                     table.Rows[0].Cells[1].Paragraphs[0].Append("Количество").Bold();
                     table.Rows[0].Cells[2].Paragraphs[0].Append("Ед. изм.").Bold();
+
                     for (int i = 0; i < itemsToRequest.Count; i++)
                     {
                         table.Rows[i + 1].Cells[0].Paragraphs[0].Append(itemsToRequest[i].IngredientName);
@@ -221,12 +216,15 @@ namespace VkusnoAndSochno.App.ViewModels
                     document.Save();
                 }
                 stream.Position = 0;
+
                 string safeSupplierName = string.Join("_", SelectedSupplierForRequest.SupplierName.Split(Path.GetInvalidFileNameChars()));
                 string fileName = $"Заявка_{safeSupplierName}_{DateTime.Now:yyyyMMdd_HHmm}.docx";
+
                 var fileSaverResult = await FileSaver.Default.SaveAsync(fileName, stream);
                 if (fileSaverResult.IsSuccessful)
                 {
-                    await Shell.Current.DisplayAlert("Успех", $"Сохранено:\n{fileSaverResult.FilePath}", "ОК"); CloseRequest();
+                    await Shell.Current.DisplayAlert("Успех", $"Сохранено:\n{fileSaverResult.FilePath}", "ОК");
+                    CloseRequest();
                 }
             }
             catch (Exception ex) { await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК"); }

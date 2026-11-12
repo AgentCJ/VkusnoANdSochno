@@ -2,6 +2,7 @@
 
 namespace VkusnoAndSochno.App.Converters
 {
+    // Определяет текст на кнопке блокировки пользователя
     public class BoolToBlockTextConverter : IValueConverter
     {
         public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)

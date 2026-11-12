@@ -15,6 +15,7 @@ namespace VkusnoAndSochno.API.Controllers
             _context = context;
         }
 
+        // Получение графика конкретного сотрудника
         [HttpGet("my/{employeeId}")]
         public async Task<IActionResult> GetMyShifts(int employeeId)
         {
@@ -26,6 +27,7 @@ namespace VkusnoAndSochno.API.Controllers
             return Ok(shifts);
         }
 
+        // Получение всех смен филиала (для управляющего)
         [HttpGet("branch/{branchId}")]
         public async Task<IActionResult> GetBranchShifts(int branchId)
         {
@@ -48,6 +50,7 @@ namespace VkusnoAndSochno.API.Controllers
             return Ok(shifts);
         }
 
+        // Получение списка сотрудников филиала для выпадающего списка
         [HttpGet("employees/{branchId}")]
         public async Task<IActionResult> GetEmployees(int branchId)
         {
@@ -58,12 +61,13 @@ namespace VkusnoAndSochno.API.Controllers
             return Ok(emps);
         }
 
+        // Создание новой смены
         [HttpPost]
         public async Task<IActionResult> CreateShift([FromBody] ShiftRequest request)
         {
             try
             {
-                // Проверка на наложение смен
+                // Проверка на пересечение смен у сотрудника в этот день
                 var existingShifts = await _context.Shifts
                     .Where(s => s.ShiftDate == request.ShiftDate &&
                                 _context.ShiftEmployees.Any(se => se.IdShift == s.IdShift && se.IdEmployee == request.EmployeeId))
@@ -99,6 +103,7 @@ namespace VkusnoAndSochno.API.Controllers
             catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
 
+        // Редактирование существующей смены
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateShift(int id, [FromBody] ShiftRequest request)
         {
@@ -107,7 +112,7 @@ namespace VkusnoAndSochno.API.Controllers
                 var shift = await _context.Shifts.FindAsync(id);
                 if (shift == null) return NotFound("Смена не найдена");
 
-                // Проверка на наложение (исключая текущую смену)
+                // Проверка пересечения, исключая текущую смену
                 var existingShifts = await _context.Shifts
                     .Where(s => s.IdShift != id &&
                                 s.ShiftDate == request.ShiftDate &&
@@ -136,6 +141,7 @@ namespace VkusnoAndSochno.API.Controllers
             catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
 
+        // Переключение статуса смены (запланирована / отработана)
         [HttpPut("{id}/toggle-status")]
         public async Task<IActionResult> ToggleShiftStatus(int id)
         {
@@ -147,6 +153,7 @@ namespace VkusnoAndSochno.API.Controllers
             return Ok(new { Message = "Статус изменен" });
         }
 
+        // Удаление смены
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteShift(int id)
         {

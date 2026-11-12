@@ -9,6 +9,7 @@
     <Grid>
         <Grid RowDefinitions="Auto, Auto, *" Padding="15" RowSpacing="10">
 
+            <!-- Верхняя панель -->
             <Grid Grid.Row="0" ColumnDefinitions="Auto, Auto, *, Auto, Auto" ColumnSpacing="10">
                 <Label Grid.Column="0" Text="Выбрать неделю:" FontAttributes="Bold" VerticalOptions="Center" TextColor="Black"/>
 
@@ -22,6 +23,7 @@
 
             <Label Grid.Row="1" Text="{Binding WeekDisplay}" FontSize="16" TextColor="#2196F3" FontAttributes="Bold" HorizontalOptions="Center"/>
 
+            <!-- Kanban-доска -->
             <ScrollView Grid.Row="2" Orientation="Horizontal" HorizontalScrollBarVisibility="Always">
                 <HorizontalStackLayout BindableLayout.ItemsSource="{Binding WeekDays}" Spacing="10" Padding="0,5,0,20">
                     <BindableLayout.ItemTemplate>
@@ -81,7 +83,7 @@
             </ScrollView>
         </Grid>
 
-        <!-- Форма добавления/редактирования -->
+        <!-- Форма -->
         <Grid IsVisible="{Binding IsFormVisible}" BackgroundColor="#80000000" Padding="20">
             <Border BackgroundColor="White" StrokeShape="RoundRectangle 15" Padding="20" VerticalOptions="Center">
                 <VerticalStackLayout Spacing="15">

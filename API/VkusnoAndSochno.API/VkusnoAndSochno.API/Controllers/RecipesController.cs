@@ -15,12 +15,12 @@ namespace VkusnoAndSochno.API.Controllers
             _context = context;
         }
 
-        // Получить состав блюда
+        // Получение списка ингредиентов, входящих в блюдо
         [HttpGet("{dishId}")]
         public async Task<IActionResult> GetRecipe(int dishId)
         {
             var recipe = await _context.Recipes.FirstOrDefaultAsync(r => r.IdDish == dishId);
-            if (recipe == null) return Ok(new List<object>()); // Если рецепта еще нет, возвращаем пустой список
+            if (recipe == null) return Ok(new List<object>()); // Если рецепт не создан
 
             var items = await (from ri in _context.RecipeIngredients
                                join i in _context.Ingredients on ri.IdIngredient equals i.IdIngredient
@@ -36,13 +36,13 @@ namespace VkusnoAndSochno.API.Controllers
             return Ok(items);
         }
 
-        // Добавить или обновить ингредиент в рецепте
+        // Добавление или обновление ингредиента в рецепте
         [HttpPost("{dishId}")]
         public async Task<IActionResult> AddIngredient(int dishId, [FromBody] RecipeItemRequest request)
         {
             try
             {
-                // Ищем рецепт для этого блюда. Если нет — создаем.
+                // Проверяем, существует ли рецепт для блюда, если нет - создаем
                 var recipe = await _context.Recipes.FirstOrDefaultAsync(r => r.IdDish == dishId);
                 if (recipe == null)
                 {
@@ -54,13 +54,13 @@ namespace VkusnoAndSochno.API.Controllers
                     await _context.SaveChangesAsync();
                 }
 
-                // Проверяем, есть ли уже этот ингредиент в рецепте
+                // Проверяем наличие ингредиента в текущем рецепте
                 var existingItem = await _context.RecipeIngredients
                     .FirstOrDefaultAsync(ri => ri.IdRecipe == recipe.IdRecipe && ri.IdIngredient == request.IdIngredient);
 
                 if (existingItem != null)
                 {
-                    existingItem.Quantity = request.Quantity; // Обновляем количество
+                    existingItem.Quantity = request.Quantity;
                 }
                 else
                 {
@@ -81,7 +81,7 @@ namespace VkusnoAndSochno.API.Controllers
             }
         }
 
-        // Удалить ингредиент из рецепта
+        // Удаление ингредиента из рецепта
         [HttpDelete("{dishId}/ingredients/{ingredientId}")]
         public async Task<IActionResult> RemoveIngredient(int dishId, int ingredientId)
         {

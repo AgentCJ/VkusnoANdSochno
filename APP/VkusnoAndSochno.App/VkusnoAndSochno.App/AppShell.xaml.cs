@@ -9,6 +9,8 @@ public partial class AppShell : Shell
     public AppShell()
     {
         InitializeComponent();
+
+        // Регистрация маршрутов для страниц, вызываемых программно
         Routing.RegisterRoute("MenuManagementPage", typeof(Views.MenuManagementPage));
         Routing.RegisterRoute("RecipePage", typeof(Views.RecipePage));
         Routing.RegisterRoute("OrderHistoryPage", typeof(Views.OrderHistoryPage));
@@ -23,6 +25,7 @@ public partial class AppShell : Shell
         var session = IPlatformApplication.Current?.Services.GetService<UserSession>();
         var currentRoute = CurrentState.Location.OriginalString;
 
+        // Определяем текущую страницу для управления кнопками навигации
         bool isLoginPage = currentRoute.Contains("LoginPage");
         bool isTestHubPage = currentRoute.Contains("TestHubPage");
         bool isSchedulePage = currentRoute.Contains("MySchedulePage");
@@ -32,7 +35,7 @@ public partial class AppShell : Shell
         bool isProductManagementPage = currentRoute.Contains("ProductManagementPage");
         bool isScheduleManagementPage = currentRoute.Contains("ScheduleManagementPage");
 
-        // 1. Управляем видимостью кнопки "Мой график"
+        // Управление видимостью кнопки "Мой график"
         if (isLoginPage || isTestHubPage)
         {
             if (ToolbarItems.Contains(ScheduleBtn))
@@ -44,13 +47,13 @@ public partial class AppShell : Shell
                 ToolbarItems.Add(ScheduleBtn);
         }
 
-        // 2. Запоминаем маршрут для кнопки "Назад"
+        // Запоминаем предыдущий маршрут для корректного возврата
         if (!isSchedulePage && !isLoginPage && !isRecipePage && !isMenuManagementPage && !isOrderHistoryPage && !isProductManagementPage && !isScheduleManagementPage)
         {
             _previousRoute = currentRoute;
         }
 
-        // 3. Управляем текстом кнопки выхода
+        // Настройка текста кнопки выхода/назад в зависимости от экрана
         if (isSchedulePage || isRecipePage || isMenuManagementPage || isOrderHistoryPage || isProductManagementPage || isScheduleManagementPage)
         {
             LogoutBtn.Text = "Назад";
@@ -75,28 +78,28 @@ public partial class AppShell : Shell
         var currentRoute = CurrentState.Location.OriginalString;
         var session = IPlatformApplication.Current?.Services.GetService<UserSession>();
 
-        // 1. Если мы на вложенной странице — возвращаемся на шаг назад
+        // Возврат на шаг назад из детализированных экранов
         if (currentRoute.Contains("RecipePage") || currentRoute.Contains("MenuManagementPage") || currentRoute.Contains("OrderHistoryPage") || currentRoute.Contains("ProductManagementPage") || currentRoute.Contains("ScheduleManagementPage"))
         {
             await GoToAsync("..");
             return;
         }
 
-        // 2. Если мы на графике — кнопка работает как "Назад"
+        // Возврат с графика на страницу, с которой был вызван
         if (currentRoute.Contains("MySchedulePage"))
         {
             await GoToAsync(_previousRoute);
             return;
         }
 
-        // 3. Если мы в тестовом режиме — возвращаем в меню теста
+        // Возврат в меню тестирования ролей
         if (session?.RoleName == "test" && !currentRoute.Contains("TestHubPage") && !currentRoute.Contains("LoginPage"))
         {
             await GoToAsync("//TestHubPage");
             return;
         }
 
-        // 4. Стандартная логика выхода/закрытия
+        // Стандартное закрытие приложения или выход из аккаунта
         if (currentRoute.Contains("LoginPage") || currentRoute.Contains("TestHubPage"))
         {
             bool answer = await DisplayAlert("Выход", "Вы уверены, что хотите закрыть приложение?", "Да", "Нет");

@@ -95,6 +95,7 @@ namespace VkusnoAndSochno.App.ViewModels
 
                     var table = document.AddTable(6, 2);
                     table.Design = TableDesign.TableGrid;
+
                     table.Rows[0].Cells[0].Paragraphs[0].Append("Показатель").Bold();
                     table.Rows[0].Cells[1].Paragraphs[0].Append("Значение").Bold();
 
@@ -114,9 +115,7 @@ namespace VkusnoAndSochno.App.ViewModels
                     table.Rows[5].Cells[1].Paragraphs[0].Append(report.BottomDish);
 
                     document.InsertTable(table);
-
                     document.InsertParagraph($"\nСотрудников на смене: {report.EmployeesOnShift}").FontSize(14).Bold();
-
                     document.Save();
                 }
                 stream.Position = 0;

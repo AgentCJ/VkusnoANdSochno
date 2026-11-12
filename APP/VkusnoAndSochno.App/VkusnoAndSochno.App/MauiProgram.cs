@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using CommunityToolkit.Maui; // <-- ОБЯЗАТЕЛЬНО ДОБАВИТЬ ЭТОТ USING
+using CommunityToolkit.Maui;
 
 namespace VkusnoAndSochno.App
 {
@@ -10,7 +10,7 @@ namespace VkusnoAndSochno.App
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .UseMauiCommunityToolkit() // <-- ВОТ ЗДЕСЬ, СРАЗУ ПОСЛЕ UseMauiApp
+                .UseMauiCommunityToolkit() // Подключение инструментов для работы с файлами
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -20,9 +20,11 @@ namespace VkusnoAndSochno.App
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
+            // Регистрация сервисов
             builder.Services.AddSingleton<Services.ApiService>();
             builder.Services.AddSingleton<Services.UserSession>();
 
+            // Регистрация страниц и их ViewModelей (Transient - новый экземпляр при каждом вызове)
             builder.Services.AddTransient<ViewModels.CashierViewModel>();
             builder.Services.AddTransient<Views.CashierPage>();
 

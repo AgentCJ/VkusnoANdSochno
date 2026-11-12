@@ -86,14 +86,14 @@ namespace VkusnoAndSochno.App.ViewModels
         [RelayCommand]
         public async Task SaveUserAsync()
         {
-            // Проверка на заполненность всех полей
+            // Проверка на заполненность обязательных полей
             if (string.IsNullOrWhiteSpace(InputName) || string.IsNullOrWhiteSpace(InputLogin) ||
                 SelectedRole == null || SelectedBranch == null || SelectedPosition == null)
             {
                 await Shell.Current.DisplayAlert("Ошибка", "Заполните все обязательные поля", "ОК"); return;
             }
 
-            // Проверка ФИО (ровно 3 слова, только буквы и дефис)
+            // Валидация ФИО: ровно 3 слова, состоящих только из букв и дефиса
             var nameParts = InputName.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             if (nameParts.Length != 3)
             {
@@ -107,13 +107,11 @@ namespace VkusnoAndSochno.App.ViewModels
                 }
             }
 
-            // Проверка длины логина
             if (InputLogin.Length < 5)
             {
                 await Shell.Current.DisplayAlert("Ошибка", "Логин должен содержать минимум 5 символов", "ОК"); return;
             }
 
-            // Проверка пароля
             if (_editingUserId == null && string.IsNullOrWhiteSpace(InputPassword))
             {
                 await Shell.Current.DisplayAlert("Ошибка", "Введите пароль для нового пользователя", "ОК"); return;

@@ -5,32 +5,51 @@
     xmlns:views="clr-namespace:VkusnoAndSochno.App.Views"
     Title="Вкусно и сочно"
     FlyoutBehavior="Disabled">
-    <!-- Отключаем боковое меню для простоты -->
+    
     <Shell.ToolbarItems>
-        <!-- Кнопка графика -->
         <ToolbarItem x:Name="ScheduleBtn" Text="Мой график" Clicked="OnScheduleClicked" Order="Primary" Priority="0" />
-
-        <!-- Кнопка выхода -->
         <ToolbarItem x:Name="LogoutBtn" Text="Выйти" Clicked="OnLogoutClicked" Order="Primary" Priority="1" />
     </Shell.ToolbarItems>
-    <!-- Стартовая страница - Авторизация -->
+
+    <!-- Стартовая страница -->
     <ShellContent
         Title="Вход"
         ContentTemplate="{DataTemplate views:LoginPage}"
         Route="LoginPage" />
 
-    <!-- Страница кассира (скрыта из меню, вызывается программно) -->
+    <!-- Рабочие экраны -->
     <ShellContent
         Title="Касса"
         ContentTemplate="{DataTemplate views:CashierPage}"
         Route="CashierPage" />
-    <ShellContent
+    
+    <ShellContent 
         Title="Кухня"
         ContentTemplate="{DataTemplate views:CookPage}"
         Route="CookPage" />
-    <ShellContent Title="Склад" ContentTemplate="{DataTemplate views:StorekeeperPage}" Route="StorekeeperPage" />
-    <ShellContent Title="Отчеты" ContentTemplate="{DataTemplate views:ManagerPage}" Route="ManagerPage" />
-    <ShellContent Title="Тест" ContentTemplate="{DataTemplate views:TestHubPage}" Route="TestHubPage" /> <!-- удалить тестовое-->
-    <ShellContent Title="Админ" ContentTemplate="{DataTemplate views:AdminPage}" Route="AdminPage" />
-    <ShellContent Title="График" ContentTemplate="{DataTemplate views:MySchedulePage}" Route="MySchedulePage" />
+        
+    <ShellContent 
+        Title="Склад" 
+        ContentTemplate="{DataTemplate views:StorekeeperPage}" 
+        Route="StorekeeperPage" />
+        
+    <ShellContent 
+        Title="Отчеты" 
+        ContentTemplate="{DataTemplate views:ManagerPage}" 
+        Route="ManagerPage" />
+        
+    <ShellContent 
+        Title="Тест" 
+        ContentTemplate="{DataTemplate views:TestHubPage}" 
+        Route="TestHubPage" />
+        
+    <ShellContent 
+        Title="Админ" 
+        ContentTemplate="{DataTemplate views:AdminPage}" 
+        Route="AdminPage" />
+        
+    <ShellContent 
+        Title="График" 
+        ContentTemplate="{DataTemplate views:MySchedulePage}" 
+        Route="MySchedulePage" />
 </Shell>

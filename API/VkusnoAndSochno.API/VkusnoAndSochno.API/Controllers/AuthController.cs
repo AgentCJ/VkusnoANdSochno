@@ -19,7 +19,7 @@ namespace VkusnoAndSochno.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            //тестовый режим (удалить в конце разработки)
+            // Тестовый аккаунт для быстрой проверки ролей без ввода реальных данных
             if (request.Login == "test" && request.Password == "test")
             {
                 return Ok(new
@@ -30,7 +30,8 @@ namespace VkusnoAndSochno.API.Controllers
                     Message = "Тестовый режим активирован"
                 });
             }
-            // Ищем пользователя по логину и паролю (сравниваем напрямую)
+
+            // Поиск пользователя в базе данных по логину и паролю
             var user = await _context.Users
                 .Include(u => u.IdEmployeeNavigation)
                 .Include(u => u.IdRoleNavigation)

@@ -5,7 +5,7 @@ using VkusnoAndSochno.App.Services;
 
 namespace VkusnoAndSochno.App.ViewModels
 {
-    // QueryProperty позволяет передавать параметры при навигации
+    // Атрибуты QueryProperty используются для получения параметров навигации
     [QueryProperty(nameof(DishId), "dishId")]
     [QueryProperty(nameof(DishName), "dishName")]
     public partial class RecipeViewModel : ObservableObject
@@ -33,14 +33,12 @@ namespace VkusnoAndSochno.App.ViewModels
             IsRefreshing = true;
             try
             {
-                // Загружаем доступные ингредиенты
                 if (Ingredients.Count == 0)
                 {
                     var ings = await _apiService.GetIngredientsAsync();
                     Ingredients = new ObservableCollection<IngredientDto>(ings);
                 }
 
-                // Загружаем текущий рецепт
                 var recipe = await _apiService.GetRecipeAsync(DishId);
                 MainThread.BeginInvokeOnMainThread(() =>
                 {

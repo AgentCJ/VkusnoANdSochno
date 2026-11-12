@@ -15,9 +15,11 @@ namespace VkusnoAndSochno.API.Controllers
             _context = context;
         }
 
+        // GET: api/admin/users
         [HttpGet("users")]
         public async Task<IActionResult> GetUsers()
         {
+            // Использование LINQ для объединения таблиц Пользователей, Сотрудников, Ролей и Филиалов
             var users = await (from u in _context.Users
                                join e in _context.Employees on u.IdEmployee equals e.IdEmployee
                                join r in _context.Roles on u.IdRole equals r.IdRole
@@ -38,6 +40,7 @@ namespace VkusnoAndSochno.API.Controllers
             return Ok(users);
         }
 
+        // Получение справочников для выпадающих списков (роли, филиалы, должности)
         [HttpGet("metadata")]
         public async Task<IActionResult> GetMetadata()
         {
@@ -47,11 +50,13 @@ namespace VkusnoAndSochno.API.Controllers
             return Ok(new { Roles = roles, Branches = branches, Positions = positions });
         }
 
+        // POST: api/admin/users
         [HttpPost("users")]
         public async Task<IActionResult> CreateUser([FromBody] UserRequest request)
         {
             try
             {
+                // Валидация входных данных
                 if (string.IsNullOrWhiteSpace(request.Login) || request.Login.Length < 5)
                     return BadRequest("Логин должен содержать минимум 5 символов.");
 
@@ -62,6 +67,7 @@ namespace VkusnoAndSochno.API.Controllers
                     request.EmployeeName.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length != 3)
                     return BadRequest("Введите ФИО полностью (Фамилия Имя Отчество).");
 
+                // Сначала создаем запись сотрудника
                 var employee = new Employee
                 {
                     FullName = request.EmployeeName.Trim(),
@@ -73,6 +79,7 @@ namespace VkusnoAndSochno.API.Controllers
                 _context.Employees.Add(employee);
                 await _context.SaveChangesAsync();
 
+                // Затем создаем учетную запись для него
                 var user = new User
                 {
                     IdEmployee = employee.IdEmployee,
@@ -89,6 +96,7 @@ namespace VkusnoAndSochno.API.Controllers
             catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
 
+        // PUT: api/admin/users/{id}
         [HttpPut("users/{id}")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UserRequest request)
         {
@@ -104,13 +112,16 @@ namespace VkusnoAndSochno.API.Controllers
                     request.EmployeeName.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length != 3)
                     return BadRequest("Введите ФИО полностью (Фамилия Имя Отчество).");
 
+                // Поиск записи и включение связанных данных через Include (JOIN)
                 var user = await _context.Users.Include(u => u.IdEmployeeNavigation).FirstOrDefaultAsync(u => u.IdUser == id);
                 if (user == null) return NotFound("Пользователь не найден");
 
+                // Обновление данных сотрудника
                 user.IdEmployeeNavigation.FullName = request.EmployeeName.Trim();
                 user.IdEmployeeNavigation.IdBranch = request.BranchId;
                 user.IdEmployeeNavigation.Phone = request.Phone;
 
+                // Обновление данных учетной записи
                 user.Login = request.Login;
                 user.IdRole = request.RoleId;
                 if (!string.IsNullOrWhiteSpace(request.Password)) user.PasswordHash = request.Password;
@@ -121,6 +132,7 @@ namespace VkusnoAndSochno.API.Controllers
             catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
 
+        // Переключение статуса активности (блокировка/разблокировка)
         [HttpPut("users/{id}/toggle")]
         public async Task<IActionResult> ToggleUserStatus(int id)
         {
@@ -132,6 +144,7 @@ namespace VkusnoAndSochno.API.Controllers
             return Ok(new { Message = "Статус изменен" });
         }
 
+        // DELETE: api/admin/users/{id}
         [HttpDelete("users/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
@@ -147,6 +160,7 @@ namespace VkusnoAndSochno.API.Controllers
             }
             catch (DbUpdateException)
             {
+                // Обработка ограничения внешнего ключа (сотрудник уже привязан к заказам)
                 return BadRequest("Невозможно удалить: сотрудник имеет связанные заказы или смены.");
             }
             catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }

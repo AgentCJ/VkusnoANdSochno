@@ -14,14 +14,14 @@ namespace VkusnoAndSochno.App.ViewModels
         [ObservableProperty] private string newDishName = string.Empty;
         [ObservableProperty] private string newDishPrice = string.Empty;
         [ObservableProperty] private bool isRefreshing;
-        
+
         [ObservableProperty] private bool isEditing = false;
         [ObservableProperty] private string formTitle = "Добавить новое блюдо";
         [ObservableProperty] private string actionButtonText = "Добавить в меню";
 
-        public ObservableCollection<string> Categories { get; } = new() 
-        { 
-            "Бургеры", "Закуски", "Напитки", "Десерты", "Соусы" 
+        public ObservableCollection<string> Categories { get; } = new()
+        {
+            "Бургеры", "Закуски", "Напитки", "Десерты", "Соусы"
         };
 
         [ObservableProperty] private string selectedCategory = string.Empty;
@@ -70,12 +70,10 @@ namespace VkusnoAndSochno.App.ViewModels
             {
                 if (IsEditing && _editingDishId.HasValue)
                 {
-                    // обновляем
                     await _apiService.UpdateDishAsync(_editingDishId.Value, new { DishName = NewDishName, Category = SelectedCategory, Price = price });
                 }
                 else
                 {
-                    // Создаем новое
                     await _apiService.AddDishAsync(new { DishName = NewDishName, Category = SelectedCategory, Price = price });
                 }
 
@@ -92,7 +90,7 @@ namespace VkusnoAndSochno.App.ViewModels
             NewDishName = dish.DishName;
             SelectedCategory = dish.Category;
             NewDishPrice = dish.Price.ToString();
-            
+
             IsEditing = true;
             FormTitle = "Редактировать блюдо";
             ActionButtonText = "Сохранить изменения";
@@ -105,7 +103,7 @@ namespace VkusnoAndSochno.App.ViewModels
             NewDishName = string.Empty;
             SelectedCategory = string.Empty;
             NewDishPrice = string.Empty;
-            
+
             IsEditing = false;
             FormTitle = "Добавить новое блюдо";
             ActionButtonText = "Добавить в меню";
@@ -136,11 +134,9 @@ namespace VkusnoAndSochno.App.ViewModels
             catch (Exception ex) { await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК"); }
         }
 
-        // НОВЫЙ МЕТОД: Переход к рецепту
         [RelayCommand]
         public async Task GoToRecipeAsync(AdminDishDto dish)
         {
-            // Передаем ID и Название блюда в параметрах навигации
             await Shell.Current.GoToAsync($"RecipePage?dishId={dish.IdDish}&dishName={Uri.EscapeDataString(dish.DishName)}");
         }
     }

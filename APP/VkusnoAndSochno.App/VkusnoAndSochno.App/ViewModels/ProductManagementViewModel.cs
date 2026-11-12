@@ -60,7 +60,6 @@ namespace VkusnoAndSochno.App.ViewModels
 
                 StatusMessage = "Продукт успешно добавлен!";
 
-                // Очищаем поля
                 NewIngName = string.Empty; SelectedUnit = string.Empty; NewIngCost = string.Empty; NewIngMin = string.Empty; NewIngInitialQty = string.Empty;
             }
             catch (Exception ex) { StatusMessage = $"Ошибка: {ex.Message}"; }

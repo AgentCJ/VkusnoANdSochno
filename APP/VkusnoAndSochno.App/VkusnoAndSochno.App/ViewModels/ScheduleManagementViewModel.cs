@@ -154,6 +154,7 @@ namespace VkusnoAndSochno.App.ViewModels
 
             var newDate = DateOnly.FromDateTime(SelectedDate);
 
+            // Проверка на пересечение смен у сотрудника в этот день
             var employeeShifts = Shifts.Where(s =>
                 s.IdEmployee == SelectedEmployee.IdEmployee &&
                 s.ShiftDate == newDate &&

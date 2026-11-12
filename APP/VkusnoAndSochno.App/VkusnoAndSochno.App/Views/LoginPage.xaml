@@ -7,7 +7,7 @@
 
     <Grid RowDefinitions="*, Auto, *">
 
-        <!-- Карточка по центру экрана -->
+        <!-- Карточка авторизации -->
         <Border Grid.Row="1" BackgroundColor="White" Padding="30" 
                 StrokeShape="RoundRectangle 15" StrokeThickness="1" Stroke="LightGray"
                 WidthRequest="400" HorizontalOptions="Center">
@@ -34,12 +34,11 @@
 
                 <BoxView HeightRequest="1" Color="LightGray" Margin="0,10"/>
 
-                <!-- НОВАЯ КНОПКА ДЛЯ ТЕСТОВОГО РЕЖИМА -->
+                <!-- Кнопка тестового режима -->
                 <Button Text="Войти в тестовый режим" Clicked="OnTestModeClicked" 
                         BackgroundColor="#9C27B0" TextColor="White" FontAttributes="Bold" FontSize="14" 
                         HeightRequest="45" CornerRadius="8"/>
 
-                <!-- ОБНОВЛЕННЫЙ СПИСОК ВСЕХ ТЕСТОВЫХ АККАУНТОВ -->
                 <Label Text="Тестовые аккаунты:&#10;manager1 / hash_1 (управляющий)&#10;cashier1 / hash_2 (кассир)&#10;cook1 / hash_3 (повар)&#10;store1 / hash_4 (кладовщик)" 
                        FontSize="11" TextColor="Gray" HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="0,5,0,0"/>
             </VerticalStackLayout>

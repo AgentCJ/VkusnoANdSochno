@@ -8,7 +8,7 @@
     <Grid>
         <Grid RowDefinitions="Auto, *" Padding="15" RowSpacing="10">
 
-            <!-- Панель кнопок -->
+            <!-- Верхняя панель -->
             <Grid Grid.Row="0" ColumnDefinitions="*, Auto">
                 <Label Grid.Column="0" Text="Список учетных записей" FontAttributes="Bold" FontSize="18" TextColor="Black" VerticalOptions="Center"/>
                 <HorizontalStackLayout Grid.Column="1" Spacing="10">

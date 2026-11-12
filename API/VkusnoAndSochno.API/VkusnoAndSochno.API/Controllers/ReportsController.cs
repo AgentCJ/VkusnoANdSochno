@@ -15,6 +15,7 @@ namespace VkusnoAndSochno.API.Controllers
             _context = context;
         }
 
+        // Формирование отчета по продажам за период с использованием функции БД
         [HttpGet("sales")]
         public async Task<IActionResult> GetSalesReport(DateTime from, DateTime to)
         {
@@ -43,6 +44,7 @@ namespace VkusnoAndSochno.API.Controllers
             }
         }
 
+        // Сводка для дашборда (выручка, количество заказов, топ-блюдо)
         [HttpGet("dashboard")]
         public async Task<IActionResult> GetDashboardStats()
         {
@@ -81,6 +83,7 @@ namespace VkusnoAndSochno.API.Controllers
             }
         }
 
+        // Детальный отчет за сегодня (выручка, навар, топ/анти-топ, сотрудники)
         [HttpGet("detailed/{branchId}")]
         public async Task<IActionResult> GetDetailedReport(int branchId)
         {
@@ -107,11 +110,13 @@ namespace VkusnoAndSochno.API.Controllers
                 string topDish = dishStats.FirstOrDefault()?.DishName ?? "Нет данных";
                 string bottomDish = dishStats.LastOrDefault()?.DishName ?? "Нет данных";
 
+                // Расчет количества сотрудников на смене
                 int employeesOnShift = await (from se in _context.ShiftEmployees
                                               join s in _context.Shifts on se.IdShift equals s.IdShift
                                               where s.ShiftDate == DateOnly.FromDateTime(today) && s.IdBranch == branchId
                                               select se.IdEmployee).Distinct().CountAsync();
 
+                // Расчет себестоимости проданных блюд для вычисления навара
                 decimal totalCost = 0;
                 var soldItems = await (from oi in _context.OrderItems
                                        join o in _context.Orders on oi.IdOrder equals o.IdOrder

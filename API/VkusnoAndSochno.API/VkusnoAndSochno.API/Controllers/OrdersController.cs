@@ -15,6 +15,7 @@ namespace VkusnoAndSochno.API.Controllers
             _context = context;
         }
 
+        // Создание заказа через скалярную функцию БД
         [HttpPost("create")]
         public async Task<IActionResult> CreateOrder(int employeeId, int branchId)
         {
@@ -28,6 +29,7 @@ namespace VkusnoAndSochno.API.Controllers
             catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
 
+        // Добавление блюда в заказ через хранимую процедуру
         [HttpPost("{orderId}/add-item")]
         public async Task<IActionResult> AddItem(int orderId, int dishId, int quantity)
         {
@@ -40,6 +42,7 @@ namespace VkusnoAndSochno.API.Controllers
             catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
 
+        // Закрытие (оплата) заказа
         [HttpPost("{orderId}/close")]
         public async Task<IActionResult> CloseOrder(int orderId, string method)
         {
@@ -52,6 +55,7 @@ namespace VkusnoAndSochno.API.Controllers
             catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
 
+        // Получение активных заказов для экрана кухни
         [HttpGet("active")]
         public async Task<IActionResult> GetActiveOrders()
         {
@@ -64,6 +68,7 @@ namespace VkusnoAndSochno.API.Controllers
                                     o.Status,
                                     o.TotalAmount,
                                     o.OrderTime,
+                                    // Вложенный запрос для получения состава заказа
                                     Items = (from oi in _context.OrderItems
                                              join d in _context.Dishes on oi.IdDish equals d.IdDish
                                              where oi.IdOrder == o.IdOrder
@@ -72,6 +77,7 @@ namespace VkusnoAndSochno.API.Controllers
             return Ok(orders);
         }
 
+        // Изменение статуса заказа
         [HttpPut("{orderId}/status")]
         public async Task<IActionResult> UpdateStatus(int orderId, string status)
         {
@@ -86,7 +92,7 @@ namespace VkusnoAndSochno.API.Controllers
             catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
 
-        // ОБНОВЛЕННЫЙ МЕТОД: Проверяет наличие ингредиентов
+        // Получение меню с проверкой наличия ингредиентов на складе
         [HttpGet("menu/{branchId}")]
         public async Task<IActionResult> GetMenu(int branchId)
         {
@@ -103,7 +109,7 @@ namespace VkusnoAndSochno.API.Controllers
                     var recipeItems = await _context.RecipeIngredients.Where(ri => ri.IdRecipe == recipe.IdRecipe).ToListAsync();
                     foreach (var ri in recipeItems)
                     {
-                        // ИСПРАВЛЕНИЕ ЗДЕСЬ: добавляем AS "Value", чтобы EF Core понял, куда класть число
+                        // Вызов функции БД для проверки остатка
                         var balance = await _context.Database
                             .SqlQueryRaw<decimal>("SELECT fn_ingredient_balance({0}, {1}) AS \"Value\"", ri.IdIngredient, branchId)
                             .FirstOrDefaultAsync();
@@ -120,6 +126,7 @@ namespace VkusnoAndSochno.API.Controllers
             return Ok(result);
         }
 
+        // Удаление позиции из заказа
         [HttpDelete("{orderId}/items/{dishId}")]
         public async Task<IActionResult> RemoveItem(int orderId, int dishId)
         {
@@ -131,13 +138,13 @@ namespace VkusnoAndSochno.API.Controllers
             }
             catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
-        // ОТМЕНА ЗАКАЗА
+
+        // Отмена заказа (только если он в статусе "создан")
         [HttpPost("{orderId}/cancel")]
         public async Task<IActionResult> CancelOrder(int orderId)
         {
             try
             {
-                // Меняем статус на "отменён" только если он еще "создан"
                 var result = await _context.Database.ExecuteSqlRawAsync(
                     "UPDATE \"Order\" SET status = 'отменён' WHERE id_order = {0} AND status = 'создан'", orderId);
 
@@ -147,7 +154,7 @@ namespace VkusnoAndSochno.API.Controllers
             catch (Exception ex) { return BadRequest(ex.InnerException?.Message ?? ex.Message); }
         }
 
-        // ИСТОРИЯ ЗАКАЗОВ (последние 50 заказов филиала)
+        // Получение истории последних 50 заказов филиала
         [HttpGet("history/{branchId}")]
         public async Task<IActionResult> GetOrderHistory(int branchId)
         {
@@ -163,7 +170,6 @@ namespace VkusnoAndSochno.API.Controllers
                                      o.Status,
                                      o.PaymentMethod,
                                      CashierName = e.FullName,
-                                     // Загружаем состав заказа
                                      Items = (from oi in _context.OrderItems
                                               join d in _context.Dishes on oi.IdDish equals d.IdDish
                                               where oi.IdOrder == o.IdOrder

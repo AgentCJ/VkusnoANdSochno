@@ -2,6 +2,7 @@
 
 namespace VkusnoAndSochno.App.Converters
 {
+    // Определяет текст на кнопке изменения статуса блюда в меню
     public class BoolToDishStatusConverter : IValueConverter
     {
         public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)

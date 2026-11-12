@@ -11,9 +11,11 @@ namespace VkusnoAndSochno.App.Services
         public ApiService()
         {
             _httpClient = new HttpClient { BaseAddress = new Uri(BaseUrl) };
+            // Отключаем кэширование, чтобы данные на экране всегда были актуальными
             _httpClient.DefaultRequestHeaders.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue { NoCache = true, NoStore = true };
         }
 
+        //ЗАКАЗЫ
         public async Task<int> CreateOrderAsync(int employeeId, int branchId)
         {
             var response = await _httpClient.PostAsync($"orders/create?employeeId={employeeId}&branchId={branchId}", null);
@@ -75,6 +77,7 @@ namespace VkusnoAndSochno.App.Services
             return res ?? new List<DishDto>();
         }
 
+        // АВТОРИЗАЦИЯ
         public async Task<LoginResponse?> LoginAsync(string login, string password)
         {
             var response = await _httpClient.PostAsJsonAsync("auth/login", new { Login = login, Password = password });
@@ -85,6 +88,7 @@ namespace VkusnoAndSochno.App.Services
             return await response.Content.ReadFromJsonAsync<LoginResponse>();
         }
 
+        // СКЛАД
         public async Task<List<StockBalanceDto>> GetBalanceAsync(int branchId)
         {
             var res = await _httpClient.GetFromJsonAsync<List<StockBalanceDto>>($"warehouse/balance/{branchId}?t={DateTime.Now.Ticks}");
@@ -137,6 +141,7 @@ namespace VkusnoAndSochno.App.Services
             if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
         }
 
+        // ОТЧЕТЫ И ДАШБОРД
         public async Task<List<SalesReportDto>> GetSalesReportAsync(DateTime from, DateTime to)
         {
             var res = await _httpClient.GetAsync($"reports/sales?from={from:yyyy-MM-dd}&to={to:yyyy-MM-dd}");
@@ -157,6 +162,7 @@ namespace VkusnoAndSochno.App.Services
             return res ?? new DetailedReportDto();
         }
 
+        // АДМИНИСТРАТОР
         public async Task<List<AdminUserDto>> GetUsersAsync()
         {
             var res = await _httpClient.GetFromJsonAsync<List<AdminUserDto>>("admin/users");
@@ -194,17 +200,40 @@ namespace VkusnoAndSochno.App.Services
             if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
         }
 
+        // ГРАФИК СМЕН
         public async Task<List<ShiftDto>> GetMyShiftsAsync(int employeeId)
         {
             var res = await _httpClient.GetFromJsonAsync<List<ShiftDto>>($"shifts/my/{employeeId}");
             return res ?? new List<ShiftDto>();
         }
 
-        public async Task<List<BranchShiftDto>> GetBranchShiftsAsync(int branchId) => await _httpClient.GetFromJsonAsync<List<BranchShiftDto>>($"shifts/branch/{branchId}") ?? new();
-        public async Task<List<EmployeeShortDto>> GetEmployeesForShiftsAsync(int branchId) => await _httpClient.GetFromJsonAsync<List<EmployeeShortDto>>($"shifts/employees/{branchId}") ?? new();
-        public async Task CreateShiftAsync(object request) { var r = await _httpClient.PostAsJsonAsync("shifts", request); if (!r.IsSuccessStatusCode) throw new Exception(await r.Content.ReadAsStringAsync()); }
-        public async Task UpdateShiftAsync(int id, object request) { var r = await _httpClient.PutAsJsonAsync($"shifts/{id}", request); if (!r.IsSuccessStatusCode) throw new Exception(await r.Content.ReadAsStringAsync()); }
-        public async Task DeleteShiftAsync(int id) { var r = await _httpClient.DeleteAsync($"shifts/{id}"); if (!r.IsSuccessStatusCode) throw new Exception(await r.Content.ReadAsStringAsync()); }
+        public async Task<List<BranchShiftDto>> GetBranchShiftsAsync(int branchId)
+        {
+            return await _httpClient.GetFromJsonAsync<List<BranchShiftDto>>($"shifts/branch/{branchId}") ?? new();
+        }
+
+        public async Task<List<EmployeeShortDto>> GetEmployeesForShiftsAsync(int branchId)
+        {
+            return await _httpClient.GetFromJsonAsync<List<EmployeeShortDto>>($"shifts/employees/{branchId}") ?? new();
+        }
+
+        public async Task CreateShiftAsync(object request)
+        {
+            var r = await _httpClient.PostAsJsonAsync("shifts", request);
+            if (!r.IsSuccessStatusCode) throw new Exception(await r.Content.ReadAsStringAsync());
+        }
+
+        public async Task UpdateShiftAsync(int id, object request)
+        {
+            var r = await _httpClient.PutAsJsonAsync($"shifts/{id}", request);
+            if (!r.IsSuccessStatusCode) throw new Exception(await r.Content.ReadAsStringAsync());
+        }
+
+        public async Task DeleteShiftAsync(int id)
+        {
+            var r = await _httpClient.DeleteAsync($"shifts/{id}");
+            if (!r.IsSuccessStatusCode) throw new Exception(await r.Content.ReadAsStringAsync());
+        }
 
         public async Task ToggleShiftStatusAsync(int id)
         {
@@ -212,6 +241,7 @@ namespace VkusnoAndSochno.App.Services
             if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
         }
 
+        // УПРАВЛЕНИЕ МЕНЮ
         public async Task<List<AdminDishDto>> GetAllDishesAsync()
         {
             var res = await _httpClient.GetFromJsonAsync<List<AdminDishDto>>("menu/all");
@@ -246,6 +276,7 @@ namespace VkusnoAndSochno.App.Services
                 throw new Exception(await res.Content.ReadAsStringAsync());
         }
 
+        // РЕЦЕПТЫ
         public async Task<List<RecipeItemDto>> GetRecipeAsync(int dishId)
         {
             var res = await _httpClient.GetFromJsonAsync<List<RecipeItemDto>>($"recipes/{dishId}");
@@ -266,6 +297,8 @@ namespace VkusnoAndSochno.App.Services
                 throw new Exception(await res.Content.ReadAsStringAsync());
         }
     }
+
+    // КЛАССЫ ДАННЫХ (DTO)
 
     public class LoginResponse
     {
@@ -437,10 +470,30 @@ namespace VkusnoAndSochno.App.Services
         public bool IsActive { get; set; }
     }
 
-    public class RoleDto { public int IdRole { get; set; } public string RoleName { get; set; } = string.Empty; }
-    public class BranchDto { public int IdBranch { get; set; } public string BranchName { get; set; } = string.Empty; }
-    public class PositionDto { public int IdPosition { get; set; } public string PositionName { get; set; } = string.Empty; }
-    public class AdminMetadataDto { public List<RoleDto> Roles { get; set; } = new(); public List<BranchDto> Branches { get; set; } = new(); public List<PositionDto> Positions { get; set; } = new(); }
+    public class RoleDto
+    {
+        public int IdRole { get; set; }
+        public string RoleName { get; set; } = string.Empty;
+    }
+
+    public class BranchDto
+    {
+        public int IdBranch { get; set; }
+        public string BranchName { get; set; } = string.Empty;
+    }
+
+    public class PositionDto
+    {
+        public int IdPosition { get; set; }
+        public string PositionName { get; set; } = string.Empty;
+    }
+
+    public class AdminMetadataDto
+    {
+        public List<RoleDto> Roles { get; set; } = new();
+        public List<BranchDto> Branches { get; set; } = new();
+        public List<PositionDto> Positions { get; set; } = new();
+    }
 
     public class BranchShiftDto
     {
@@ -455,5 +508,9 @@ namespace VkusnoAndSochno.App.Services
         public bool IsToday => ShiftDate == DateOnly.FromDateTime(DateTime.Today);
     }
 
-    public class EmployeeShortDto { public int IdEmployee { get; set; } public string FullName { get; set; } = string.Empty; }
+    public class EmployeeShortDto
+    {
+        public int IdEmployee { get; set; }
+        public string FullName { get; set; } = string.Empty;
+    }
 }

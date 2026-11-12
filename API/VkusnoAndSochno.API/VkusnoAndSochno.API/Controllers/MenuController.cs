@@ -15,6 +15,7 @@ namespace VkusnoAndSochno.API.Controllers
             _context = context;
         }
 
+        // Получение полного списка блюд с сортировкой по категориям
         [HttpGet("all")]
         public async Task<IActionResult> GetAllDishes()
         {
@@ -26,6 +27,7 @@ namespace VkusnoAndSochno.API.Controllers
             return Ok(dishes);
         }
 
+        // POST: api/menu
         [HttpPost]
         public async Task<IActionResult> AddDish([FromBody] DishRequest request)
         {
@@ -41,7 +43,7 @@ namespace VkusnoAndSochno.API.Controllers
             return Ok(new { Message = "Блюдо добавлено", Id = dish.IdDish });
         }
 
-        // Обновление блюда
+        // PUT: api/menu/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateDish(int id, [FromBody] DishRequest request)
         {
@@ -56,7 +58,7 @@ namespace VkusnoAndSochno.API.Controllers
             return Ok(new { Message = "Блюдо обновлено" });
         }
 
-        // Удаление блюда
+        // DELETE: api/menu/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDish(int id)
         {
@@ -71,11 +73,12 @@ namespace VkusnoAndSochno.API.Controllers
             }
             catch (DbUpdateException)
             {
-                // Если блюдо уже есть в заказах, БД выдаст ошибку внешнего ключа
+                // Ошибка внешнего ключа, если блюдо уже фигурирует в заказах
                 return BadRequest("Невозможно удалить блюдо, так как оно уже есть в истории заказов. Используйте «Снять с продажи».");
             }
         }
 
+        // Переключение доступности блюда (в меню/снято с продажи)
         [HttpPut("{id}/toggle")]
         public async Task<IActionResult> ToggleDish(int id)
         {

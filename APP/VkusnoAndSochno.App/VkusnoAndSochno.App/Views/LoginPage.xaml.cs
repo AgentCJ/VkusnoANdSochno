@@ -38,6 +38,7 @@ namespace VkusnoAndSochno.App.Views
             _session.BranchId = result.BranchId;
             _session.RoleName = result.RoleName;
 
+            // Перенаправление в зависимости от роли
             if (result.RoleName == "cashier")
                 await Shell.Current.GoToAsync("//CashierPage");
             else if (result.RoleName == "cook")
@@ -54,15 +55,13 @@ namespace VkusnoAndSochno.App.Views
                 await DisplayAlert("Успех", $"Вы вошли как {result.RoleName}. Экран в разработке.", "ОК");
         }
 
-        // НОВЫЙ ОБРАБОТЧИК ДЛЯ КНОПКИ ТЕСТА
         private async void OnTestModeClicked(object sender, EventArgs e)
         {
-            // Заполняем сессию тестовыми данными
+            // Заполняем сессию тестовыми данными и сразу переходим в хаб
             _session.EmployeeId = 1;
             _session.BranchId = 1;
             _session.RoleName = "test";
 
-            // Сразу переходим в хаб выбора ролей
             await Shell.Current.GoToAsync("//TestHubPage");
         }
     }

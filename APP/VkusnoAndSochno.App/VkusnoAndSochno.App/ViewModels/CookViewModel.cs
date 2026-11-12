@@ -20,26 +20,22 @@ namespace VkusnoAndSochno.App.ViewModels
         {
             _apiService = apiService;
 
-            // Настраиваем таймер, который тикает каждую секунду
+            // Настраиваем таймер для обновления времени на экране каждую секунду
             _timer = Application.Current.Dispatcher.CreateTimer();
             _timer.Interval = TimeSpan.FromSeconds(1);
             _timer.Tick += UpdateOrderTimers;
             _timer.Start();
         }
 
-        // Этот метод вызывается каждую секунду
         private void UpdateOrderTimers(object sender, EventArgs e)
         {
             var now = DateTime.Now;
             foreach (var order in ActiveOrders)
             {
-                // Считаем, сколько времени прошло с момента создания
                 var elapsed = now - order.OrderTime;
-
-                // Форматируем в минуты и секунды (например, "05:23")
                 order.TimeElapsed = elapsed.ToString(@"mm\:ss");
 
-                // Если прошло больше 5 минут — делаем красным
+                // Подсвечиваем красным, если заказ висит более 5 минут
                 order.IsOverdue = elapsed.TotalMinutes >= 5;
             }
         }
@@ -52,7 +48,7 @@ namespace VkusnoAndSochno.App.ViewModels
             {
                 var orders = await _apiService.GetActiveOrdersAsync();
 
-                // Обновляем коллекцию в UI-потоке, чтобы таймер не ломал приложение
+                // Обновляем коллекцию в главном потоке, чтобы избежать конфликтов с UI
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     ActiveOrders.Clear();
@@ -60,7 +56,6 @@ namespace VkusnoAndSochno.App.ViewModels
                     {
                         ActiveOrders.Add(order);
                     }
-                    // Сразу обновляем время для новых заказов
                     UpdateOrderTimers(null, EventArgs.Empty);
                 });
             }
@@ -91,7 +86,7 @@ namespace VkusnoAndSochno.App.ViewModels
             try
             {
                 await _apiService.UpdateOrderStatusAsync(order.IdOrder, newStatus);
-                await LoadOrdersAsync(); // Обновляем список на экране
+                await LoadOrdersAsync();
             }
             catch (Exception ex)
             {
@@ -99,7 +94,6 @@ namespace VkusnoAndSochno.App.ViewModels
             }
         }
 
-        // НОВЫЙ МЕТОД: Переход в историю
         [RelayCommand]
         public async Task GoToHistoryAsync()
         {

@@ -19,7 +19,6 @@ namespace VkusnoAndSochno.App.ViewModels
         [ObservableProperty] private bool isOrderCreated = false;
         [ObservableProperty] private string globalQuantity = "1";
 
-        // Поиск и Сортировка
         [ObservableProperty] private string searchText = string.Empty;
         [ObservableProperty] private string selectedSort = "По умолчанию";
 
@@ -40,7 +39,6 @@ namespace VkusnoAndSochno.App.ViewModels
 
         partial void OnSearchTextChanged(string value) => ApplyFilterAndSort();
 
-        // КОМАНДА ДЛЯ ОТКРЫТИЯ МЕНЮ СОРТИРОВКИ
         [RelayCommand]
         public async Task ChangeSortAsync()
         {

@@ -23,7 +23,7 @@
                         <Border Margin="0,5" Padding="15" BackgroundColor="White" StrokeShape="RoundRectangle 10" StrokeThickness="1" Stroke="LightGray">
                             <VerticalStackLayout Spacing="10">
 
-                                <!-- Шапка заказа: Номер, Время создания, Таймер и Сумма -->
+                                <!-- Шапка заказа -->
                                 <Grid ColumnDefinitions="*, Auto">
                                     <VerticalStackLayout Grid.Column="0">
                                         <Label Text="{Binding IdOrder, StringFormat='Заказ №{0}'}" FontAttributes="Bold" FontSize="18" TextColor="Black"/>
@@ -33,14 +33,12 @@
                                     <VerticalStackLayout Grid.Column="1" HorizontalOptions="End">
                                         <Label Text="{Binding TotalAmount, StringFormat='{0} ₽'}" TextColor="#4CAF50" FontAttributes="Bold" FontSize="16" HorizontalTextAlignment="End"/>
 
-                                        <!-- Таймер с изменением цвета -->
+                                        <!-- Таймер ожидания -->
                                         <Label Text="{Binding TimeElapsed}" FontAttributes="Bold" FontSize="14" HorizontalTextAlignment="End">
                                             <Label.Triggers>
-                                                <!-- Если время превышено (красный) -->
                                                 <DataTrigger TargetType="Label" Binding="{Binding IsOverdue}" Value="True">
                                                     <Setter Property="TextColor" Value="#F44336" />
                                                 </DataTrigger>
-                                                <!-- Если время в норме (синий) -->
                                                 <DataTrigger TargetType="Label" Binding="{Binding IsOverdue}" Value="False">
                                                     <Setter Property="TextColor" Value="#2196F3" />
                                                 </DataTrigger>

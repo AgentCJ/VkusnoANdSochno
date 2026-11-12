@@ -10,21 +10,17 @@
     <Grid>
         <Grid RowDefinitions="Auto, *" Padding="15" RowSpacing="10">
 
-            <!-- ВЕРХНЯЯ ПАНЕЛЬ (Кнопки, Поиск, Сортировка) -->
+            <!-- Верхняя панель -->
             <VerticalStackLayout Grid.Row="0" Spacing="10">
-
-                <!-- Кнопки поставок -->
                 <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
                     <Button Text="📥 Принять поставку" Command="{Binding OpenReceiveSupplyCommand}" BackgroundColor="#4CAF50" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
                     <Button Text="📝 Заявка поставщику" Command="{Binding OpenRequestCommand}" BackgroundColor="#2196F3" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
                 </HorizontalStackLayout>
 
-                <!-- Строка поиска -->
                 <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
                     <SearchBar Placeholder="Поиск продукта..." Text="{Binding SearchText}" BackgroundColor="Transparent" CancelButtonColor="Gray"/>
                 </Border>
 
-                <!-- Кнопки сортировки и обновления (в отдельной строке) -->
                 <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
                     <Button Grid.Column="0" 
                             Text="{Binding SelectedSort, StringFormat='🔽 {0}'}" 
@@ -38,10 +34,9 @@
                             BackgroundColor="#2196F3" TextColor="White" FontSize="12" 
                             HeightRequest="40" WidthRequest="120" Padding="0" CornerRadius="5"/>
                 </Grid>
-
             </VerticalStackLayout>
 
-            <!-- Таблица остатков -->
+            <!-- Список остатков -->
             <ScrollView Grid.Row="1">
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding FilteredStockList}" Spacing="8">
                     <BindableLayout.ItemTemplate>
@@ -76,7 +71,7 @@
             </ScrollView>
         </Grid>
 
-        <!-- ОКНО 1: ИНВЕНТАРИЗАЦИЯ -->
+        <!-- Окно инвентаризации -->
         <Grid IsVisible="{Binding IsAdjustVisible}" BackgroundColor="#80000000" Padding="20">
             <Border BackgroundColor="White" StrokeShape="RoundRectangle 15" Padding="20" VerticalOptions="Center">
                 <VerticalStackLayout Spacing="15">
@@ -96,7 +91,7 @@
             </Border>
         </Grid>
 
-        <!-- ОКНО 2: Массовая приемка поставки -->
+        <!-- Окно приемки -->
         <Grid IsVisible="{Binding IsReceiveSupplyVisible}" BackgroundColor="#80000000" Padding="20">
             <Border BackgroundColor="White" StrokeShape="RoundRectangle 15" Padding="20" VerticalOptions="Center" HeightRequest="500">
                 <Grid RowDefinitions="Auto, Auto, *, Auto" RowSpacing="10">
@@ -130,7 +125,7 @@
             </Border>
         </Grid>
 
-        <!-- ОКНО 3: Заявка поставщику -->
+        <!-- Окно заявки -->
         <Grid IsVisible="{Binding IsRequestVisible}" BackgroundColor="#80000000" Padding="20">
             <Border BackgroundColor="White" StrokeShape="RoundRectangle 15" Padding="20" VerticalOptions="Center" HeightRequest="550">
                 <Grid RowDefinitions="Auto, Auto, *, Auto" RowSpacing="10">

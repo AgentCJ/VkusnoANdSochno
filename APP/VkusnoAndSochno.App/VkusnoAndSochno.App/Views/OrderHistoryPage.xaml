@@ -17,14 +17,12 @@
                 <BindableLayout.ItemTemplate>
                     <DataTemplate x:DataType="services:OrderHistoryDto">
                         <Border Margin="0" Padding="15" BackgroundColor="White" StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="LightGray">
-
-                            <!-- Обработчик клика на всю карточку -->
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnOrderTapped" />
                             </Border.GestureRecognizers>
 
                             <VerticalStackLayout Spacing="5">
-                                <!-- Шапка заказа (видна всегда) -->
+                                <!-- Шапка -->
                                 <Grid ColumnDefinitions="*, Auto">
                                     <VerticalStackLayout Grid.Column="0">
                                         <Label Text="{Binding IdOrder, StringFormat='Заказ №{0}'}" FontAttributes="Bold" TextColor="Black" FontSize="16"/>
@@ -38,12 +36,11 @@
                                     </VerticalStackLayout>
                                 </Grid>
 
-                                <!-- ДЕТАЛИ ЗАКАЗА (Видны только если IsExpanded = true) -->
+                                <!-- Детали -->
                                 <VerticalStackLayout IsVisible="{Binding IsExpanded}" Spacing="5" Margin="0,10,0,0">
                                     <BoxView HeightRequest="1" Color="LightGray" Margin="0,5"/>
                                     <Label Text="Состав заказа:" FontAttributes="Bold" FontSize="13" TextColor="Gray"/>
 
-                                    <!-- Список блюд -->
                                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}" Spacing="2">
                                         <BindableLayout.ItemTemplate>
                                             <DataTemplate x:DataType="services:OrderHistoryItemDto">
@@ -59,7 +56,6 @@
                                     <BoxView HeightRequest="1" Color="LightGray" Margin="0,5"/>
                                     <Label Text="{Binding PaymentMethod, StringFormat='Способ оплаты: {0}'}" FontSize="12" TextColor="Gray"/>
                                 </VerticalStackLayout>
-
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>

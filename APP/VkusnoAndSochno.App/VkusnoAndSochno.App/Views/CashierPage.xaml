@@ -8,7 +8,7 @@
 
     <Grid ColumnDefinitions="2*, 1*" Padding="10" ColumnSpacing="10">
 
-        <!-- ЛЕВАЯ ЧАСТЬ -->
+        <!-- Левая часть: меню и управление заказом -->
         <Grid Grid.Column="0" RowDefinitions="Auto, Auto, *" RowSpacing="10">
 
             <!-- Панель управления заказом -->
@@ -30,21 +30,18 @@
                 </Grid>
             </Border>
 
-            <!-- ПОИСК И СОРТИРОВКА (ИСПРАВЛЕНО) -->
+            <!-- Поиск и сортировка -->
             <Grid Grid.Row="1" ColumnDefinitions="*, 160, 110" ColumnSpacing="10">
-                <!-- Поиск -->
                 <Border Grid.Column="0" Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
                     <SearchBar Placeholder="Поиск блюда..." Text="{Binding SearchText}" BackgroundColor="Transparent" CancelButtonColor="Gray"/>
                 </Border>
 
-                <!-- Кнопка сортировки (с фиксированной шириной) -->
                 <Button Grid.Column="1" 
                         Text="{Binding SelectedSort, StringFormat='🔽 {0}'}" 
                         Command="{Binding ChangeSortCommand}" 
                         BackgroundColor="#E3F2FD" TextColor="#1565C0" FontSize="13" FontAttributes="Bold" 
                         HeightRequest="40" WidthRequest="160" CornerRadius="5" Padding="5,0"/>
 
-                <!-- Кнопка обновления меню (с фиксированной шириной) -->
                 <Button Grid.Column="2" 
                         Text="🔄 Обновить" 
                         Command="{Binding LoadMenuCommand}" 
@@ -71,6 +68,7 @@
                                     <Label Text="{Binding Price, StringFormat='{0} ₽'}" TextColor="#4CAF50" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,5,0,0"/>
                                 </VerticalStackLayout>
 
+                                <!-- Блокировка блюда при отсутствии ингредиентов -->
                                 <Grid IsVisible="{Binding IsAvailable, Converter={StaticResource InverseBoolConverter}}" 
                                       BackgroundColor="#B3FFFFFF" HorizontalOptions="Fill" VerticalOptions="Fill">
                                     <Label Text="НЕТ ИНГРЕДИЕНТОВ" TextColor="#D32F2F" FontAttributes="Bold" 
@@ -83,7 +81,7 @@
             </CollectionView>
         </Grid>
 
-        <!-- Правая часть (Корзина) -->
+        <!-- Правая часть: корзина -->
         <Border Grid.Column="1" BackgroundColor="White" StrokeShape="RoundRectangle 10" Padding="10" StrokeThickness="0">
             <Grid RowDefinitions="Auto, *, Auto" RowSpacing="10">
                 <Label Grid.Row="0" Text="Текущий чек" FontSize="18" FontAttributes="Bold" TextColor="Black"/>

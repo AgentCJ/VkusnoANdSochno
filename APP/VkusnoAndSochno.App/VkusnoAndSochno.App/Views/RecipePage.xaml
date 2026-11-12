@@ -7,21 +7,18 @@
              BackgroundColor="#F5F5F5">
     <Grid RowDefinitions="Auto, Auto, *" Padding="15" RowSpacing="10">
 
-        <!-- Заголовок с названием блюда -->
         <Label Grid.Row="0" Text="{Binding DishName, StringFormat='Рецепт блюда: {0}'}" 
                FontAttributes="Bold" FontSize="20" TextColor="Black"/>
 
-        <!-- Форма добавления ингредиента -->
+        <!-- Форма добавления -->
         <Border Grid.Row="1" Padding="15" BackgroundColor="#E3F2FD" StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="#90CAF9">
             <Grid ColumnDefinitions="2*, 1*, Auto" ColumnSpacing="10">
-                <!-- Ингредиент -->
                 <Border Grid.Column="0" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
                     <Picker Title="Ингредиент" TitleColor="#999999" ItemsSource="{Binding Ingredients}" 
                             ItemDisplayBinding="{Binding IngredientName}" SelectedItem="{Binding SelectedIngredient}"
                             TextColor="Black" Margin="5,0" BackgroundColor="Transparent" VerticalOptions="Center"/>
                 </Border>
 
-                <!-- Количество -->
                 <Border Grid.Column="1" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
                     <Entry Placeholder="Кол-во" PlaceholderColor="#999999" Keyboard="Numeric" 
                            Text="{Binding QuantityText}" TextColor="Black" Margin="5,0" BackgroundColor="Transparent"/>
@@ -31,7 +28,7 @@
             </Grid>
         </Border>
 
-        <!-- Список ингредиентов в рецепте -->
+        <!-- Список ингредиентов -->
         <RefreshView Grid.Row="2" IsRefreshing="{Binding IsRefreshing}" Command="{Binding LoadDataCommand}">
             <CollectionView ItemsSource="{Binding RecipeItems}">
                 <CollectionView.ItemTemplate>

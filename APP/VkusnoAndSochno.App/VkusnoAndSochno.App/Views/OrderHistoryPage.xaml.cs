@@ -41,10 +41,10 @@ namespace VkusnoAndSochno.App.Views
         {
             await LoadHistoryAsync();
         }
-        // Переключение развернутого состояния
+
         private void OnOrderTapped(object sender, TappedEventArgs e)
         {
-            // Получаем объект заказа, на который кликнули
+            // Разворачиваем/сворачиваем детали заказа при клике
             if (sender is Border border && border.BindingContext is OrderHistoryDto order)
             {
                 order.IsExpanded = !order.IsExpanded;

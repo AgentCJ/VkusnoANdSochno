@@ -18,6 +18,7 @@
                 <Button Grid.Column="4" Text="🕒 История заказов" Clicked="OnHistoryClicked" BackgroundColor="#607D8B" TextColor="White" FontAttributes="Bold" CornerRadius="8"/>
             </Grid>
 
+            <!-- Карточки сводки -->
             <Label Text="Сводка за сегодня" FontAttributes="Bold" FontSize="18" TextColor="Black"/>
             <Grid ColumnDefinitions="*, *, *" ColumnSpacing="10">
                 <Border Grid.Column="0" BackgroundColor="#E3F2FD" StrokeShape="RoundRectangle 8" StrokeThickness="0" Padding="10">
@@ -44,6 +45,7 @@
 
             <BoxView HeightRequest="1" Color="LightGray" Margin="0,5"/>
 
+            <!-- Детальный отчет -->
             <Label Text="Детальный отчет за период" FontAttributes="Bold" FontSize="18" TextColor="Black"/>
             <Border Padding="10" Stroke="LightGray" StrokeShape="RoundRectangle 8" BackgroundColor="White">
                 <VerticalStackLayout Spacing="10">
@@ -62,6 +64,7 @@
                 </VerticalStackLayout>
             </Border>
 
+            <!-- Таблица результатов -->
             <Grid ColumnDefinitions="*, Auto, Auto" Padding="10,0" Margin="0,10,0,0">
                 <Label Text="Филиал" FontAttributes="Bold" Grid.Column="0" TextColor="Black"/>
                 <Label Text="Заказов" FontAttributes="Bold" Grid.Column="1" WidthRequest="80" HorizontalTextAlignment="Center" TextColor="Black"/>
