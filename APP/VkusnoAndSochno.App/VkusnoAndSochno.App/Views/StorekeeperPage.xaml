@@ -18,7 +18,7 @@
                 </HorizontalStackLayout>
 
                 <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
-                    <SearchBar Placeholder="Поиск продукта..." Text="{Binding SearchText}" BackgroundColor="Transparent" CancelButtonColor="Gray"/>
+                    <SearchBar Placeholder="Поиск продукта..." Text="{Binding SearchText}" BackgroundColor="Transparent" CancelButtonColor="Gray" TextColor="Black" PlaceholderColor="#999999"/>
                 </Border>
 
                 <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
@@ -80,7 +80,7 @@
                     <VerticalStackLayout Spacing="5">
                         <Label Text="Фактическое количество на складе" FontSize="12" TextColor="Gray"/>
                         <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
-                            <Entry Keyboard="Numeric" Text="{Binding AdjustFactQty}" TextColor="Black" BackgroundColor="Transparent" Margin="5,0"/>
+                            <Entry Keyboard="Numeric" MaxLength="4" Text="{Binding AdjustFactQty}" TextColor="Black" BackgroundColor="Transparent" Margin="5,0" PlaceholderColor="#999999"/>
                         </Border>
                     </VerticalStackLayout>
                     <HorizontalStackLayout Spacing="10" HorizontalOptions="Center" Margin="0,10,0,0">
@@ -109,7 +109,7 @@
                                     <Grid ColumnDefinitions="*, 100, 40" ColumnSpacing="10">
                                         <Label Grid.Column="0" Text="{Binding IngredientName}" VerticalOptions="Center" TextColor="Black"/>
                                         <Border Grid.Column="1" Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
-                                            <Entry Placeholder="0" Keyboard="Numeric" Text="{Binding QuantityToAdd}" TextColor="Black" BackgroundColor="Transparent" Margin="5,0"/>
+                                            <Entry Placeholder="0" Keyboard="Numeric" MaxLength="4" Text="{Binding QuantityToAdd}" TextColor="Black" BackgroundColor="Transparent" Margin="5,0" PlaceholderColor="#999999"/>
                                         </Border>
                                         <Label Grid.Column="2" Text="{Binding UnitOfMeasure}" VerticalOptions="Center" TextColor="Gray"/>
                                     </Grid>
@@ -143,7 +143,7 @@
                                     <Grid ColumnDefinitions="*, 100, 40" ColumnSpacing="10">
                                         <Label Grid.Column="0" Text="{Binding IngredientName}" VerticalOptions="Center" TextColor="Black"/>
                                         <Border Grid.Column="1" Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
-                                            <Entry Placeholder="0" Keyboard="Numeric" Text="{Binding RequestedQuantity}" TextColor="Black" BackgroundColor="Transparent" Margin="5,0"/>
+                                            <Entry Placeholder="0" Keyboard="Numeric" MaxLength="4" Text="{Binding RequestedQuantity}" TextColor="Black" BackgroundColor="Transparent" Margin="5,0" PlaceholderColor="#999999"/>
                                         </Border>
                                         <Label Grid.Column="2" Text="{Binding UnitOfMeasure}" VerticalOptions="Center" TextColor="Gray"/>
                                     </Grid>

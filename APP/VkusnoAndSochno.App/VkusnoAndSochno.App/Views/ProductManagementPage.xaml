@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:services="clr-namespace:VkusnoAndSochno.App.Services"
              x:Class="VkusnoAndSochno.App.Views.ProductManagementPage"
              Title="Управление продуктами"
              BackgroundColor="#F5F5F5">
-    <Grid Padding="20">
-        <Border BackgroundColor="White" StrokeShape="RoundRectangle 15" Padding="20" VerticalOptions="Start">
+    <Grid RowDefinitions="Auto, *" Padding="20" RowSpacing="15">
+
+        <!-- Верхняя часть: Форма создания -->
+        <Border Grid.Row="0" BackgroundColor="White" StrokeShape="RoundRectangle 15" Padding="20" VerticalOptions="Start">
             <VerticalStackLayout Spacing="15">
                 <Label Text="Создание нового продукта" FontAttributes="Bold" FontSize="20" TextColor="Black" HorizontalOptions="Center"/>
 
                 <VerticalStackLayout Spacing="5">
                     <Label Text="Название" FontSize="12" TextColor="Gray"/>
                     <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
-                        <Entry Text="{Binding NewIngName}" TextColor="Black" BackgroundColor="Transparent" Margin="5,0"/>
+                        <Entry Text="{Binding NewIngName}" TextColor="Black" BackgroundColor="Transparent" Margin="5,0" MaxLength="100"/>
                     </Border>
                 </VerticalStackLayout>
 
@@ -59,5 +62,34 @@
                 <Label Text="{Binding StatusMessage}" TextColor="#1976D2" HorizontalOptions="Center" FontAttributes="Bold"/>
             </VerticalStackLayout>
         </Border>
+
+        <!-- Нижняя часть: Список продуктов с кнопкой удаления -->
+        <Grid Grid.Row="1" RowDefinitions="Auto, *" RowSpacing="10">
+            <Label Grid.Row="0" Text="Список всех продуктов" FontAttributes="Bold" FontSize="18" TextColor="Black"/>
+
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Products}" Spacing="8">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="services:StockBalanceDto">
+                            <Border Margin="0" Padding="10" BackgroundColor="White" StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="LightGray">
+                                <Grid ColumnDefinitions="*, Auto, Auto" ColumnSpacing="10">
+                                    <VerticalStackLayout Grid.Column="0">
+                                        <Label Text="{Binding IngredientName}" FontAttributes="Bold" TextColor="Black" FontSize="15"/>
+                                        <Label Text="{Binding UnitOfMeasure, StringFormat='Ед. изм.: {0}'}" TextColor="Gray" FontSize="12"/>
+                                    </VerticalStackLayout>
+
+                                    <Label Grid.Column="1" Text="{Binding Balance, StringFormat='Остаток: {0:0.###}'}" TextColor="#1976D2" FontAttributes="Bold" VerticalOptions="Center"/>
+
+                                    <Button Grid.Column="2" Text="🗑️" 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteProductCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#F44336" TextColor="White" WidthRequest="40" HeightRequest="35" FontSize="16" CornerRadius="5" Padding="0" VerticalOptions="Center"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
     </Grid>
 </ContentPage>

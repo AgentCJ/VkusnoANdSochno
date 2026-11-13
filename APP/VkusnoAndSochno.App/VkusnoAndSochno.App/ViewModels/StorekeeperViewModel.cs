@@ -134,9 +134,10 @@ namespace VkusnoAndSochno.App.ViewModels
         [RelayCommand]
         public async Task SaveAdjustAsync()
         {
-            if (!decimal.TryParse(AdjustFactQty, out var factQty) || factQty < 0)
+            // Проверка: не пустое, не отрицательное и не больше 1000
+            if (!decimal.TryParse(AdjustFactQty, out var factQty) || factQty < 0 || factQty > 1000)
             {
-                await Shell.Current.DisplayAlert("Ошибка", "Введите корректное количество", "ОК"); return;
+                await Shell.Current.DisplayAlert("Ошибка", "Введите корректное количество (от 0 до 1000)", "ОК"); return;
             }
 
             try
@@ -161,8 +162,24 @@ namespace VkusnoAndSochno.App.ViewModels
         public async Task ApplyReceiveSupplyAsync()
         {
             if (SelectedSupplierForReceive == null) { await Shell.Current.DisplayAlert("Ошибка", "Выберите поставщика", "ОК"); return; }
-            var itemsToReceive = ReceiveList.Where(x => !string.IsNullOrWhiteSpace(x.QuantityToAdd) && decimal.TryParse(x.QuantityToAdd, out var q) && q > 0).ToList();
-            if (itemsToReceive.Count == 0) { await Shell.Current.DisplayAlert("Ошибка", "Вы не указали количество", "ОК"); return; }
+
+            var itemsToReceive = new List<ReceiveItemDto>();
+
+            // Проходим по КАЖДОМУ полю и проверяем его
+            foreach (var item in ReceiveList)
+            {
+                if (string.IsNullOrWhiteSpace(item.QuantityToAdd)) continue; // Пропускаем пустые поля
+
+                // Если ввели не число, или число <= 0, или > 1000 — прерываем
+                if (!decimal.TryParse(item.QuantityToAdd, out var qty) || qty <= 0 || qty > 1000)
+                {
+                    await Shell.Current.DisplayAlert("Ошибка", $"Для '{item.IngredientName}' введите количество от 1 до 1000", "ОК");
+                    return;
+                }
+                itemsToReceive.Add(item);
+            }
+
+            if (itemsToReceive.Count == 0) { await Shell.Current.DisplayAlert("Ошибка", "Вы не указали количество ни для одного продукта", "ОК"); return; }
 
             try
             {
@@ -188,8 +205,24 @@ namespace VkusnoAndSochno.App.ViewModels
         public async Task GenerateDocxAsync()
         {
             if (SelectedSupplierForRequest == null) { await Shell.Current.DisplayAlert("Ошибка", "Выберите поставщика", "ОК"); return; }
-            var itemsToRequest = RequestList.Where(x => !string.IsNullOrWhiteSpace(x.RequestedQuantity) && decimal.TryParse(x.RequestedQuantity, out var q) && q > 0).ToList();
-            if (itemsToRequest.Count == 0) { await Shell.Current.DisplayAlert("Ошибка", "Вы не указали количество", "ОК"); return; }
+
+            var itemsToRequest = new List<RequestItemDto>();
+
+            // Проходим по КАЖДОМУ полю и проверяем его
+            foreach (var item in RequestList)
+            {
+                if (string.IsNullOrWhiteSpace(item.RequestedQuantity)) continue; // Пропускаем пустые поля
+
+                // Если ввели не число, или число <= 0, или > 1000 — прерываем
+                if (!decimal.TryParse(item.RequestedQuantity, out var qty) || qty <= 0 || qty > 1000)
+                {
+                    await Shell.Current.DisplayAlert("Ошибка", $"Для '{item.IngredientName}' введите количество от 1 до 1000", "ОК");
+                    return;
+                }
+                itemsToRequest.Add(item);
+            }
+
+            if (itemsToRequest.Count == 0) { await Shell.Current.DisplayAlert("Ошибка", "Вы не указали количество ни для одного продукта", "ОК"); return; }
 
             try
             {
@@ -230,4 +263,4 @@ namespace VkusnoAndSochno.App.ViewModels
             catch (Exception ex) { await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК"); }
         }
     }
-}
+}   

@@ -16,7 +16,7 @@
                     <!-- Название -->
                     <Border Grid.Column="0" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 5" BackgroundColor="White">
                         <Entry Placeholder="Название" PlaceholderColor="#999999" 
-                               Text="{Binding NewDishName}" TextColor="Black" Margin="5,0" BackgroundColor="Transparent"/>
+                               Text="{Binding NewDishName}" TextColor="Black" Margin="5,0" BackgroundColor="Transparent" MaxLength="100"/>
                     </Border>
 
                     <!-- Категория -->

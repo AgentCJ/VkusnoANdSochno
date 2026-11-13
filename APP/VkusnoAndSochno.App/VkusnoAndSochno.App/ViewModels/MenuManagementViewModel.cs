@@ -66,6 +66,13 @@ namespace VkusnoAndSochno.App.ViewModels
                 return;
             }
 
+            // Проверка длины названия
+            if (NewDishName.Length > 100)
+            {
+                await Shell.Current.DisplayAlert("Ошибка", "Название блюда не должно превышать 100 символов", "ОК");
+                return;
+            }
+
             try
             {
                 if (IsEditing && _editingDishId.HasValue)

@@ -10,6 +10,9 @@ namespace VkusnoAndSochno.App.ViewModels
         private readonly ApiService _apiService;
         private readonly UserSession _session;
 
+        // Список для отображения существующих продуктов
+        [ObservableProperty] private ObservableCollection<StockBalanceDto> products = new();
+
         [ObservableProperty] private string newIngName = string.Empty;
         [ObservableProperty] private string newIngCost = string.Empty;
         [ObservableProperty] private string newIngMin = string.Empty;
@@ -23,6 +26,23 @@ namespace VkusnoAndSochno.App.ViewModels
         {
             _apiService = apiService;
             _session = session;
+        }
+
+        [RelayCommand]
+        public async Task LoadDataAsync()
+        {
+            try
+            {
+                var data = await _apiService.GetBalanceAsync(_session.BranchId);
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    Products = new ObservableCollection<StockBalanceDto>(data);
+                });
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Ошибка API", ex.Message, "ОК");
+            }
         }
 
         [RelayCommand]
@@ -40,6 +60,13 @@ namespace VkusnoAndSochno.App.ViewModels
                 !decimal.TryParse(NewIngCost, out var cost) || !decimal.TryParse(NewIngMin, out var min))
             {
                 StatusMessage = "Заполните все обязательные поля корректными данными.";
+                return;
+            }
+
+            // Проверка длины названия
+            if (NewIngName.Length > 100)
+            {
+                StatusMessage = "Название продукта не должно превышать 100 символов.";
                 return;
             }
 
@@ -61,8 +88,29 @@ namespace VkusnoAndSochno.App.ViewModels
                 StatusMessage = "Продукт успешно добавлен!";
 
                 NewIngName = string.Empty; SelectedUnit = string.Empty; NewIngCost = string.Empty; NewIngMin = string.Empty; NewIngInitialQty = string.Empty;
+
+                // Обновляем список
+                await LoadDataAsync();
             }
             catch (Exception ex) { StatusMessage = $"Ошибка: {ex.Message}"; }
+        }
+
+        [RelayCommand]
+        public async Task DeleteProductAsync(StockBalanceDto product)
+        {
+            bool confirm = await Shell.Current.DisplayAlert("Удаление", $"Удалить '{product.IngredientName}' из системы?", "Да", "Нет");
+            if (!confirm) return;
+
+            try
+            {
+                await _apiService.DeleteIngredientAsync(product.IdIngredient);
+                await LoadDataAsync();
+            }
+            catch (Exception ex)
+            {
+                // Если продукт используется в рецептах, БД не даст его удалить
+                await Shell.Current.DisplayAlert("Внимание", ex.Message, "ОК");
+            }
         }
     }
 }

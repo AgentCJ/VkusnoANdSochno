@@ -31,6 +31,8 @@ namespace VkusnoAndSochno.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddDish([FromBody] DishRequest request)
         {
+            if (request.DishName.Length > 100) return BadRequest("Название блюда не должно превышать 100 символов.");
+
             var dish = new Dish
             {
                 DishName = request.DishName,
@@ -47,6 +49,8 @@ namespace VkusnoAndSochno.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateDish(int id, [FromBody] DishRequest request)
         {
+            if (request.DishName.Length > 100) return BadRequest("Название блюда не должно превышать 100 символов.");
+
             var dish = await _context.Dishes.FindAsync(id);
             if (dish == null) return NotFound("Блюдо не найдено");
 
@@ -73,7 +77,6 @@ namespace VkusnoAndSochno.API.Controllers
             }
             catch (DbUpdateException)
             {
-                // Ошибка внешнего ключа, если блюдо уже фигурирует в заказах
                 return BadRequest("Невозможно удалить блюдо, так как оно уже есть в истории заказов. Используйте «Снять с продажи».");
             }
         }

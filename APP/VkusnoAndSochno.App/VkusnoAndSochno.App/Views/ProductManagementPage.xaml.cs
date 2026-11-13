@@ -11,5 +11,11 @@ namespace VkusnoAndSochno.App.Views
             InitializeComponent();
             BindingContext = _viewModel = vm;
         }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await _viewModel.LoadDataAsync();
+        }
     }
 }
